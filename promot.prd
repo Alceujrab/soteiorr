@@ -1,0 +1,302 @@
+# PRD ESTRUTURADO - AÇÃO RR VEICULOS ENTRE AMIGOS
+
+## 1. Visão Geral
+
+O **Ação RR Veículos Entre Amigos** é uma plataforma web completa e profissional para criação, gerenciamento e participação em rifas online, desenvolvida em Laravel 13 com banco de dados MySQL. O sistema oferece uma experiência integrada tanto para administradores quanto para clientes, utilizando APIs modernas e recursos robustos para garantir performance e escalabilidade. A plataforma foi projetada para atender desde pequenos organizadores de rifas entre amigos até grandes campanhas com milhares de participantes, oferecendo automação total do processo, desde o cadastro da rifa até a confirmação do pagamento e realização do sorteio ao vivo.
+
+O principal problema que o Ação RR Veículos Entre Amigos resolve é a falta de transparência e segurança nas rifas tradicionais, onde organizadores enfrentam dificuldades com controle manual de números vendidos, pagamentos não confirmados, sorteios questionáveis e falta de credibilidade. Por exemplo, um organizador que realiza rifas pelo WhatsApp precisa gerenciar dezenas de conversas, anotar números manualmente, conferir pagamentos em diferentes bancos e ainda organizar o sorteio de forma que todos confiem no resultado. Isso gera erros, retrabalho e desconfiança dos participantes, que muitas vezes deixam de comprar números por medo de fraudes.
+
+A solução oferece um painel administrativo completo para criação de rifas com definição de prêmios, fotos, vídeos, valores, quantidade de números e data/hora do sorteio, com gerenciamento em tempo real de participantes, pagamentos e números vendidos. O sistema integra pagamento via PIX e boleto bancário com processamento automático de confirmação, liberando os números imediatamente após a aprovação. Cada número é único e vinculado a um único comprador, e o sorteio é transmitido ao vivo via YouTube e Instagram, permitindo que os clientes acompanhem em tempo real. O histórico de sorteios anteriores fica disponível para consulta, garantindo total transparência.
+
+O público-alvo inclui organizadores de rifas que desejam profissionalizar seus sorteios, aumentar a credibilidade e automatizar processos, como influenciadores digitais, pequenos empresários, instituições beneficentes e grupos de amigos. Os participantes são pessoas que buscam uma plataforma segura e transparente para concorrer a prêmios, com a tranquilidade de saber que o processo é auditável e o sorteio é ao vivo. Os diferenciais incluem automação total do processo, transparência com números disponíveis e comprados em tempo real, escalabilidade para suportar desde pequenas rifas até grandes campanhas, segurança com dados criptografados e conformidade com a LGPD, e facilidade de integração com sistemas de pagamento, redes sociais e ferramentas de transmissão ao vivo.
+
+## 2. Funcionalidades
+
+### 2.1 Perfis
+
+| Perfil | Registro | Permissões | Acessos |
+|---|---|---|---|
+| Super Admin | Email corporativo + 2FA | Completo (criação, edição, exclusão, auditoria) | Config global, users, reports, audit, security, billing |
+| Admin Organizador | Email + CPF + CNPJ | Gerenciamento de rifas, participantes, pagamentos | Dashboard, rifas, participantes, financeiro, sorteios |
+| Gerente Operacional | Email corporativo + SSO | Equipe, metas, aprovações, relatórios | Dashboard, metas, aprovações, reports, equipe |
+| Vendedor | Email + CPF | Cadastro de participantes, consulta de números | Dashboard simplificado, participantes, consulta |
+| Cliente/Participante | Email + CPF + telefone | Compra de números, acompanhamento, histórico | Minha conta, números comprados, sorteios, histórico |
+| Financeiro | Email corporativo | Conciliação, relatórios financeiros, extratos | Dashboard financeiro, conciliação, relatórios, extratos |
+| Suporte | Email corporativo | Visualização de tickets, respostas, escalonamento | Dashboard suporte, tickets, base de conhecimento |
+| Auditor | Email corporativo + certificado | Apenas leitura, logs, relatórios de auditoria | Logs, relatórios, histórico, exportação |
+
+### 2.2 Módulos
+
+1. **Dashboard Principal** - Visão consolidada de KPIs em tempo real com gráficos de vendas, números vendidos, receita do dia, participantes ativos e alertas de pagamentos pendentes. Widgets drag-and-drop personalizáveis por perfil, com feed de atividades recentes e calendário de sorteios agendados.
+
+2. **Gestão de Rifas** - Cadastro central de rifas com criação de prêmios (fotos, vídeos, descrição), definição de valores, quantidade de números, data/hora do sorteio e configuração de transmissão ao vivo. Busca avançada por status, data, valor e organizador, com importação/exportação em CSV e Excel.
+
+3. **Gestão de Participantes** - Cadastro completo de participantes com dados pessoais, histórico de compras, status de pagamento e números adquiridos. Filtros por rifa, data, status de pagamento e forma de pagamento, com exportação de relatórios e envio de notificações em massa.
+
+4. **Sistema de Pagamentos** - Integração com gateways Asaas, PagSeguro e Mercado Pago para processamento de PIX e boleto bancário. Confirmação automática de pagamento com liberação imediata dos números, conciliação bancária, estorno e reembolso, e relatórios financeiros detalhados.
+
+5. **Sorteios e Transmissão** - Agendamento de sorteios com data/hora definidos, integração com YouTube e Instagram para transmissão ao vivo, geração automática de link de transmissão e notificação aos participantes. Histórico de sorteios anteriores com replay disponível.
+
+6. **Notificações e Comunicação** - Sistema de notificações push, e-mail e SMS para confirmação de compra, pagamento aprovado, lembretes de sorteio e resultados. Templates personalizáveis e disparo em massa para campanhas promocionais.
+
+7. **Relatórios e Analytics** - Relatórios detalhados de vendas por rifa, período e organizador, receitas, participantes, números vendidos e taxa de conversão. Gráficos interativos, exportação em PDF/Excel e dashboards personalizados por perfil.
+
+8. **Gestão de Usuários e Permissões** - Cadastro e gerenciamento de usuários com níveis de acesso granulares, autenticação 2FA, logs de atividade e histórico de alterações. Integração com SSO para perfis corporativos.
+
+9. **Auditoria e Compliance** - Registro completo de todas as ações do sistema com data, hora, usuário e IP, logs de alterações em rifas, pagamentos e participantes. Relatórios de auditoria exportáveis e alertas de atividades suspeitas.
+
+10. **Configurações Globais** - Configuração de parâmetros do sistema como limites de rifas, valores mínimos/máximos, gateways de pagamento ativos, templates de e-mail, integrações com redes sociais e personalização visual da plataforma.
+
+11. **Suporte e Tickets** - Sistema de tickets de suporte com categorias, prioridades e escalonamento automático. Base de conhecimento com FAQs, tutoriais e vídeos, chat ao vivo e histórico de atendimentos.
+
+12. **API e Integrações** - API RESTful completa para integração com sistemas externos, webhooks para notificações de eventos, SDK para desenvolvedores e documentação interativa. Integração com ferramentas de marketing e CRM.
+
+### 2.3 Páginas
+
+| Página | Módulo | Descrição | Elementos |
+|---|---|---|---|
+| Dashboard Principal | Dashboard Principal | Visão geral KPIs em tempo real | Cards métricas, gráficos vendas, feed atividades, calendário sorteios, alertas |
+| Minhas Rifas | Gestão de Rifas | Listagem e gerenciamento de rifas criadas | Tabela rifas, filtros, botões criar/editar/excluir, status, ações |
+| Criar Rifa | Gestão de Rifas | Formulário de criação de nova rifa | Campos prêmio, fotos, vídeos, valor, números, data sorteio, transmissão |
+| Detalhes Rifa | Gestão de Rifas | Visualização completa de uma rifa | Informações, números vendidos, participantes, financeiro, transmissão |
+| Participantes | Gestão de Participantes | Listagem de participantes com filtros | Tabela participantes, busca, filtros, exportar, notificar |
+| Detalhes Participante | Gestão de Participantes | Perfil completo do participante | Dados pessoais, histórico compras, números, pagamentos |
+| Pagamentos | Sistema de Pagamentos | Gestão de transações financeiras | Tabela pagamentos, status, conciliação, estorno, relatórios |
+| Configurar Pagamento | Sistema de Pagamentos | Configuração de gateways e formas de pagamento | Gateways ativos, chaves API, taxas, prazos |
+| Sorteios | Sorteios e Transmissão | Listagem e gerenciamento de sorteios | Tabela sorteios, status, link transmissão, resultado |
+| Realizar Sorteio | Sorteios e Transmissão | Execução do sorteio ao vivo | Player YouTube/Instagram, gerar resultado, notificar |
+| Notificações | Notificações e Comunicação | Templates e disparo de notificações | Templates, histórico disparos, agendamento, estatísticas |
+| Relatórios | Relatórios e Analytics | Dashboards e relatórios personalizados | Gráficos, tabelas, filtros, exportar PDF/Excel |
+| Usuários | Gestão de Usuários | Gerenciamento de usuários do sistema | Tabela usuários, criar/editar, permissões, 2FA, logs |
+| Logs de Auditoria | Auditoria e Compliance | Registro de todas as ações do sistema | Tabela logs, filtros, exportar, alertas |
+| Configurações | Configurações Globais | Parâmetros e personalização do sistema | Formulário configurações, integrações, personalização |
+| Tickets | Suporte e Tickets | Sistema de atendimento ao cliente | Lista tickets, chat, base conhecimento, FAQ |
+| API Documentation | API e Integrações | Documentação interativa da API | Endpoints, exemplos, SDK, webhooks, chaves |
+
+## 3. Processos
+
+**Super Admin:** Login com 2FA → Dashboard Principal → Configurações Globais → Gestão de Usuários → Relatórios de Auditoria → Logs de Segurança → Billing e Assinaturas → Suporte Técnico → Backup e Manutenção → Logout
+
+**Admin Organizador:** Login → Dashboard Principal → Minhas Rifas → Criar Nova Rifa → Configurar Prêmio e Valores → Definir Números e Data Sorteio → Configurar Transmissão → Publicar Rifa → Gerenciar Participantes → Acompanhar Pagamentos → Realizar Sorteio → Notificar Vencedor → Gerar Relatório Final
+
+**Gerente Operacional:** Login → Dashboard Equipe → Metas e Indicadores → Aprovações Pendentes → Relatórios de Vendas → Gestão de Vendedores → Análise de Performance → Ajustes de Campanhas → Comunicação com Equipe → Relatório Semanal → Logout
+
+**Vendedor:** Login → Dashboard Simplificado → Consultar Rifas Ativas → Cadastrar Participante → Registrar Venda → Confirmar Pagamento → Visualizar Comissões → Relatório Diário → Solicitar Aprovação → Logout
+
+**Cliente/Participante:** Cadastro/Login → Buscar Rifas Disponíveis → Visualizar Detalhes da Rifa → Selecionar Números → Efetuar Pagamento PIX/Boleto → Aguardar Confirmação → Acompanhar Sorteio ao Vivo → Verificar Resultado → Histórico de Participações → Notificações de Novas Rifas
+
+**Financeiro:** Login → Dashboard Financeiro → Conciliação de Pagamentos → Relatórios de Receitas → Extratos Bancários → Gestão de Estornos → Relatório Fiscal → Fechamento Mensal → Auditoria Financeira → Logout
+
+**Suporte:** Login → Dashboard Suporte → Visualizar Tickets → Responder Clientes → Escalonar Problemas → Base de Conhecimento → FAQ → Relatório de Atendimentos → Logout
+
+**Auditor:** Login com Certificado → Dashboard Auditoria → Logs do Sistema → Relatórios de Compliance → Histórico de Alterações → Exportação de Dados → Alertas de Segurança → Relatório Final → Logout
+
+═══════════════════════════════════════════════════════════
+PARTE 2A: DESIGN UI + DIAGRAMAS
+═══════════════════════════════════════════════════════════
+
+# CONTINUAÇÃO - DESIGN UI ULTRA DETALHADO
+
+## 4. Diagrama de Fluxo - Fluxo Completo do Sistema
+
+```mermaid
+graph TD
+    A["Login (Admin/Cliente)"] --> B{Perfil?}
+    B -->|Admin| C["Dashboard Admin"]
+    B -->|Cliente| D["Dashboard Cliente"]
+    C --> E["Gerenciar Rifas"]
+    C --> F["Gerenciar Usuarios"]
+    C --> G["Relatorios Financeiros"]
+    C --> H["Configuracoes"]
+    D --> I["Minhas Rifas"]
+    D --> J["Comprar Numeros"]
+    D --> K["Meus Bilhetes"]
+    D --> L["Historico Compras"]
+    E --> M{Criar/Editar?}
+    M -->|Criar| N["Formulario Rifa"]
+    M -->|Editar| O["Selecionar Rifa"]
+    N --> P["Definir Premio"]
+    N --> Q["Definir Valor"]
+    N --> R["Definir Data Sorteio"]
+    N --> S["Publicar Rifa"]
+    O --> T["Editar Detalhes"]
+    O --> U["Gerenciar Numeros"]
+    O --> V["Visualizar Participantes"]
+    J --> W["Selecionar Rifa Ativa"]
+    W --> X["Escolher Numeros"]
+    X --> Y["Carrinho Compras"]
+    Y --> Z["Pagamento"]
+    Z --> AA{Metodo Pagamento?}
+    AA -->|Pix| AB["QR Code Pix"]
+    AA -->|Cartao| AC["Formulario Cartao"]
+    AA -->|Boleto| AD["Boleto Gerado"]
+    AB --> AE["Confirmar Pagamento"]
+    AC --> AE
+    AD --> AE
+    AE --> AF["Bilhete Gerado"]
+    AF --> AG["Notificacao Cliente"]
+    AG --> AH["Email/SMS Confirmacao"]
+    S --> AI["Rifa Publicada"]
+    AI --> AJ["Notificacao Seguidores"]
+    G --> AK["Relatorio Vendas"]
+    G --> AL["Relatorio Participantes"]
+    G --> AM["Relatorio Financeiro"]
+    H --> AN["Perfil Admin"]
+    H --> AO["Configurar Metodos Pagamento"]
+    H --> AP["Configurar Notificacoes"]
+    H --> AQ["Logs Sistema"]
+    I --> AR["Rifas Ativas"]
+    I --> AS["Rifas Encerradas"]
+    I --> AT["Rifas Premiadas"]
+    K --> AU["Bilhetes Ativos"]
+    K --> AV["Bilhetes Expirados"]
+    K --> AW["Bilhetes Premiados"]
+    L --> AX["Compras Recentes"]
+    L --> AY["Compras Finalizadas"]
+    L --> AZ["Compras Canceladas"]
+    V --> BA["Lista Participantes"]
+    BA --> BB["Exportar CSV"]
+    BA --> BC["Enviar Mensagem"]
+```
+
+## 5. Design Interface
+
+### 5.1 Estilo Visual - Detalhamento
+
+**Paleta Expandida:**
+- Primária: #2563EB (Azul corporate) - ações principais, links, botões primários
+- Secundária: #10B981 (Verde sucesso) - confirmações, badges ativos, pagamentos
+- Acento: #F59E0B (Laranja alerta) - warnings, prazos, notificações
+- Erro: #EF4444 (Vermelho) - erros, cancelamentos, bloqueios
+- Neutros:
+  - #1E293B (Slate 800) - texto principal
+  - #475569 (Slate 600) - texto secundário
+  - #94A3B8 (Slate 400) - placeholder, disabled
+  - #F1F5F9 (Slate 100) - fundo claro
+  - #E2E8F0 (Slate 200) - bordas, dividers
+  - #FFFFFF (Branco) - cards, modais
+
+**Tipografia Detalhada:**
+- Font Family: 'Inter', -apple-system, sans-serif
+- Headings:
+  - H1: 32px bold (700), line-height 1.2, letter-spacing -0.02em
+  - H2: 28px semibold (600), line-height 1.3
+  - H3: 24px semibold (600), line-height 1.4
+  - H4: 20px medium (500), line-height 1.5
+- Body:
+  - Body Large: 18px regular (400), line-height 1.6
+  - Body: 16px regular (400), line-height 1.5
+  - Body Small: 14px regular (400), line-height 1.4
+  - Caption: 12px regular (400), line-height 1.3
+- Pesos disponíveis: 300 (light), 400 (regular), 500 (medium), 600 (semibold), 700 (bold)
+
+**Componentes Detalhados:**
+
+**Botões:**
+- Primary: bg #2563EB, text white, hover #1D4ED8, active #1E40AF
+- Secondary: bg white, border #E2E8F0, text #1E293B, hover bg #F1F5F9
+- Ghost: bg transparent, text #475569, hover bg #F1F5F9
+- Danger: bg #EF4444, text white, hover #DC2626
+- Sizes: SM (32px), MD (40px), LG (48px)
+- States: default, hover, active, disabled, loading (com spinner)
+
+**Cards:**
+- Border radius: 12px
+- Shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06)
+- Hover shadow: 0 10px 15px -3px rgba(0,0,0,0.1)
+- Padding: 24px (default), 16px (compact), 32px (comfortable)
+- Background: white
+- Border: 1px solid #E2E8F0
+
+**Inputs:**
+- Height: 44px (MD), 36px (SM), 52px (LG)
+- Border: 1px solid #E2E8F0, focus: 2px solid #2563EB
+- Border radius: 8px
+- Padding: 12px 16px
+- Placeholder: #94A3B8
+- Error state: border #EF4444, helper text red
+- Disabled: bg #F1F5F9, text #94A3B8
+
+**Modais:**
+- Backdrop: rgba(0,0,0,0.5), blur(4px)
+- Width: 480px (default), 640px (large), 320px (small)
+- Border radius: 16px
+- Animation: scale 0.95 to 1, opacity 0 to 1
+- Header: 24px padding, border-bottom
+- Body: 24px padding
+- Footer: 24px padding, border-top, flex-end
+
+**Navigation:**
+- Sidebar expanded: 280px width
+- Sidebar collapsed: 72px width
+- Transition: width 0.3s ease
+- Background: #1E293B, text white
+- Active item: bg rgba(37,99,235,0.1), text #2563EB
+- Breadcrumbs: font-size 14px, separator "/", color #94A3B8
+- Tabs: border-bottom 2px, active tab #2563EB
+
+### 5.2 Tabela Páginas (12 linhas x 4 colunas):
+
+| Página | Módulo | UI | Componentes | Interações |
+|---|---|---|---|---|
+| Dashboard Admin | Analytics | Cards métricas, Gráfico vendas, Calendário sorteios | KPIs animados (contagem progressiva), Quick actions (criar rifa, ver relatórios), Timeline eventos | Hover cards revela detalhes, Click drilldown para relatório completo, Drag calendário para navegar meses |
+| Gerenciar Rifas | Rifas | Tabela listagem, Filtros, Busca | DataTable com paginação, Badges status (ativa/pausada/encerrada), Botões ação (editar/excluir/duplicar) | Click linha expande detalhes, Hover badge mostra tooltip, Checkbox seleção múltipla para ações em lote |
+| Criar/Editar Rifa | Rifas | Formulário multi-step, Preview | Stepper 4 etapas (dados, prêmio, números, publicação), Upload imagem com crop, DatePicker, Input valor formatado | Validação em tempo real, Preview atualiza conforme preenche, Auto-save rascunho |
+| Gerenciar Números | Rifas | Grid numérico, Status cores | Grid 10x10 com números, Cores: disponível (verde), reservado (amarelo), vendido (vermelho), Legenda interativa | Click número mostra tooltip comprador, Drag seleciona múltiplos, Scroll infinito para rifas grandes |
+| Participantes | Rifas | Lista participantes, Export | Tabela com avatar, nome, email, números comprados, data compra, Botão exportar CSV/PDF | Click nome abre perfil, Hover número mostra tooltip, Sort por coluna |
+| Comprar Números | Cliente | Grid rifa ativa, Seleção | Grid visual com números disponíveis, Carrinho lateral, Input quantidade, Botão "Comprar" | Click adiciona ao carrinho, Hover mostra preço, Badge contador carrinho |
+| Checkout | Cliente | Resumo compra, Pagamento | Card resumo (rifa, números, valor total), Métodos pagamento (Pix/Cartão/Boleto), Input cupom desconto | Accordion métodos pagamento, Loading state processamento, Confirmação visual |
+| Meus Bilhetes | Cliente | Grid bilhetes, Filtros | Cards bilhete com número, rifa, status, data sorteio, Badge premiado/ativo/expirado | Click abre detalhes bilhete, Hover mostra QR code, Compartilhar redes sociais |
+| Histórico Compras | Cliente | Timeline, Tabela | Timeline vertical com ícones, Tabela resumo (data, rifa, valor, status), Filtro período | Click expande detalhes compra, Hover ícone mostra tooltip, Scroll suave |
+| Relatórios | Admin | Gráficos, Tabelas | Gráfico linha vendas (Chart.js), Pizza distribuição, Tabela resumo financeiro, Export PDF/Excel | Hover gráfico mostra valores, Click legenda filtra, Drag para zoom |
+| Configurações | Admin | Formulários, Switches | Inputs perfil, Switch notificações, Select métodos pagamento, Card segurança (2FA) | Validação em tempo real, Preview avatar upload, Confirmação alterações |
+| Notificações | Sistema | Lista notificações, Badges | Card notificação com ícone, texto, data, Botão marcar lida, Badge contador não lidas | Click marca como lida, Swipe mobile para arquivar, Infinite scroll |
+
+### 5.3 Responsividade - Detalhamento Completo
+
+**Desktop (≥1200px):**
+- Layout: Sidebar 280px fixa + conteúdo central grid 12 colunas
+- Sidebar: Expandida com labels, ícones 20px, submenus dropdown
+- Cards: 3 colunas grid, gap 24px
+- Tabelas: Completas com todas colunas visíveis
+- Interações: Hover detalhes, Drag & drop, Keyboard shortcuts (Ctrl+N nova rifa, Ctrl+S salvar)
+- Modais: Centralizados, width 480px
+- Tooltips: Rich tooltips com HTML, delay 300ms
+
+**Tablet (768-1199px):**
+- Layout: Sidebar 72px collapsed + conteúdo grid 8 colunas
+- Sidebar: Apenas ícones, tooltip no hover, toggle expandir
+- Cards: 2 colunas grid, gap 16px
+- Tabelas: Colunas essenciais + toggle "Ver mais" para expandir
+- Touch gestures: Swipe para navegar tabs, Pinch zoom gráficos
+- Bottom bar: Barra inferior com 4 ações principais (Dashboard, Rifas, Relatórios, Perfil)
+- Modais: Full-width com padding 16px, backdrop sem blur
+- Inputs: Touch-friendly 48px height mínimo
+
+**Mobile (320-767px):**
+- Layout: Single column, bottom nav 56px fixa
+- Bottom nav: 5 ícones (Home, Rifas, Bilhetes, Notificações, Perfil), active state highlight
+- Cards: 1 coluna, gap 12px, padding 16px
+- Tabelas: Cards substituem tabelas, swipe horizontal para ver mais dados
+- Touch gestures: Swipe cards para ações (editar/excluir), Tap longo para contexto
+- Inputs: 48px height mínimo, font-size 16px (evitar zoom iOS)
+- Modais: Bottom sheet (slide up), 90% height, drag para fechar
+- Botões: Full-width, 48px height, touch feedback ripple
+- Navegação: Hamburger menu para sidebar, back button nativo
+- Loading: Skeleton screens, shimmer effect
+- Notificações: Toast bottom, banner push
+- Scroll: Infinite scroll com loading spinner, pull-to-refresh
+
+**Breakpoints Adicionais:**
+- 1400px+: Grid 12 colunas, max-width 1280px container
+- 1024px: Grid 10 colunas, sidebar 72px
+- 640px: Grid 4 colunas, bottom nav aparece
+- 480px: Grid 2 colunas, font-size reduz 14px
+
+**Considerações de Performance:**
+- Lazy loading imagens e componentes abaixo do fold
+- Virtual scrolling para listas grandes (>100 itens)
+- Debounce em inputs de busca (300ms)
+- Throttle em eventos de scroll/resize (100ms)
+- Service worker para cache offline de assets estáticos
+- Code splitting por rota (lazy routes)
