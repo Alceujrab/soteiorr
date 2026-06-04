@@ -32,4 +32,17 @@ Route::get('/admin/logs', [AdminController::class, 'logs'])->name('admin.logs');
 Route::get('/admin/settings', [AdminController::class, 'settings'])->name('admin.settings');
 Route::post('/admin/settings', [AdminController::class, 'updateSettings'])->name('admin.settings.update');
 Route::get('/admin/participants', [AdminController::class, 'participants'])->name('admin.participants');
+Route::get('/admin/reports', [AdminController::class, 'reports'])->name('admin.reports');
+Route::get('/admin/users', [AdminController::class, 'users'])->name('admin.users');
+
+// Rotas de API e Webhooks
+use App\Http\Controllers\ApiController;
+
+Route::prefix('api')->group(function () {
+    Route::get('/raffles', [ApiController::class, 'getRaffles'])->name('api.raffles');
+    Route::get('/raffles/{raffle}', [ApiController::class, 'getRaffleDetails'])->name('api.raffles.show');
+    Route::post('/webhook/asaas', [ApiController::class, 'webhookAsaas'])->name('api.webhook.asaas');
+    Route::post('/webhook/mercadopago', [ApiController::class, 'webhookMercadoPago'])->name('api.webhook.mercadopago');
+});
+
 

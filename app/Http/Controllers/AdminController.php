@@ -174,4 +174,28 @@ class AdminController extends Controller
 
         return view('admin.participants', compact('participants'));
     }
+
+    /**
+     * Exibir a página de relatórios e analytics (Relatórios e Analytics).
+     */
+    public function reports()
+    {
+        $salesData = [
+            'total_sales' => Ticket::where('status', 'paid')->count(),
+            'total_revenue' => Payment::where('status', 'approved')->sum('amount'),
+            'total_pending' => Payment::where('status', 'pending')->sum('amount'),
+            'conversion_rate' => '85%', // Simulação
+        ];
+
+        return view('admin.reports', compact('salesData'));
+    }
+
+    /**
+     * Exibir a listagem e gestão de usuários (Gestão de Usuários e Permissões).
+     */
+    public function users()
+    {
+        $users = User::orderBy('name', 'asc')->get();
+        return view('admin.users', compact('users'));
+    }
 }

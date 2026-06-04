@@ -70,6 +70,14 @@
                     <i class="fa-solid fa-users text-lg"></i>
                     <span class="font-medium text-sm">Participantes</span>
                 </a>
+                <a href="{{ route('admin.reports') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition text-slate-400 hover:text-white hover:bg-slate-900/60 {{ Route::currentRouteName() == 'admin.reports' ? 'bg-slate-900 text-white border-l-4 border-blue-500' : '' }}">
+                    <i class="fa-solid fa-chart-pie text-lg"></i>
+                    <span class="font-medium text-sm">Relatórios</span>
+                </a>
+                <a href="{{ route('admin.users') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition text-slate-400 hover:text-white hover:bg-slate-900/60 {{ Route::currentRouteName() == 'admin.users' ? 'bg-slate-900 text-white border-l-4 border-blue-500' : '' }}">
+                    <i class="fa-solid fa-user-gear text-lg"></i>
+                    <span class="font-medium text-sm">Usuários / Perfis</span>
+                </a>
                 <a href="{{ route('admin.logs') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition text-slate-400 hover:text-white hover:bg-slate-900/60 {{ Route::currentRouteName() == 'admin.logs' ? 'bg-slate-900 text-white border-l-4 border-blue-500' : '' }}">
                     <i class="fa-solid fa-shield-halved text-lg"></i>
                     <span class="font-medium text-sm">Auditoria logs</span>
