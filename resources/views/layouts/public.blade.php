@@ -13,34 +13,91 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            /* Tema Escuro: Ruby Crimson */
+            --bg-primary: #090d16;
+            --bg-sidebar: #020617;
+            --bg-card: rgba(30, 41, 59, 0.65);
+            --border-color: rgba(239, 68, 68, 0.22);
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --accent: #ef4444;
+            --accent-hover: #dc2626;
+            --badge-bg: rgba(239, 68, 68, 0.1);
+            --badge-text: #ef4444;
+        }
+
+        body.light-theme {
+            /* Tema Claro: Indigo Lavender */
+            --bg-primary: #f8fafc;
+            --bg-sidebar: #e2e8f0;
+            --bg-card: rgba(255, 255, 255, 0.82);
+            --border-color: rgba(99, 102, 241, 0.28);
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --accent: #6366f1;
+            --accent-hover: #4f46e5;
+            --badge-bg: rgba(99, 102, 241, 0.12);
+            --badge-text: #6366f1;
+        }
+
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #0f172a;
-            color: #f1f5f9;
+            background-color: var(--bg-primary) !important;
+            color: var(--text-primary) !important;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
+
         .glass-card {
-            background: rgba(30, 41, 59, 0.6);
-            backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+            background: var(--bg-card) !important;
+            border-color: var(--border-color) !important;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Mapeamento dinâmico para os elementos do Tailwind */
+        .text-slate-400, .text-slate-500, .text-slate-300 {
+            color: var(--text-secondary) !important;
+        }
+        .text-white {
+            color: var(--text-primary) !important;
+        }
+        .bg-blue-600, .bg-emerald-600, .bg-slate-800, .bg-slate-950 {
+            background-color: var(--accent) !important;
+        }
+        .hover\:bg-blue-500:hover, .hover\:bg-emerald-500:hover, .hover\:bg-slate-700:hover {
+            background-color: var(--accent-hover) !important;
+        }
+        .text-blue-500, .text-blue-400, .text-emerald-400 {
+            color: var(--badge-text) !important;
+        }
+        .bg-blue-500\/10, .bg-emerald-500\/10, .bg-blue-600\/10 {
+            background-color: var(--badge-bg) !important;
+        }
+        .border-blue-500\/30, .border-emerald-500\/30, .border-slate-800 {
+            border-color: var(--border-color) !important;
         }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
 
     <!-- Public Header -->
-    <nav class="glass-card sticky top-0 z-50 border-b border-slate-800/80">
+    <nav class="glass-card sticky top-0 z-50 border-b">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16 items-center">
                 <div class="flex items-center gap-3">
-                    <div class="bg-blue-600 p-2 rounded-xl text-white font-bold tracking-wide">
+                    <div class="p-2 rounded-xl text-white font-bold tracking-wide" style="background-color: var(--accent);">
                         <i class="fa-solid fa-car-side text-lg"></i>
                     </div>
-                    <a href="/" class="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400">
+                    <a href="/" class="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r" style="background-image: linear-gradient(to right, var(--accent), var(--text-primary));">
                         Ação RR Veículos
                     </a>
                 </div>
                 <div class="flex items-center gap-4">
+                    <!-- Theme Toggle Button -->
+                    <button onclick="toggleTheme()" class="p-2 rounded-lg text-slate-400 hover:text-white transition" title="Alternar Tema">
+                        <i class="fa-solid fa-circle-half-stroke text-lg"></i>
+                    </button>
+
                     <a href="/" class="text-sm font-medium text-slate-300 hover:text-white transition">Rifas Ativas</a>
                     @auth
                         @if(in_array(auth()->user()->role, ['cliente', 'vendedor']))
@@ -60,7 +117,7 @@
                         </form>
                     @else
                         <a href="{{ route('login') }}" class="text-sm font-medium text-slate-300 hover:text-white transition">Entrar</a>
-                        <a href="{{ route('register') }}" class="bg-blue-600 hover:bg-blue-500 text-white font-semibold px-4 py-2 rounded-xl text-xs transition">
+                        <a href="{{ route('register') }}" class="text-white font-semibold px-4 py-2 rounded-xl text-xs transition" style="background-color: var(--accent);">
                             Cadastrar-se
                         </a>
                     @endauth
@@ -92,11 +149,28 @@
     </main>
 
     <!-- Footer -->
-    <footer class="border-t border-slate-800 bg-slate-950 py-8">
+    <footer class="border-t py-8" style="background-color: var(--bg-sidebar); border-color: var(--border-color);">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-slate-500 text-sm">
             <p>&copy; {{ date('Y') }} Ação RR Veículos Entre Amigos. Todos os direitos reservados.</p>
         </div>
     </footer>
 
+    <!-- Theme Switcher Logic -->
+    <script>
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        if (savedTheme === 'light') {
+            document.body.classList.add('light-theme');
+        }
+
+        function toggleTheme() {
+            if (document.body.classList.contains('light-theme')) {
+                document.body.classList.remove('light-theme');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.body.classList.add('light-theme');
+                localStorage.setItem('theme', 'light');
+            }
+        }
+    </script>
 </body>
 </html>

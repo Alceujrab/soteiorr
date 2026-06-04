@@ -15,35 +15,87 @@
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
+        :root {
+            /* Tema Escuro: Ruby Crimson */
+            --bg-primary: #090d16;
+            --bg-sidebar: #020617;
+            --bg-card: rgba(30, 41, 59, 0.65);
+            --border-color: rgba(239, 68, 68, 0.22);
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --accent: #ef4444;
+            --accent-hover: #dc2626;
+            --badge-bg: rgba(239, 68, 68, 0.1);
+            --badge-text: #ef4444;
+        }
+
+        body.light-theme {
+            /* Tema Claro: Indigo Lavender */
+            --bg-primary: #f8fafc;
+            --bg-sidebar: #f1f5f9;
+            --bg-card: rgba(255, 255, 255, 0.82);
+            --border-color: rgba(99, 102, 241, 0.28);
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --accent: #6366f1;
+            --accent-hover: #4f46e5;
+            --badge-bg: rgba(99, 102, 241, 0.12);
+            --badge-text: #6366f1;
+        }
+
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #0f172a;
-            color: #f1f5f9;
+            background-color: var(--bg-primary) !important;
+            color: var(--text-primary) !important;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
+
         .glass-card {
-            background: rgba(30, 41, 59, 0.6);
-            backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+            background: var(--bg-card) !important;
+            border-color: var(--border-color) !important;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Mapeamento dinâmico para os elementos do Tailwind */
+        .text-slate-400, .text-slate-500, .text-slate-300 {
+            color: var(--text-secondary) !important;
+        }
+        .text-white {
+            color: var(--text-primary) !important;
+        }
+        .bg-blue-600, .bg-emerald-600, .bg-slate-800, .bg-slate-950 {
+            background-color: var(--accent) !important;
+        }
+        .hover\:bg-blue-500:hover, .hover\:bg-emerald-500:hover, .hover\:bg-slate-700:hover {
+            background-color: var(--accent-hover) !important;
+        }
+        .text-blue-500, .text-blue-400, .text-emerald-400 {
+            color: var(--badge-text) !important;
+        }
+        .bg-blue-500\/10, .bg-emerald-500\/10, .bg-blue-600\/10 {
+            background-color: var(--badge-bg) !important;
+        }
+        .border-blue-500\/30, .border-emerald-500\/30, .border-slate-800 {
+            border-color: var(--border-color) !important;
         }
     </style>
 </head>
 <body class="min-h-screen flex flex-col md:flex-row">
 
     <!-- Admin Sidebar -->
-    <aside class="w-72 bg-slate-950 border-r border-slate-800/80 flex flex-col hidden md:flex min-h-screen sticky top-0">
+    <aside class="w-72 border-r flex flex-col hidden md:flex min-h-screen sticky top-0" style="background-color: var(--bg-sidebar); border-color: var(--border-color);">
         <!-- Logo -->
-        <div class="h-20 flex items-center px-6 border-b border-slate-900 gap-3">
-            <div class="bg-blue-600 p-2 rounded-xl text-white font-bold tracking-wide shadow-lg">
+        <div class="h-20 flex items-center px-6 border-b gap-3" style="border-color: var(--border-color);">
+            <div class="p-2 rounded-xl text-white font-bold tracking-wide shadow-lg" style="background-color: var(--accent);">
                 <i class="fa-solid fa-user-shield text-lg"></i>
             </div>
-            <a href="/" class="text-sm font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400">
+            <a href="/" class="text-sm font-bold text-transparent bg-clip-text bg-gradient-to-r" style="background-image: linear-gradient(to right, var(--accent), var(--text-primary));">
                 Ação RR Admin
             </a>
         </div>
 
         <!-- Navigation Links -->
-        <div class="flex-1 px-4 py-6 space-y-1 overflow-y-auto max-h-[calc(100vh-220px)]">
+        <div class="flex-1 px-4 py-6 space-y-1 overflow-y-auto max-h-[calc(100vh-250px)]">
             <a href="/" class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition text-slate-400 hover:text-white hover:bg-slate-900/60">
                 <i class="fa-solid fa-house text-base"></i>
                 <span class="font-medium text-sm">Ver Site Público</span>
@@ -78,10 +130,18 @@
             </a>
         </div>
 
-        <!-- Profile switcher area -->
-        <div class="p-4 border-t border-slate-900 flex flex-col gap-2 bg-slate-950">
+        <!-- Profile switcher & Theme Switcher area -->
+        <div class="p-4 border-t flex flex-col gap-2" style="border-color: var(--border-color); background-color: var(--bg-sidebar);">
+            <!-- Theme Switcher -->
+            <div class="flex items-center justify-between border-b pb-2 mb-1" style="border-color: var(--border-color);">
+                <span class="text-xs text-slate-400">Alternar Tema:</span>
+                <button onclick="toggleTheme()" class="p-1 rounded bg-slate-800 text-slate-300 hover:text-white transition">
+                    <i class="fa-solid fa-circle-half-stroke text-base"></i>
+                </button>
+            </div>
+
             <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-full bg-blue-600/20 flex items-center justify-center font-bold text-blue-400 text-xs">
+                <div class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs" style="background-color: var(--badge-bg); color: var(--badge-text);">
                     {{ auth()->check() ? substr(auth()->user()->name, 0, 1) : 'A' }}
                 </div>
                 <div class="flex-1 min-w-0">
@@ -91,7 +151,7 @@
             </div>
             <div class="mt-2 space-y-1">
                 <label class="text-[9px] font-bold text-slate-500 uppercase block">Simular Perfil:</label>
-                <select onchange="location.href='/simulate-login/' + this.value" class="w-full bg-slate-900 border border-slate-805 rounded-lg px-2 py-1.5 text-[11px] text-slate-300 focus:outline-none">
+                <select onchange="location.href='/simulate-login/' + this.value" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2 py-1.5 text-[11px] text-slate-300 focus:outline-none">
                     <option value="super_admin" {{ auth()->check() && auth()->user()->role == 'super_admin' ? 'selected' : '' }}>Super Admin</option>
                     <option value="admin_organizador" {{ auth()->check() && auth()->user()->role == 'admin_organizador' ? 'selected' : '' }}>Admin Organizador</option>
                     <option value="gerente_operacional" {{ auth()->check() && auth()->user()->role == 'gerente_operacional' ? 'selected' : '' }}>Gerente Operacional</option>
@@ -114,14 +174,19 @@
     <!-- Main Content Area -->
     <div class="flex-grow flex flex-col min-h-screen">
         <!-- Topbar Mobile only -->
-        <header class="h-16 bg-slate-950 border-b border-slate-900 flex md:hidden items-center justify-between px-6 sticky top-0 z-50">
+        <header class="h-16 border-b flex md:hidden items-center justify-between px-6 sticky top-0 z-50" style="background-color: var(--bg-sidebar); border-color: var(--border-color);">
             <div class="flex items-center gap-2">
-                <i class="fa-solid fa-user-shield text-blue-500 text-lg"></i>
+                <i class="fa-solid fa-user-shield text-lg" style="color: var(--accent);"></i>
                 <span class="font-bold text-white text-sm">Painel Admin</span>
             </div>
-            <a href="/" class="text-slate-400 hover:text-white">
-                <i class="fa-solid fa-house text-lg"></i>
-            </a>
+            <div class="flex items-center gap-3">
+                <button onclick="toggleTheme()" class="text-slate-400 hover:text-white transition">
+                    <i class="fa-solid fa-circle-half-stroke text-lg"></i>
+                </button>
+                <a href="/" class="text-slate-400 hover:text-white">
+                    <i class="fa-solid fa-house text-lg"></i>
+                </a>
+            </div>
         </header>
 
         <!-- Dynamic Content -->
@@ -148,7 +213,7 @@
     </div>
 
     <!-- Bottom Nav Mobile -->
-    <nav class="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-slate-950/95 border-t border-slate-900 backdrop-blur flex justify-around items-center z-50">
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 h-16 border-t backdrop-blur flex justify-around items-center z-50" style="background-color: var(--bg-sidebar); border-color: var(--border-color);">
         <a href="/" class="flex flex-col items-center gap-1 text-slate-400 hover:text-white">
             <i class="fa-solid fa-house text-lg"></i>
             <span class="text-[10px]">Início</span>
@@ -167,5 +232,22 @@
         </a>
     </nav>
 
+    <!-- Theme Switcher Logic -->
+    <script>
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        if (savedTheme === 'light') {
+            document.body.classList.add('light-theme');
+        }
+
+        function toggleTheme() {
+            if (document.body.classList.contains('light-theme')) {
+                document.body.classList.remove('light-theme');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.body.classList.add('light-theme');
+                localStorage.setItem('theme', 'light');
+            }
+        }
+    </script>
 </body>
 </html>
