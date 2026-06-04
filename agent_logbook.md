@@ -66,3 +66,7 @@ Este arquivo serve como a única fonte de verdade sobre o estado atual do projet
 - Atualizadas todas as views existentes para herdar seus respectivos novos layouts de acordo com a finalidade da página.
 - Removido o arquivo de layout legado (`app.blade.php`).
 - Validadas todas as rotas e funcionamento de testes unitários.
+- Adicionado suporte a menus responsivos hamburger e painel drawer deslizante nos layouts público, admin e cliente.
+- Implementado sistema de configurações persistentes via banco de dados (`settings` table e `Setting` model) no Laravel.
+- Integrado APIs diretas de PIX PJ do Itaú e Santander no `PaymentService` com suporte a autenticação mTLS (certificados SSL) e fallback de simulação.
+
