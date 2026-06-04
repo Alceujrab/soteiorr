@@ -40,6 +40,11 @@
                 </div>
                 <h2 class="text-xl font-bold text-white">Bilhete Autêntico e Verificado!</h2>
                 <p class="text-slate-400 text-xs">Este bilhete é oficial e registrado em nossa base de dados.</p>
+                <div class="pt-4 flex justify-center">
+                    <a href="{{ route('payments.receipt', $payment->id) }}" class="bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2.5 px-6 rounded-xl text-xs transition flex items-center gap-1.5 shadow">
+                        <i class="fa-solid fa-receipt"></i> Abrir Recibo Oficial / Imprimir / PDF
+                    </a>
+                </div>
             </div>
 
             <!-- Validation Details -->

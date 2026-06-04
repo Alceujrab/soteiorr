@@ -143,12 +143,6 @@ class RaffleController extends Controller
     public function receipt(\App\Models\Payment $payment)
     {
         $payment->load(['user', 'tickets.raffle']);
-        
-        // Apenas o proprietário ou administrador pode ver o recibo detalhado completo
-        if (!Auth::check() || (Auth::id() !== $payment->user_id && !in_array(Auth::user()->role, ['super_admin', 'admin_organizador']))) {
-            return redirect()->route('raffles.validate-ticket', $payment->id);
-        }
-
         return view('payments.receipt', compact('payment'));
     }
 
