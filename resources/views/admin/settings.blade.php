@@ -36,6 +36,13 @@
                         <input type="number" name="max_tickets" value="{{ $settings['max_tickets'] }}" required class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none">
                     </div>
                 </div>
+                <div class="flex items-center justify-between p-3 rounded-xl bg-slate-900/40 border border-slate-800">
+                    <span class="text-xs text-slate-300 font-medium">Exibir quantidade de cotas vendidas publicamente:</span>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" name="show_sold_qty" value="1" {{ $settings['show_sold_qty'] == '1' ? 'checked' : '' }} class="sr-only peer">
+                        <div class="w-11 h-6 bg-slate-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-slate-300 after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+                    </label>
+                </div>
             </div>
 
             <!-- Parâmetros de Gateways Intermediários -->

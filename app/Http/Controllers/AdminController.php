@@ -143,6 +143,7 @@ class AdminController extends Controller
             'gateway_mercadopago_key' => \App\Models\Setting::get('gateway_mercadopago_key', ''),
             'min_tickets' => \App\Models\Setting::get('min_tickets', 1),
             'max_tickets' => \App\Models\Setting::get('max_tickets', 10),
+            'show_sold_qty' => \App\Models\Setting::get('show_sold_qty', '1'),
             
             // Google reCAPTCHA
             'recaptcha_enabled' => \App\Models\Setting::get('recaptcha_enabled', '0'),
@@ -215,6 +216,7 @@ class AdminController extends Controller
         \App\Models\Setting::set('max_tickets', $request->max_tickets);
         \App\Models\Setting::set('gateway_asaas_key', $request->gateway_asaas_key ?: '');
         \App\Models\Setting::set('gateway_mercadopago_key', $request->gateway_mercadopago_key ?: '');
+        \App\Models\Setting::set('show_sold_qty', $request->has('show_sold_qty') ? '1' : '0');
         
         \App\Models\Setting::set('recaptcha_enabled', $request->has('recaptcha_enabled') ? '1' : '0');
         \App\Models\Setting::set('recaptcha_site_key', $request->recaptcha_site_key ?: '');

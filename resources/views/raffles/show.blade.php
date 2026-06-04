@@ -32,6 +32,17 @@
                         <span class="text-slate-400">Data do Sorteio:</span>
                         <span class="text-white font-medium">{{ $raffle->draw_date->format('d/m/Y \à\s H:i') }}</span>
                     </div>
+                    @if(\App\Models\Setting::get('show_sold_qty', '1') === '1')
+                        <div class="space-y-1.5 pt-2 border-t" style="border-color: var(--border-color);">
+                            <div class="flex justify-between text-xs text-slate-400">
+                                <span>Progresso de Vendas:</span>
+                                <span class="font-bold text-white">{{ $takenTickets->count() }} / {{ $raffle->total_numbers }} vendidos</span>
+                            </div>
+                            <div class="w-full bg-slate-900 rounded-full h-2 overflow-hidden border" style="border-color: var(--border-color);">
+                                <div class="bg-blue-500 h-2 rounded-full" style="width: {{ ($takenTickets->count() / $raffle->total_numbers) * 100 }}%"></div>
+                            </div>
+                        </div>
+                    @endif
                     @if($raffle->status === 'completed' && $raffle->draw)
                         <div class="p-3 bg-blue-500/10 border border-blue-500/30 rounded-xl text-blue-400 mt-4">
                             <div class="font-bold text-xs uppercase tracking-wider mb-1">Ganhador:</div>
@@ -42,6 +53,48 @@
                 </div>
             </div>
         </div>
+
+        <!-- Compartilhar Rifa Card -->
+        <div class="glass-card rounded-2xl p-6 space-y-4">
+            <h3 class="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
+                <i class="fa-solid fa-share-nodes text-blue-500"></i> Compartilhar Sorteio
+            </h3>
+            <p class="text-xs text-slate-400">Ajude a divulgar esta ação entre amigos!</p>
+            <div class="grid grid-cols-5 gap-2">
+                <!-- WhatsApp -->
+                <a href="https://api.whatsapp.com/send?text={{ urlencode('Olha essa ação premium no Ação RR Veículos: ' . $raffle->title . '. Participe em: ' . route('raffles.show', $raffle->id)) }}" target="_blank" class="flex items-center justify-center p-3 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/20 transition" title="Compartilhar no WhatsApp">
+                    <i class="fa-brands fa-whatsapp text-lg"></i>
+                </a>
+                <!-- Facebook -->
+                <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(route('raffles.show', $raffle->id)) }}" target="_blank" class="flex items-center justify-center p-3 rounded-xl bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 border border-blue-500/20 transition" title="Compartilhar no Facebook">
+                    <i class="fa-brands fa-facebook-f text-lg"></i>
+                </a>
+                <!-- Twitter/X -->
+                <a href="https://twitter.com/intent/tweet?url={{ urlencode(route('raffles.show', $raffle->id)) }}&text={{ urlencode('Confira essa rifa no Ação RR Veículos!') }}" target="_blank" class="flex items-center justify-center p-3 rounded-xl bg-slate-900/50 hover:bg-slate-900 text-slate-300 border border-slate-800 transition" title="Compartilhar no X (Twitter)">
+                    <i class="fa-brands fa-x-twitter text-lg"></i>
+                </a>
+                <!-- LinkedIn -->
+                <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ urlencode(route('raffles.show', $raffle->id)) }}" target="_blank" class="flex items-center justify-center p-3 rounded-xl bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-400 border border-indigo-500/20 transition" title="Compartilhar no LinkedIn">
+                    <i class="fa-brands fa-linkedin-in text-lg"></i>
+                </a>
+                <!-- Copy Link -->
+                <button onclick="copyRaffleLink()" class="flex items-center justify-center p-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition" title="Copiar Link">
+                    <i class="fa-solid fa-link text-lg"></i>
+                </button>
+            </div>
+            <p id="share-toast" class="text-center text-[10px] text-emerald-400 font-bold hidden">Link copiado com sucesso!</p>
+        </div>
+
+        <script>
+            function copyRaffleLink() {
+                const link = "{{ route('raffles.show', $raffle->id) }}";
+                navigator.clipboard.writeText(link).then(() => {
+                    const toast = document.getElementById('share-toast');
+                    toast.classList.remove('hidden');
+                    setTimeout(() => toast.classList.add('hidden'), 3000);
+                });
+            }
+        </script>
 
         <!-- Selections Panel / Cart (Sticks below info on scroll) -->
         <div id="selection-panel" class="glass-card rounded-2xl p-6 hidden space-y-4">
