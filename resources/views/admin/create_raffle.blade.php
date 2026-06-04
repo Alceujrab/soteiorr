@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.admin')
 
 @section('title', 'Criar Nova Rifa - Ação RR Veículos')
 

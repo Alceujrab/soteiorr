@@ -10,6 +10,7 @@ Este arquivo serve como a única fonte de verdade sobre o estado atual do projet
   - [Draw](file:///d:/sorteio/soteiorr/app/Models/Draw.php) (Sorteios)
   - [ActivityLog](file:///d:/sorteio/soteiorr/app/Models/ActivityLog.php) (Logs de Auditoria)
   - [SupportTicket](file:///d:/sorteio/soteiorr/app/Models/SupportTicket.php) (Tickets de Suporte)
+  - [NotificationLog](file:///d:/sorteio/soteiorr/app/Models/NotificationLog.php) (Registros de Notificações)
 - **Controllers & Rotas**:
   - [web.php](file:///d:/sorteio/soteiorr/routes/web.php) (Rotas)
   - [RaffleController](file:///d:/sorteio/soteiorr/app/Http/Controllers/RaffleController.php)
@@ -31,8 +32,9 @@ Este arquivo serve como a única fonte de verdade sobre o estado atual do projet
   - [admin logs](file:///d:/sorteio/soteiorr/resources/views/admin/logs.blade.php)
   - [admin settings](file:///d:/sorteio/soteiorr/resources/views/admin/settings.blade.php)
   - [admin participants](file:///d:/sorteio/soteiorr/resources/views/admin/participants.blade.php)
-  - [admin reports](file:///d:/sorteio/soteiorr/resources/views/admin/reports.blade.php) (Visualização de relatórios do Chart.js)
-  - [admin users](file:///d:/sorteio/soteiorr/resources/views/admin/users.blade.php) (Gestão de papéis de usuários)
+  - [admin reports](file:///d:/sorteio/soteiorr/resources/views/admin/reports.blade.php)
+  - [admin users](file:///d:/sorteio/soteiorr/resources/views/admin/users.blade.php)
+  - [admin notifications](file:///d:/sorteio/soteiorr/resources/views/admin/notifications.blade.php) (Controle de disparos em massa e histórico)
   - [support index](file:///d:/sorteio/soteiorr/resources/views/support/index.blade.php)
 
 ## 2. Status das Funcionalidades
@@ -49,13 +51,13 @@ Este arquivo serve como a única fonte de verdade sobre o estado atual do projet
 - [x] Relatórios e Analytics (Concluído)
 - [x] Gestão de Usuários e Permissões (Concluído)
 - [x] API e Integrações / Webhooks (Concluído)
+- [x] Notificações e Comunicação / Disparo em Massa (Concluído)
 
 ## 3. Últimas Alterações Realizadas
-- Criadas as tabelas e migrações para logs de auditoria (`activity_logs`) e tickets de suporte (`support_tickets`).
-- Criados os modelos `ActivityLog` e `SupportTicket` com suas relações.
+- Criadas as tabelas e migrações para logs de auditoria (`activity_logs`), tickets de suporte (`support_tickets`) e logs de notificações (`notification_logs`).
+- Criados os modelos correspondentes (`ActivityLog`, `SupportTicket`, `NotificationLog`) com suas relações.
 - Criado o helper de auditoria `LogActivityAction` e acoplado na criação de rifas, sorteios e confirmações de pagamento.
-- Implementado o `SupportController` e tela de FAQ com formulário de envio de ticket de ajuda.
-- Adicionadas as telas administrativas de Logs de Auditoria, Configurações Globais (gateways e limites de cotas) e listagem/contador de cotas de Participantes.
-- Implementados os endpoints de API de listagem/detalhes de rifas e webhooks integrados para Asaas/MercadoPago em `ApiController`.
-- Adicionadas as páginas administrativas de Relatórios Avançados (faturamento com Chart.js) e Gestão de Usuários (cargos e permissões).
+- Adicionado sistema de login simulado interativo no layout para simulação dos 8 perfis do PRD.
+- Criado o painel de disparo de Notificações em Massa (`/admin/notifications`) para e-mail, SMS e push com aplicação automática de templates (Confirmação, Sorteio, Promoções).
+- Adicionadas as páginas administrativas de logs, configurações, participantes, relatórios Chart.js, usuários e suporte.
 - Atualizados os links de navegação da sidebar principal e validados testes via PHPUnit.

@@ -11,6 +11,18 @@ Route::get('/simulate-login/{role}', function ($role) {
     return redirect()->back()->withErrors(['error' => 'Perfil não encontrado.']);
 })->name('simulate-login');
 
+use App\Http\Controllers\AuthController;
+
+// Rotas de Autenticação
+Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [AuthController::class, 'login']);
+Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::get('/customer', function () {
+    return redirect()->route('raffles.my-tickets');
+})->name('customer.dashboard');
+
 use App\Http\Controllers\RaffleController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\AdminController;
