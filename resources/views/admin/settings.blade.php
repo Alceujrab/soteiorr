@@ -3,34 +3,36 @@
 @section('title', 'Configurações Globais - Ação RR Veículos')
 
 @section('content')
-<div class="max-w-2xl mx-auto space-y-6">
-    <div class="border-b border-slate-800 pb-6">
+<div class="max-w-3xl mx-auto space-y-6">
+    <div class="border-b pb-6" style="border-color: var(--border-color);">
         <h1 class="text-3xl font-extrabold text-white flex items-center gap-2">
-            <i class="fa-solid fa-gears text-blue-500"></i> Configurações Globais
+            <i class="fa-solid fa-gears" style="color: var(--accent);"></i> Configurações Globais
         </h1>
         <p class="text-slate-400 text-sm mt-1">
-            Configure gateways de pagamento ativos, limites e personalização visual.
+            Configure gateways de pagamento ativos, limites do sistema e chaves de serviços externos do Google.
         </p>
     </div>
 
     <div class="glass-card rounded-2xl p-6 sm:p-8 space-y-6">
-        <form action="{{ route('admin.settings.update') }}" method="POST" class="space-y-6">
+        <form action="{{ route('admin.settings.update') }}" method="POST" class="space-y-8">
             @csrf
 
             <!-- Parâmetros Gerais -->
             <div class="space-y-4">
-                <h3 class="text-base font-bold text-white border-b border-slate-800 pb-2">Gerais</h3>
+                <h3 class="text-base font-bold text-white border-b pb-2 flex items-center gap-2" style="border-color: var(--border-color);">
+                    <i class="fa-solid fa-sliders text-sm text-slate-400"></i> Parâmetros Gerais
+                </h3>
                 <div class="space-y-1.5">
                     <label class="text-xs text-slate-400 font-semibold uppercase">Nome do Aplicativo:</label>
                     <input type="text" name="app_name" value="{{ $settings['app_name'] }}" required class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none">
                 </div>
-                <div class="grid grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div class="space-y-1.5">
-                        <label class="text-xs text-slate-400 font-semibold uppercase">Mínimo de Cotas:</label>
+                        <label class="text-xs text-slate-400 font-semibold uppercase">Mínimo de Cotas por Compra:</label>
                         <input type="number" name="min_tickets" value="{{ $settings['min_tickets'] }}" required class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none">
                     </div>
                     <div class="space-y-1.5">
-                        <label class="text-xs text-slate-400 font-semibold uppercase">Máximo de Cotas:</label>
+                        <label class="text-xs text-slate-400 font-semibold uppercase">Máximo de Cotas por Compra:</label>
                         <input type="number" name="max_tickets" value="{{ $settings['max_tickets'] }}" required class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none">
                     </div>
                 </div>
@@ -38,19 +40,89 @@
 
             <!-- Parâmetros de Gateways -->
             <div class="space-y-4">
-                <h3 class="text-base font-bold text-white border-b border-slate-800 pb-2">Integração de Gateways</h3>
-                <div class="space-y-1.5">
-                    <label class="text-xs text-slate-400 font-semibold uppercase">Asaas API Token:</label>
-                    <input type="password" name="gateway_asaas_key" value="{{ $settings['gateway_asaas_key'] }}" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none">
-                </div>
-                <div class="space-y-1.5">
-                    <label class="text-xs text-slate-400 font-semibold uppercase">Mercado Pago Access Token:</label>
-                    <input type="password" name="gateway_mercadopago_key" value="{{ $settings['gateway_mercadopago_key'] }}" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none">
+                <h3 class="text-base font-bold text-white border-b pb-2 flex items-center gap-2" style="border-color: var(--border-color);">
+                    <i class="fa-solid fa-credit-card text-sm text-slate-400"></i> Integração de Gateways
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="space-y-1.5">
+                        <label class="text-xs text-slate-400 font-semibold uppercase">Asaas API Token:</label>
+                        <input type="password" name="gateway_asaas_key" value="{{ $settings['gateway_asaas_key'] }}" placeholder="Chave secreta Asaas" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none">
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="text-xs text-slate-400 font-semibold uppercase">Mercado Pago Access Token:</label>
+                        <input type="password" name="gateway_mercadopago_key" value="{{ $settings['gateway_mercadopago_key'] }}" placeholder="Chave privada Mercado Pago" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none">
+                    </div>
                 </div>
             </div>
 
-            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3.5 px-4 rounded-xl transition text-sm">
-                Salvar Configurações
+            <!-- Google reCAPTCHA -->
+            <div class="space-y-4 p-4 rounded-xl border" style="border-color: var(--border-color); background-color: rgba(15, 23, 42, 0.3);">
+                <div class="flex items-center justify-between border-b pb-2" style="border-color: var(--border-color);">
+                    <h3 class="text-base font-bold text-white flex items-center gap-2">
+                        <i class="fa-brands fa-google text-sm text-red-400"></i> Google reCAPTCHA v2 / v3
+                    </h3>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" name="recaptcha_enabled" value="1" {{ $settings['recaptcha_enabled'] == '1' ? 'checked' : '' }} class="sr-only peer">
+                        <div class="w-11 h-6 bg-slate-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-slate-300 after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+                        <span class="ml-2 text-xs text-slate-300 font-medium">Ativar</span>
+                    </label>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="space-y-1.5">
+                        <label class="text-xs text-slate-400 font-semibold uppercase">Site Key:</label>
+                        <input type="text" name="recaptcha_site_key" value="{{ $settings['recaptcha_site_key'] }}" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none">
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="text-xs text-slate-400 font-semibold uppercase">Secret Key:</label>
+                        <input type="password" name="recaptcha_secret_key" value="{{ $settings['recaptcha_secret_key'] }}" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Google Login (OAuth) -->
+            <div class="space-y-4 p-4 rounded-xl border" style="border-color: var(--border-color); background-color: rgba(15, 23, 42, 0.3);">
+                <div class="flex items-center justify-between border-b pb-2" style="border-color: var(--border-color);">
+                    <h3 class="text-base font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-right-to-bracket text-sm text-blue-400"></i> Google Login (OAuth)
+                    </h3>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" name="google_login_enabled" value="1" {{ $settings['google_login_enabled'] == '1' ? 'checked' : '' }} class="sr-only peer">
+                        <div class="w-11 h-6 bg-slate-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-slate-300 after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+                        <span class="ml-2 text-xs text-slate-300 font-medium">Ativar</span>
+                    </label>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="space-y-1.5">
+                        <label class="text-xs text-slate-400 font-semibold uppercase">Google Client ID:</label>
+                        <input type="text" name="google_client_id" value="{{ $settings['google_client_id'] }}" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none">
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="text-xs text-slate-400 font-semibold uppercase">Google Client Secret:</label>
+                        <input type="password" name="google_client_secret" value="{{ $settings['google_client_secret'] }}" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Google Maps API -->
+            <div class="space-y-4 p-4 rounded-xl border" style="border-color: var(--border-color); background-color: rgba(15, 23, 42, 0.3);">
+                <div class="flex items-center justify-between border-b pb-2" style="border-color: var(--border-color);">
+                    <h3 class="text-base font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-map-location-dot text-sm text-emerald-400"></i> Google Maps API
+                    </h3>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" name="google_maps_enabled" value="1" {{ $settings['google_maps_enabled'] == '1' ? 'checked' : '' }} class="sr-only peer">
+                        <div class="w-11 h-6 bg-slate-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-slate-300 after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+                        <span class="ml-2 text-xs text-slate-300 font-medium">Ativar</span>
+                    </label>
+                </div>
+                <div class="space-y-1.5">
+                    <label class="text-xs text-slate-400 font-semibold uppercase">Google Maps API Key:</label>
+                    <input type="text" name="google_maps_key" value="{{ $settings['google_maps_key'] }}" placeholder="AIzaSy..." class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none">
+                </div>
+            </div>
+
+            <button type="submit" class="w-full text-white font-semibold py-3.5 px-4 rounded-xl transition text-sm flex items-center justify-center gap-2 shadow-lg" style="background-color: var(--accent); hover:background-color: var(--accent-hover);">
+                <i class="fa-solid fa-circle-check"></i> Salvar Configurações
             </button>
         </form>
     </div>

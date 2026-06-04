@@ -135,13 +135,26 @@ class AdminController extends Controller
      */
     public function settings()
     {
-        // Simulando parâmetros globais salvos em cache ou config
         $settings = [
-            'app_name' => config('app.name'),
-            'gateway_asaas_key' => '*****_asaas_secret_key_*****',
-            'gateway_mercadopago_key' => '*****_mp_secret_key_*****',
-            'min_tickets' => 1,
-            'max_tickets' => 10,
+            'app_name' => \App\Models\Setting::get('app_name', config('app.name')),
+            'gateway_asaas_key' => \App\Models\Setting::get('gateway_asaas_key', ''),
+            'gateway_mercadopago_key' => \App\Models\Setting::get('gateway_mercadopago_key', ''),
+            'min_tickets' => \App\Models\Setting::get('min_tickets', 1),
+            'max_tickets' => \App\Models\Setting::get('max_tickets', 10),
+            
+            // Google reCAPTCHA
+            'recaptcha_enabled' => \App\Models\Setting::get('recaptcha_enabled', '0'),
+            'recaptcha_site_key' => \App\Models\Setting::get('recaptcha_site_key', ''),
+            'recaptcha_secret_key' => \App\Models\Setting::get('recaptcha_secret_key', ''),
+            
+            // Google Login
+            'google_login_enabled' => \App\Models\Setting::get('google_login_enabled', '0'),
+            'google_client_id' => \App\Models\Setting::get('google_client_id', ''),
+            'google_client_secret' => \App\Models\Setting::get('google_client_secret', ''),
+            
+            // Google Maps
+            'google_maps_enabled' => \App\Models\Setting::get('google_maps_enabled', '0'),
+            'google_maps_key' => \App\Models\Setting::get('google_maps_key', ''),
         ];
         return view('admin.settings', compact('settings'));
     }
@@ -155,11 +168,40 @@ class AdminController extends Controller
             'app_name' => 'required|string',
             'min_tickets' => 'required|integer',
             'max_tickets' => 'required|integer',
+            'gateway_asaas_key' => 'nullable|string',
+            'gateway_mercadopago_key' => 'nullable|string',
+            
+            'recaptcha_site_key' => 'nullable|string',
+            'recaptcha_secret_key' => 'nullable|string',
+            
+            'google_client_id' => 'nullable|string',
+            'google_client_secret' => 'nullable|string',
+            
+            'google_maps_key' => 'nullable|string',
         ]);
+
+        \App\Models\Setting::set('app_name', $request->app_name);
+        \App\Models\Setting::set('min_tickets', $request->min_tickets);
+        \App\Models\Setting::set('max_tickets', $request->max_tickets);
+        \App\Models\Setting::set('gateway_asaas_key', $request->gateway_asaas_key ?: '');
+        \App\Models\Setting::set('gateway_mercadopago_key', $request->gateway_mercadopago_key ?: '');
+        
+        \App\Models\Setting::set('recaptcha_enabled', $request->has('recaptcha_enabled') ? '1' : '0');
+        \App\Models\Setting::set('recaptcha_site_key', $request->recaptcha_site_key ?: '');
+        \App\Models\Setting::set('recaptcha_secret_key', $request->recaptcha_secret_key ?: '');
+        
+        \App\Models\Setting::set('google_login_enabled', $request->has('google_login_enabled') ? '1' : '0');
+        \App\Models\Setting::set('google_client_id', $request->google_client_id ?: '');
+        \App\Models\Setting::set('google_client_secret', $request->google_client_secret ?: '');
+        
+        \App\Models\Setting::set('google_maps_enabled', $request->has('google_maps_enabled') ? '1' : '0');
+        \App\Models\Setting::set('google_maps_key', $request->google_maps_key ?: '');
+
+        config(['app.name' => $request->app_name]);
 
         $logActivity->execute("Atualizou as configurações globais do sistema", json_encode($request->all()));
 
-        return redirect()->route('admin.settings')->with('success', 'Configurações atualizadas com sucesso (Simulado)!');
+        return redirect()->route('admin.settings')->with('success', 'Configurações atualizadas com sucesso!');
     }
 
     /**
