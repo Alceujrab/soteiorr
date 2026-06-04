@@ -139,6 +139,9 @@
         <!-- Topbar Mobile only -->
         <header class="h-16 border-b flex md:hidden items-center justify-between px-6 sticky top-0 z-50" style="background-color: var(--bg-sidebar); border-color: var(--border-color);">
             <div class="flex items-center gap-2">
+                <button onclick="toggleMobileMenu()" class="p-2 -ml-2 rounded-lg text-slate-400 hover:text-white transition">
+                    <i class="fa-solid fa-bars text-xl"></i>
+                </button>
                 <i class="fa-solid fa-user-tie text-lg" style="color: var(--accent);"></i>
                 <span class="font-bold text-white text-sm">Área Cliente</span>
             </div>
@@ -151,6 +154,57 @@
                 </a>
             </div>
         </header>
+
+        <!-- Mobile Drawer Overlay -->
+        <div id="mobile-drawer-overlay" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden opacity-0 transition-opacity duration-300" onclick="toggleMobileMenu()"></div>
+        
+        <!-- Mobile Drawer Content -->
+        <div id="mobile-drawer" class="fixed top-0 bottom-0 left-0 w-80 max-w-[85vw] z-50 transform -translate-x-full transition-transform duration-300 ease-in-out border-r flex flex-col" style="background-color: var(--bg-sidebar); border-color: var(--border-color);">
+            <div class="h-16 flex items-center justify-between px-6 border-b" style="border-color: var(--border-color);">
+                <div class="flex items-center gap-2">
+                    <div class="p-1.5 rounded-lg text-white font-bold" style="background-color: var(--accent);">
+                        <i class="fa-solid fa-user-tie text-sm"></i>
+                    </div>
+                    <span class="font-bold text-white text-sm">Ação RR Cliente</span>
+                </div>
+                <button onclick="toggleMobileMenu()" class="p-2 rounded-lg text-slate-400 hover:text-white transition">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+
+            <div class="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
+                <a href="/" class="flex items-center gap-3 px-4 py-3 rounded-xl transition text-slate-400 hover:text-white hover:bg-slate-900/60">
+                    <i class="fa-solid fa-house text-lg"></i>
+                    <span class="font-medium text-sm">Ir para o Início</span>
+                </a>
+                <a href="{{ route('raffles.my-tickets') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition text-slate-400 hover:text-white hover:bg-slate-900/60 {{ Route::currentRouteName() == 'raffles.my-tickets' ? 'bg-slate-900 text-white' : '' }}">
+                    <i class="fa-solid fa-ticket text-lg"></i>
+                    <span class="font-medium text-sm">Meus Bilhetes</span>
+                </a>
+                <a href="{{ route('support.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition text-slate-400 hover:text-white hover:bg-slate-900/60 {{ Route::currentRouteName() == 'support.index' ? 'bg-slate-900 text-white' : '' }}">
+                    <i class="fa-solid fa-headset text-lg"></i>
+                    <span class="font-medium text-sm">Suporte / FAQs</span>
+                </a>
+            </div>
+
+            <div class="p-4 border-t flex flex-col gap-3" style="border-color: var(--border-color); background-color: var(--bg-sidebar);">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs" style="background-color: var(--badge-bg); color: var(--badge-text);">
+                        {{ auth()->check() ? substr(auth()->user()->name, 0, 1) : 'C' }}
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="text-xs font-semibold text-white truncate">{{ auth()->check() ? auth()->user()->name : 'Cliente' }}</div>
+                        <div class="text-[10px] text-slate-500 truncate">{{ auth()->check() ? auth()->user()->email : '' }}</div>
+                    </div>
+                </div>
+                <form action="{{ route('logout') }}" method="POST" class="w-full">
+                    @csrf
+                    <button type="submit" class="w-full mt-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 font-semibold py-1.5 rounded-lg text-xs transition">
+                        Desconectar-se
+                    </button>
+                </form>
+            </div>
+        </div>
 
         <!-- Dynamic Content -->
         <main class="flex-grow p-4 sm:p-8 max-w-7xl mx-auto w-full pb-24 md:pb-8">
@@ -195,6 +249,24 @@
             } else {
                 document.body.classList.add('light-theme');
                 localStorage.setItem('theme', 'light');
+            }
+        }
+
+        function toggleMobileMenu() {
+            const drawer = document.getElementById('mobile-drawer');
+            const overlay = document.getElementById('mobile-drawer-overlay');
+            if (drawer.classList.contains('-translate-x-full')) {
+                drawer.classList.remove('-translate-x-full');
+                overlay.classList.remove('hidden');
+                setTimeout(() => {
+                    overlay.classList.add('opacity-100');
+                }, 10);
+            } else {
+                drawer.classList.add('-translate-x-full');
+                overlay.classList.remove('opacity-100');
+                setTimeout(() => {
+                    overlay.classList.add('hidden');
+                }, 300);
             }
         }
     </script>

@@ -176,6 +176,9 @@
         <!-- Topbar Mobile only -->
         <header class="h-16 border-b flex md:hidden items-center justify-between px-6 sticky top-0 z-50" style="background-color: var(--bg-sidebar); border-color: var(--border-color);">
             <div class="flex items-center gap-2">
+                <button onclick="toggleMobileMenu()" class="p-2 -ml-2 rounded-lg text-slate-400 hover:text-white transition">
+                    <i class="fa-solid fa-bars text-xl"></i>
+                </button>
                 <i class="fa-solid fa-user-shield text-lg" style="color: var(--accent);"></i>
                 <span class="font-bold text-white text-sm">Painel Admin</span>
             </div>
@@ -188,6 +191,90 @@
                 </a>
             </div>
         </header>
+
+        <!-- Mobile Drawer Overlay -->
+        <div id="mobile-drawer-overlay" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden opacity-0 transition-opacity duration-300" onclick="toggleMobileMenu()"></div>
+        
+        <!-- Mobile Drawer Content -->
+        <div id="mobile-drawer" class="fixed top-0 bottom-0 left-0 w-80 max-w-[85vw] z-50 transform -translate-x-full transition-transform duration-300 ease-in-out border-r flex flex-col" style="background-color: var(--bg-sidebar); border-color: var(--border-color);">
+            <div class="h-16 flex items-center justify-between px-6 border-b" style="border-color: var(--border-color);">
+                <div class="flex items-center gap-2">
+                    <div class="p-1.5 rounded-lg text-white font-bold" style="background-color: var(--accent);">
+                        <i class="fa-solid fa-user-shield text-sm"></i>
+                    </div>
+                    <span class="font-bold text-white text-sm">Ação RR Admin</span>
+                </div>
+                <button onclick="toggleMobileMenu()" class="p-2 rounded-lg text-slate-400 hover:text-white transition">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+
+            <div class="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
+                <a href="/" class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition text-slate-400 hover:text-white hover:bg-slate-900/60">
+                    <i class="fa-solid fa-house text-base"></i>
+                    <span class="font-medium text-sm">Ver Site Público</span>
+                </a>
+                <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition text-slate-400 hover:text-white hover:bg-slate-900/60 {{ Route::currentRouteName() == 'admin.dashboard' ? 'bg-slate-900 text-white' : '' }}">
+                    <i class="fa-solid fa-chart-line text-base"></i>
+                    <span class="font-medium text-sm">Dashboard / Rifas</span>
+                </a>
+                <a href="{{ route('admin.participants') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition text-slate-400 hover:text-white hover:bg-slate-900/60 {{ Route::currentRouteName() == 'admin.participants' ? 'bg-slate-900 text-white' : '' }}">
+                    <i class="fa-solid fa-users text-base"></i>
+                    <span class="font-medium text-sm">Participantes</span>
+                </a>
+                <a href="{{ route('admin.reports') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition text-slate-400 hover:text-white hover:bg-slate-900/60 {{ Route::currentRouteName() == 'admin.reports' ? 'bg-slate-900 text-white' : '' }}">
+                    <i class="fa-solid fa-chart-pie text-base"></i>
+                    <span class="font-medium text-sm">Relatórios</span>
+                </a>
+                <a href="{{ route('admin.users') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition text-slate-400 hover:text-white hover:bg-slate-900/60 {{ Route::currentRouteName() == 'admin.users' ? 'bg-slate-900 text-white' : '' }}">
+                    <i class="fa-solid fa-user-gear text-base"></i>
+                    <span class="font-medium text-sm">Usuários / Perfis</span>
+                </a>
+                <a href="{{ route('admin.notifications') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition text-slate-400 hover:text-white hover:bg-slate-900/60 {{ Route::currentRouteName() == 'admin.notifications' ? 'bg-slate-900 text-white' : '' }}">
+                    <i class="fa-solid fa-bullhorn text-base"></i>
+                    <span class="font-medium text-sm">Notificações</span>
+                </a>
+                <a href="{{ route('admin.logs') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition text-slate-400 hover:text-white hover:bg-slate-900/60 {{ Route::currentRouteName() == 'admin.logs' ? 'bg-slate-900 text-white' : '' }}">
+                    <i class="fa-solid fa-shield-halved text-base"></i>
+                    <span class="font-medium text-sm">Logs de Auditoria</span>
+                </a>
+                <a href="{{ route('admin.settings') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition text-slate-400 hover:text-white hover:bg-slate-900/60 {{ Route::currentRouteName() == 'admin.settings' ? 'bg-slate-900 text-white' : '' }}">
+                    <i class="fa-solid fa-gears text-base"></i>
+                    <span class="font-medium text-sm">Configurações</span>
+                </a>
+            </div>
+
+            <div class="p-4 border-t flex flex-col gap-2 bg-slate-950" style="border-color: var(--border-color); background-color: var(--bg-sidebar);">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs" style="background-color: var(--badge-bg); color: var(--badge-text);">
+                        {{ auth()->check() ? substr(auth()->user()->name, 0, 1) : 'A' }}
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="text-xs font-semibold text-white truncate">{{ auth()->check() ? auth()->user()->name : 'Admin' }}</div>
+                        <div class="text-[10px] text-slate-500 uppercase font-bold truncate">{{ auth()->check() ? str_replace('_', ' ', auth()->user()->role) : '' }}</div>
+                    </div>
+                </div>
+                <div class="mt-2 space-y-1">
+                    <label class="text-[9px] font-bold text-slate-500 uppercase block">Simular Perfil:</label>
+                    <select onchange="location.href='/simulate-login/' + this.value" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2 py-1.5 text-[11px] text-slate-300 focus:outline-none">
+                        <option value="super_admin" {{ auth()->check() && auth()->user()->role == 'super_admin' ? 'selected' : '' }}>Super Admin</option>
+                        <option value="admin_organizador" {{ auth()->check() && auth()->user()->role == 'admin_organizador' ? 'selected' : '' }}>Admin Organizador</option>
+                        <option value="gerente_operacional" {{ auth()->check() && auth()->user()->role == 'gerente_operacional' ? 'selected' : '' }}>Gerente Operacional</option>
+                        <option value="vendedor" {{ auth()->check() && auth()->user()->role == 'vendedor' ? 'selected' : '' }}>Vendedor</option>
+                        <option value="cliente" {{ auth()->check() && auth()->user()->role == 'cliente' ? 'selected' : '' }}>Cliente/Participante</option>
+                        <option value="financeiro" {{ auth()->check() && auth()->user()->role == 'financeiro' ? 'selected' : '' }}>Financeiro</option>
+                        <option value="suporte" {{ auth()->check() && auth()->user()->role == 'suporte' ? 'selected' : '' }}>Suporte</option>
+                        <option value="auditor" {{ auth()->check() && auth()->user()->role == 'auditor' ? 'selected' : '' }}>Auditor</option>
+                    </select>
+                </div>
+                <form action="{{ route('logout') }}" method="POST" class="w-full mt-1">
+                    @csrf
+                    <button type="submit" class="w-full bg-red-500/10 hover:bg-red-500/20 text-red-400 font-semibold py-1 rounded-lg text-xs transition">
+                        Sair
+                    </button>
+                </form>
+            </div>
+        </div>
 
         <!-- Dynamic Content -->
         <main class="flex-grow p-4 sm:p-8 max-w-7xl mx-auto w-full pb-24 md:pb-8">
@@ -246,6 +333,24 @@
             } else {
                 document.body.classList.add('light-theme');
                 localStorage.setItem('theme', 'light');
+            }
+        }
+
+        function toggleMobileMenu() {
+            const drawer = document.getElementById('mobile-drawer');
+            const overlay = document.getElementById('mobile-drawer-overlay');
+            if (drawer.classList.contains('-translate-x-full')) {
+                drawer.classList.remove('-translate-x-full');
+                overlay.classList.remove('hidden');
+                setTimeout(() => {
+                    overlay.classList.add('opacity-100');
+                }, 10);
+            } else {
+                drawer.classList.add('-translate-x-full');
+                overlay.classList.remove('opacity-100');
+                setTimeout(() => {
+                    overlay.classList.add('hidden');
+                }, 300);
             }
         }
     </script>

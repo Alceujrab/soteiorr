@@ -92,7 +92,7 @@
                         Ação RR Veículos
                     </a>
                 </div>
-                <div class="flex items-center gap-4">
+                <div class="hidden md:flex items-center gap-4">
                     <!-- Theme Toggle Button -->
                     <button onclick="toggleTheme()" class="p-2 rounded-lg text-slate-400 hover:text-white transition" title="Alternar Tema">
                         <i class="fa-solid fa-circle-half-stroke text-lg"></i>
@@ -122,9 +122,76 @@
                         </a>
                     @endauth
                 </div>
+
+                <!-- Mobile Hamburger and Theme Toggle -->
+                <div class="flex md:hidden items-center gap-2">
+                    <button onclick="toggleTheme()" class="p-2 rounded-lg text-slate-400 hover:text-white transition">
+                        <i class="fa-solid fa-circle-half-stroke text-lg"></i>
+                    </button>
+                    <button onclick="toggleMobileMenu()" class="p-2 rounded-lg text-slate-400 hover:text-white transition" title="Abrir Menu">
+                        <i class="fa-solid fa-bars text-xl"></i>
+                    </button>
+                </div>
             </div>
         </div>
     </nav>
+
+    <!-- Mobile Drawer Overlay -->
+    <div id="mobile-drawer-overlay" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden opacity-0 transition-opacity duration-300" onclick="toggleMobileMenu()"></div>
+    
+    <!-- Mobile Drawer Content -->
+    <div id="mobile-drawer" class="fixed top-0 bottom-0 left-0 w-80 max-w-[85vw] z-50 transform -translate-x-full transition-transform duration-300 ease-in-out border-r flex flex-col" style="background-color: var(--bg-sidebar); border-color: var(--border-color);">
+        <div class="h-16 flex items-center justify-between px-6 border-b" style="border-color: var(--border-color);">
+            <div class="flex items-center gap-2">
+                <div class="p-1.5 rounded-lg text-white font-bold" style="background-color: var(--accent);">
+                    <i class="fa-solid fa-car-side text-sm"></i>
+                </div>
+                <span class="font-bold text-white text-sm">Ação RR</span>
+            </div>
+            <button onclick="toggleMobileMenu()" class="p-2 rounded-lg text-slate-400 hover:text-white transition">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+        </div>
+
+        <div class="flex-1 px-4 py-6 space-y-3">
+            <a href="/" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:text-white hover:bg-slate-900/60 transition">
+                <i class="fa-solid fa-ticket text-lg"></i>
+                <span class="font-medium text-sm">Rifas Ativas</span>
+            </a>
+            
+            <div class="border-t my-4" style="border-color: var(--border-color);"></div>
+
+            @auth
+                @if(in_array(auth()->user()->role, ['cliente', 'vendedor']))
+                    <a href="{{ route('customer.dashboard') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-blue-400 hover:bg-slate-900/60 transition">
+                        <i class="fa-solid fa-user text-lg"></i>
+                        <span class="font-medium text-sm">Minha Área</span>
+                    </a>
+                @else
+                    <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-blue-400 hover:bg-slate-900/60 transition">
+                        <i class="fa-solid fa-chart-line text-lg"></i>
+                        <span class="font-medium text-sm">Painel Admin</span>
+                    </a>
+                @endif
+                
+                <form action="{{ route('logout') }}" method="POST" class="w-full pt-4">
+                    @csrf
+                    <button type="submit" class="w-full bg-red-500/10 hover:bg-red-500/20 text-red-400 font-semibold py-2.5 rounded-xl text-xs transition">
+                        Desconectar-se
+                    </button>
+                </form>
+            @else
+                <a href="{{ route('login') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:text-white hover:bg-slate-900/60 transition">
+                    <i class="fa-solid fa-right-to-bracket text-lg"></i>
+                    <span class="font-medium text-sm">Entrar</span>
+                </a>
+                <a href="{{ route('register') }}" class="flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-white font-semibold text-xs transition" style="background-color: var(--accent);">
+                    <i class="fa-solid fa-user-plus"></i>
+                    Cadastrar-se
+                </a>
+            @endauth
+        </div>
+    </div>
 
     <!-- Main Public Area -->
     <main class="flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 pb-16">
@@ -169,6 +236,24 @@
             } else {
                 document.body.classList.add('light-theme');
                 localStorage.setItem('theme', 'light');
+            }
+        }
+
+        function toggleMobileMenu() {
+            const drawer = document.getElementById('mobile-drawer');
+            const overlay = document.getElementById('mobile-drawer-overlay');
+            if (drawer.classList.contains('-translate-x-full')) {
+                drawer.classList.remove('-translate-x-full');
+                overlay.classList.remove('hidden');
+                setTimeout(() => {
+                    overlay.classList.add('opacity-100');
+                }, 10);
+            } else {
+                drawer.classList.add('-translate-x-full');
+                overlay.classList.remove('opacity-100');
+                setTimeout(() => {
+                    overlay.classList.add('hidden');
+                }, 300);
             }
         }
     </script>
