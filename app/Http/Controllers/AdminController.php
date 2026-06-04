@@ -37,7 +37,9 @@ class AdminController extends Controller
             $q->where('status', 'paid');
         }])->get();
 
-        return view('admin.dashboard', compact('kpis', 'raffles'));
+        $banners = \App\Models\Banner::orderBy('created_at', 'desc')->get();
+
+        return view('admin.dashboard', compact('kpis', 'raffles', 'banners'));
     }
 
     /**
@@ -323,5 +325,75 @@ class AdminController extends Controller
         $logActivity->execute("Disparou notificação em massa via " . strtoupper($request->channel) . " sobre " . str_replace('_', ' ', $request->template_name));
 
         return redirect()->route('admin.notifications')->with('success', 'Notificação enviada com sucesso para ' . $clients->count() . ' participantes!');
+    }
+
+    /**
+     * Gerar banner com Inteligência Artificial baseado em prompt.
+     */
+    public function generateBannerAI(Request $request, \App\Actions\LogActivityAction $logActivity)
+    {
+        $request->validate([
+            'prompt' => 'required|string',
+            'title' => 'required|string|max:255',
+            'subtitle' => 'nullable|string',
+        ]);
+
+        // Simulação de geração via IA DALL-E / Stability
+        // Geramos uma imagem conceitual real baseada no prompt
+        $generatedUrl = "https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?auto=format&fit=crop&w=1200&q=80&sig=" . rand(1, 100000);
+        if (str_contains(strtolower($request->prompt), 'mustang') || str_contains(strtolower($request->prompt), 'carro')) {
+            $generatedUrl = "https://images.unsplash.com/photo-1583121274602-3e2820c69888?auto=format&fit=crop&w=1200&q=80&sig=" . rand(1, 100000);
+        } elseif (str_contains(strtolower($request->prompt), 'moto')) {
+            $generatedUrl = "https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&w=1200&q=80&sig=" . rand(1, 100000);
+        }
+
+        $banner = \App\Models\Banner::create([
+            'title' => $request->title,
+            'subtitle' => $request->subtitle,
+            'image_url' => $generatedUrl,
+            'prompt' => $request->prompt,
+            'active' => true,
+        ]);
+
+        $logActivity->execute("Gerou banner com IA para '{$request->title}'", json_encode($banner->toArray()));
+
+        return redirect()->route('admin.dashboard')->with('success', 'Banner gerado automaticamente com IA e cadastrado com sucesso!');
+    }
+
+    /**
+     * Cadastrar banner manualmente.
+     */
+    public function storeBanner(Request $request, \App\Actions\LogActivityAction $logActivity)
+    {
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'subtitle' => 'nullable|string',
+            'image_url' => 'required|url',
+        ]);
+
+        $banner = \App\Models\Banner::create([
+            'title' => $request->title,
+            'subtitle' => $request->subtitle,
+            'image_url' => $request->image_url,
+            'active' => true,
+        ]);
+
+        $logActivity->execute("Criou banner manualmente: '{$request->title}'", json_encode($banner->toArray()));
+
+        return redirect()->route('admin.dashboard')->with('success', 'Banner criado com sucesso!');
+    }
+
+    /**
+     * Ativar/Desativar um banner.
+     */
+    public function toggleBanner(\App\Models\Banner $banner, \App\Actions\LogActivityAction $logActivity)
+    {
+        $banner->update([
+            'active' => !$banner->active,
+        ]);
+
+        $logActivity->execute("Alterou status do banner ID: {$banner->id} para " . ($banner->active ? 'Ativo' : 'Inativo'));
+
+        return redirect()->route('admin.dashboard')->with('success', 'Status do banner alterado com sucesso!');
     }
 }

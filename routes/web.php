@@ -43,6 +43,9 @@ Route::post('/support/ticket', [SupportController::class, 'storeTicket'])->name(
 Route::get('/payments/{payment}', [PaymentController::class, 'show'])->name('payments.show');
 Route::get('/payments/{payment}/check-status', [PaymentController::class, 'checkStatus'])->name('payments.check-status');
 Route::get('/payments/{payment}/confirm', [PaymentController::class, 'confirm'])->name('payments.confirm'); // Simulação
+Route::get('/payments/{payment}/receipt', [RaffleController::class, 'receipt'])->name('payments.receipt');
+Route::get('/validate-ticket/{payment?}', [RaffleController::class, 'validateTicket'])->name('raffles.validate-ticket');
+Route::post('/validate-ticket', [RaffleController::class, 'validateTicketPost'])->name('raffles.validate-ticket-post');
 
 // Rotas Admin
 Route::get('/admin', [AdminController::class, 'dashboard'])->name('admin.dashboard');
@@ -57,6 +60,9 @@ Route::get('/admin/reports', [AdminController::class, 'reports'])->name('admin.r
 Route::get('/admin/users', [AdminController::class, 'users'])->name('admin.users');
 Route::get('/admin/notifications', [AdminController::class, 'notifications'])->name('admin.notifications');
 Route::post('/admin/notifications/send', [AdminController::class, 'sendNotification'])->name('admin.notifications.send');
+Route::post('/admin/banners', [AdminController::class, 'storeBanner'])->name('admin.banners.store');
+Route::post('/admin/banners/generate', [AdminController::class, 'generateBannerAI'])->name('admin.banners.generate');
+Route::post('/admin/banners/{banner}/toggle', [AdminController::class, 'toggleBanner'])->name('admin.banners.toggle');
 
 // Rotas de API e Webhooks
 use App\Http\Controllers\ApiController;

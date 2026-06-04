@@ -142,9 +142,14 @@
                     <h3 class="text-xl font-bold text-white">Pagamento Confirmado!</h3>
                     <p class="text-slate-400 text-sm">Seus números já estão reservados e pagos sob o seu perfil.</p>
                 </div>
-                <a href="{{ route('raffles.index') }}" class="inline-flex bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white font-semibold py-3 px-6 rounded-xl transition">
-                    Voltar para o Início
-                </a>
+                <div class="flex flex-col sm:flex-row justify-center gap-3">
+                    <a href="{{ route('payments.receipt', $payment->id) }}" class="bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3 px-6 rounded-xl transition flex items-center justify-center gap-1.5 shadow">
+                        <i class="fa-solid fa-receipt"></i> Ver Recibo de Compra
+                    </a>
+                    <a href="{{ route('raffles.index') }}" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white font-semibold py-3 px-6 rounded-xl transition">
+                        Voltar para o Início
+                    </a>
+                </div>
             </div>
         @endif
     </div>

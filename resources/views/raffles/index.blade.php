@@ -4,26 +4,87 @@
 
 @section('content')
 <div class="space-y-8">
-    <!-- Header Hero -->
-    <div class="relative overflow-hidden rounded-2xl glass-card p-8 sm:p-12 flex flex-col md:flex-row items-center justify-between gap-8">
-        <div class="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-indigo-600/10 pointer-events-none"></div>
-        <div class="space-y-4 max-w-xl">
-            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-blue-500/10 text-blue-400 border border-blue-500/30">
-                <i class="fa-solid fa-star"></i> Sorteios 100% Auditados
-            </span>
-            <h1 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-                Concorra aos melhores veículos com preços imperdíveis!
-            </h1>
-            <p class="text-slate-400 text-base sm:text-lg">
-                Escolha sua ação, selecione seus números da sorte e realize o pagamento via PIX para participar. O sorteio é realizado ao vivo!
-            </p>
+    
+    <!-- Rotative Banner -->
+    @if(isset($banners) && $banners->isNotEmpty())
+        <div class="relative overflow-hidden rounded-2xl glass-card h-80 sm:h-96 w-full">
+            <div id="banner-container" class="relative w-full h-full">
+                @foreach($banners as $index => $banner)
+                    <div class="banner-slide absolute inset-0 w-full h-full transition-opacity duration-1000 ease-in-out {{ $index === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0' }}">
+                        <div class="absolute inset-0 bg-gradient-to-r from-black/80 via-black/30 to-transparent z-10"></div>
+                        <img src="{{ $banner->image_url }}" alt="{{ $banner->title }}" class="w-full h-full object-cover">
+                        <div class="absolute inset-y-0 left-0 flex flex-col justify-center px-8 sm:px-16 z-20 space-y-4 max-w-xl">
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-blue-500/20 text-blue-400 border border-blue-500/30 w-fit">
+                                <i class="fa-solid fa-star"></i> Destaque da Semana
+                            </span>
+                            <h1 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">
+                                {{ $banner->title }}
+                            </h1>
+                            <p class="text-slate-300 text-sm sm:text-base">
+                                {{ $banner->subtitle }}
+                            </p>
+                            <a href="#rifas" class="bg-blue-600 hover:bg-blue-500 text-white font-medium px-6 py-2.5 rounded-lg shadow-lg hover:shadow-blue-500/20 transition text-center w-fit">
+                                Comprar Cotas
+                            </a>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+
+            <!-- Slider Controls -->
+            <button onclick="prevBanner()" class="absolute left-4 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/60 text-white p-2.5 rounded-full z-30 transition">
+                <i class="fa-solid fa-chevron-left text-sm"></i>
+            </button>
+            <button onclick="nextBanner()" class="absolute right-4 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/60 text-white p-2.5 rounded-full z-30 transition">
+                <i class="fa-solid fa-chevron-right text-sm"></i>
+            </button>
         </div>
-        <div class="w-full md:w-auto flex flex-col sm:flex-row gap-4">
-            <a href="#rifas" class="bg-blue-600 hover:bg-blue-500 text-white font-medium px-6 py-3 rounded-lg shadow-lg hover:shadow-blue-500/20 transition text-center">
-                Ver Rifas Ativas
-            </a>
+
+        <script>
+            let currentSlide = 0;
+            const slides = document.querySelectorAll('.banner-slide');
+            
+            function showSlide(index) {
+                slides[currentSlide].classList.remove('opacity-100', 'z-10');
+                slides[currentSlide].classList.add('opacity-0', 'z-0');
+                currentSlide = (index + slides.length) % slides.length;
+                slides[currentSlide].classList.remove('opacity-0', 'z-0');
+                slides[currentSlide].classList.add('opacity-100', 'z-10');
+            }
+
+            function nextBanner() {
+                showSlide(currentSlide + 1);
+            }
+
+            function prevBanner() {
+                showSlide(currentSlide - 1);
+            }
+
+            // Auto rotation every 6 seconds
+            setInterval(nextBanner, 6000);
+        </script>
+    @else
+        <!-- Header Hero (Fallback) -->
+        <div class="relative overflow-hidden rounded-2xl glass-card p-8 sm:p-12 flex flex-col md:flex-row items-center justify-between gap-8">
+            <div class="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-indigo-600/10 pointer-events-none"></div>
+            <div class="space-y-4 max-w-xl">
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-blue-500/10 text-blue-400 border border-blue-500/30">
+                    <i class="fa-solid fa-star"></i> Sorteios 100% Auditados
+                </span>
+                <h1 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+                    Concorra aos melhores veículos com preços imperdíveis!
+                </h1>
+                <p class="text-slate-400 text-base sm:text-lg">
+                    Escolha sua ação, selecione seus números da sorte e realize o pagamento via PIX para participar. O sorteio é realizado ao vivo!
+                </p>
+            </div>
+            <div class="w-full md:w-auto flex flex-col sm:flex-row gap-4">
+                <a href="#rifas" class="bg-blue-600 hover:bg-blue-500 text-white font-medium px-6 py-3 rounded-lg shadow-lg hover:shadow-blue-500/20 transition text-center">
+                    Ver Rifas Ativas
+                </a>
+            </div>
         </div>
-    </div>
+    @endif
 
     <!-- Active Raffles Grid -->
     <div id="rifas" class="space-y-6">
