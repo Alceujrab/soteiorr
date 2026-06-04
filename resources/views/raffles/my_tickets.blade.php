@@ -32,14 +32,26 @@
                             <p class="text-xs text-slate-500">Sorteio em: {{ $raffle->draw_date->format('d/m/Y H:i') }}</p>
                         </div>
                     </div>
-                    @if($raffleTickets->where('status', 'reserved')->isNotEmpty())
-                        @php $firstPaymentId = $raffleTickets->where('status', 'reserved')->first()->payment_id; @endphp
-                        @if($firstPaymentId)
-                            <a href="{{ route('payments.show', $firstPaymentId) }}" class="bg-amber-600 hover:bg-amber-500 text-amber-950 font-bold px-4 py-2 rounded-xl text-xs transition flex items-center gap-1">
-                                <i class="fa-solid fa-circle-exclamation"></i> Pagar Reservas Pendentes
+                    <div class="flex flex-wrap gap-2">
+                        @if($raffleTickets->where('status', 'reserved')->isNotEmpty())
+                            @php $firstPaymentId = $raffleTickets->where('status', 'reserved')->first()->payment_id; @endphp
+                            @if($firstPaymentId)
+                                <a href="{{ route('payments.show', $firstPaymentId) }}" class="bg-amber-600 hover:bg-amber-500 text-white font-bold px-4 py-2 rounded-xl text-xs transition flex items-center gap-1.5 shadow">
+                                    <i class="fa-solid fa-circle-exclamation text-amber-300 animate-pulse"></i> Pagar Reservas Pendentes
+                                </a>
+                            @endif
+                        @endif
+
+                        @php
+                            $paidTickets = $raffleTickets->where('status', 'paid');
+                            $firstPaidPaymentId = $paidTickets->isNotEmpty() ? $paidTickets->first()->payment_id : null;
+                        @endphp
+                        @if($firstPaidPaymentId)
+                            <a href="{{ route('payments.receipt', $firstPaidPaymentId) }}" class="bg-blue-600 hover:bg-blue-500 text-white font-bold px-4 py-2 rounded-xl text-xs transition flex items-center gap-1.5 shadow">
+                                <i class="fa-solid fa-receipt"></i> Ver Recibo / PDF
                             </a>
                         @endif
-                    @endif
+                    </div>
                 </div>
 
                 <div class="border-t border-slate-800/80 pt-4">
