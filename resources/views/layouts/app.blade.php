@@ -89,14 +89,29 @@
             </div>
         </div>
 
-        <!-- User profile summary -->
-        <div class="p-4 border-t border-slate-900 flex items-center gap-3">
-            <div class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center font-bold text-blue-400 text-sm border border-slate-700">
-                U
+        <!-- User profile summary & Profile Switcher -->
+        <div class="p-4 border-t border-slate-900 flex flex-col gap-2">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-blue-600/20 flex items-center justify-center font-bold text-blue-400 text-xs border border-blue-500/30">
+                    {{ auth()->check() ? substr(auth()->user()->name, 0, 1) : 'U' }}
+                </div>
+                <div class="flex-1 min-w-0">
+                    <div class="text-xs font-semibold text-white truncate">{{ auth()->check() ? auth()->user()->name : 'Usuário Geral' }}</div>
+                    <div class="text-[10px] text-slate-500 uppercase tracking-wider font-semibold">{{ auth()->check() ? str_replace('_', ' ', auth()->user()->role) : 'cliente' }}</div>
+                </div>
             </div>
-            <div>
-                <div class="text-xs font-semibold text-white">Usuário Geral</div>
-                <div class="text-[10px] text-slate-500">Conectado</div>
+            <div class="mt-2 space-y-1">
+                <label class="text-[9px] font-bold text-slate-500 uppercase block tracking-wider">Simular Perfil:</label>
+                <select onchange="location.href='/simulate-login/' + this.value" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2 py-1.5 text-[11px] text-slate-300 focus:outline-none">
+                    <option value="super_admin" {{ auth()->check() && auth()->user()->role == 'super_admin' ? 'selected' : '' }}>Super Admin</option>
+                    <option value="admin_organizador" {{ auth()->check() && auth()->user()->role == 'admin_organizador' ? 'selected' : '' }}>Admin Organizador</option>
+                    <option value="gerente_operacional" {{ auth()->check() && auth()->user()->role == 'gerente_operacional' ? 'selected' : '' }}>Gerente Operacional</option>
+                    <option value="vendedor" {{ auth()->check() && auth()->user()->role == 'vendedor' ? 'selected' : '' }}>Vendedor</option>
+                    <option value="cliente" {{ auth()->check() && auth()->user()->role == 'cliente' ? 'selected' : '' }}>Cliente/Participante</option>
+                    <option value="financeiro" {{ auth()->check() && auth()->user()->role == 'financeiro' ? 'selected' : '' }}>Financeiro</option>
+                    <option value="suporte" {{ auth()->check() && auth()->user()->role == 'suporte' ? 'selected' : '' }}>Suporte</option>
+                    <option value="auditor" {{ auth()->check() && auth()->user()->role == 'auditor' ? 'selected' : '' }}>Auditor</option>
+                </select>
             </div>
         </div>
     </aside>

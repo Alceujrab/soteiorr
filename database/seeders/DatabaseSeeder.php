@@ -37,6 +37,61 @@ class DatabaseSeeder extends Seeder
             'phone' => '(11) 98888-8888',
         ]);
 
+        // Outros perfis do PRD
+        User::create([
+            'name' => 'Super Admin Geral',
+            'email' => 'superadmin@rrveiculos.com',
+            'password' => bcrypt('admin123'),
+            'role' => 'super_admin',
+            'cpf' => '000.000.000-01',
+            'phone' => '(11) 99999-0001',
+        ]);
+
+        User::create([
+            'name' => 'Gerente Operacional',
+            'email' => 'gerente@rrveiculos.com',
+            'password' => bcrypt('admin123'),
+            'role' => 'gerente_operacional',
+            'cpf' => '000.000.000-02',
+            'phone' => '(11) 99999-0002',
+        ]);
+
+        User::create([
+            'name' => 'Vendedor 1',
+            'email' => 'vendedor@rrveiculos.com',
+            'password' => bcrypt('admin123'),
+            'role' => 'vendedor',
+            'cpf' => '000.000.000-03',
+            'phone' => '(11) 99999-0003',
+        ]);
+
+        User::create([
+            'name' => 'Financeiro Diretor',
+            'email' => 'financeiro@rrveiculos.com',
+            'password' => bcrypt('admin123'),
+            'role' => 'financeiro',
+            'cpf' => '000.000.000-04',
+            'phone' => '(11) 99999-0004',
+        ]);
+
+        User::create([
+            'name' => 'Suporte Técnico',
+            'email' => 'suporte@rrveiculos.com',
+            'password' => bcrypt('admin123'),
+            'role' => 'suporte',
+            'cpf' => '000.000.000-05',
+            'phone' => '(11) 99999-0005',
+        ]);
+
+        User::create([
+            'name' => 'Auditor Externo',
+            'email' => 'auditor@rrveiculos.com',
+            'password' => bcrypt('admin123'),
+            'role' => 'auditor',
+            'cpf' => '000.000.000-06',
+            'phone' => '(11) 99999-0006',
+        ]);
+
         // Criar Rifa 1 (Gol Turbo)
         \App\Models\Raffle::create([
             'user_id' => $admin->id,

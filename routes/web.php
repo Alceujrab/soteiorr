@@ -2,6 +2,15 @@
 
 use Illuminate\Support\Facades\Route;
 
+Route::get('/simulate-login/{role}', function ($role) {
+    $user = \App\Models\User::where('role', $role)->first();
+    if ($user) {
+        \Illuminate\Support\Facades\Auth::login($user);
+        return redirect()->back()->with('success', 'Perfil alterado para: ' . str_replace('_', ' ', $role));
+    }
+    return redirect()->back()->withErrors(['error' => 'Perfil não encontrado.']);
+})->name('simulate-login');
+
 use App\Http\Controllers\RaffleController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\AdminController;
