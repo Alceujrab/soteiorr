@@ -59,10 +59,11 @@
             <h3 class="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
                 <i class="fa-solid fa-share-nodes text-blue-500"></i> Compartilhar Sorteio
             </h3>
-            <p class="text-xs text-slate-400">Ajude a divulgar esta ação entre amigos!</p>
+            <p class="text-xs text-slate-400">Ajude a divulgar esta ação entre amigos nas redes sociais!</p>
+            
             <div class="grid grid-cols-5 gap-2">
                 <!-- WhatsApp -->
-                <a href="https://api.whatsapp.com/send?text={{ urlencode('Olha essa ação premium no Ação RR Veículos: ' . $raffle->title . '. Participe em: ' . route('raffles.show', $raffle->id)) }}" target="_blank" class="flex items-center justify-center p-3 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/20 transition" title="Compartilhar no WhatsApp">
+                <a href="https://api.whatsapp.com/send?text={{ urlencode('Olha essa ação incrível no Ação RR Veículos: ' . $raffle->title . ' (Prêmio: ' . $raffle->prize_name . '). Participe em: ' . route('raffles.show', $raffle->id)) }}" target="_blank" class="flex items-center justify-center p-3 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/20 transition" title="Compartilhar no WhatsApp">
                     <i class="fa-brands fa-whatsapp text-lg"></i>
                 </a>
                 <!-- Facebook -->
@@ -70,7 +71,7 @@
                     <i class="fa-brands fa-facebook-f text-lg"></i>
                 </a>
                 <!-- Twitter/X -->
-                <a href="https://twitter.com/intent/tweet?url={{ urlencode(route('raffles.show', $raffle->id)) }}&text={{ urlencode('Confira essa rifa no Ação RR Veículos!') }}" target="_blank" class="flex items-center justify-center p-3 rounded-xl bg-slate-900/50 hover:bg-slate-900 text-slate-300 border border-slate-800 transition" title="Compartilhar no X (Twitter)">
+                <a href="https://twitter.com/intent/tweet?url={{ urlencode(route('raffles.show', $raffle->id)) }}&text={{ urlencode('Confira essa ação de prêmios no Ação RR Veículos!') }}" target="_blank" class="flex items-center justify-center p-3 rounded-xl bg-slate-900/50 hover:bg-slate-900 text-slate-300 border border-slate-800 transition" title="Compartilhar no X (Twitter)">
                     <i class="fa-brands fa-x-twitter text-lg"></i>
                 </a>
                 <!-- LinkedIn -->
@@ -82,7 +83,18 @@
                     <i class="fa-solid fa-link text-lg"></i>
                 </button>
             </div>
+
+            <div class="pt-2 space-y-2">
+                <button onclick="shareRaffleNative()" class="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition shadow">
+                    <i class="fa-solid fa-share-nodes"></i> Compartilhar no Celular (Instagram, Tik Tok...)
+                </button>
+                <button onclick="copyPromoPost()" class="w-full flex items-center justify-center gap-2 py-2 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold border border-slate-700 transition">
+                    <i class="fa-solid fa-copy"></i> Copiar Texto de Divulgação (Redes Sociais)
+                </button>
+            </div>
+            
             <p id="share-toast" class="text-center text-[10px] text-emerald-400 font-bold hidden">Link copiado com sucesso!</p>
+            <p id="promo-toast" class="text-center text-[10px] text-emerald-400 font-bold hidden">Texto de divulgação copiado para colar no Instagram/TikTok/YouTube!</p>
         </div>
 
         <script>
@@ -93,6 +105,28 @@
                     toast.classList.remove('hidden');
                     setTimeout(() => toast.classList.add('hidden'), 3000);
                 });
+            }
+
+            function copyPromoPost() {
+                const text = "🏆 Participe também da ação entre amigos da Ação RR Veículos!\n🔥 Ação: {{ $raffle->title }}\n🎁 Prêmio: {{ $raffle->prize_name }}\n👉 Garanta seus números da sorte em: {{ route('raffles.show', $raffle->id) }}";
+                navigator.clipboard.writeText(text).then(() => {
+                    const toast = document.getElementById('promo-toast');
+                    toast.classList.remove('hidden');
+                    setTimeout(() => toast.classList.add('hidden'), 3000);
+                });
+            }
+
+            function shareRaffleNative() {
+                if (navigator.share) {
+                    navigator.share({
+                        title: 'Ação RR Veículos - {{ $raffle->title }}',
+                        text: 'Confira e participe desta ação premium para concorrer ao {{ $raffle->prize_name }}!',
+                        url: '{{ route("raffles.show", $raffle->id) }}'
+                    }).catch(console.error);
+                } else {
+                    copyRaffleLink();
+                    alert('Navegador não suporta compartilhamento nativo. O link foi copiado para a área de transferência!');
+                }
             }
         </script>
 
