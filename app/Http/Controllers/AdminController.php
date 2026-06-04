@@ -155,6 +155,22 @@ class AdminController extends Controller
             // Google Maps
             'google_maps_enabled' => \App\Models\Setting::get('google_maps_enabled', '0'),
             'google_maps_key' => \App\Models\Setting::get('google_maps_key', ''),
+
+            // Itaú API Pix Direct
+            'itau_enabled' => \App\Models\Setting::get('itau_enabled', '0'),
+            'itau_client_id' => \App\Models\Setting::get('itau_client_id', ''),
+            'itau_client_secret' => \App\Models\Setting::get('itau_client_secret', ''),
+            'itau_cert_path' => \App\Models\Setting::get('itau_cert_path', ''),
+            'itau_key_path' => \App\Models\Setting::get('itau_key_path', ''),
+            'itau_pix_key' => \App\Models\Setting::get('itau_pix_key', ''),
+
+            // Santander API Pix Direct
+            'santander_enabled' => \App\Models\Setting::get('santander_enabled', '0'),
+            'santander_client_id' => \App\Models\Setting::get('santander_client_id', ''),
+            'santander_client_secret' => \App\Models\Setting::get('santander_client_secret', ''),
+            'santander_cert_path' => \App\Models\Setting::get('santander_cert_path', ''),
+            'santander_key_path' => \App\Models\Setting::get('santander_key_path', ''),
+            'santander_pix_key' => \App\Models\Setting::get('santander_pix_key', ''),
         ];
         return view('admin.settings', compact('settings'));
     }
@@ -178,6 +194,18 @@ class AdminController extends Controller
             'google_client_secret' => 'nullable|string',
             
             'google_maps_key' => 'nullable|string',
+
+            'itau_client_id' => 'nullable|string',
+            'itau_client_secret' => 'nullable|string',
+            'itau_cert_path' => 'nullable|string',
+            'itau_key_path' => 'nullable|string',
+            'itau_pix_key' => 'nullable|string',
+
+            'santander_client_id' => 'nullable|string',
+            'santander_client_secret' => 'nullable|string',
+            'santander_cert_path' => 'nullable|string',
+            'santander_key_path' => 'nullable|string',
+            'santander_pix_key' => 'nullable|string',
         ]);
 
         \App\Models\Setting::set('app_name', $request->app_name);
@@ -196,6 +224,20 @@ class AdminController extends Controller
         
         \App\Models\Setting::set('google_maps_enabled', $request->has('google_maps_enabled') ? '1' : '0');
         \App\Models\Setting::set('google_maps_key', $request->google_maps_key ?: '');
+
+        \App\Models\Setting::set('itau_enabled', $request->has('itau_enabled') ? '1' : '0');
+        \App\Models\Setting::set('itau_client_id', $request->itau_client_id ?: '');
+        \App\Models\Setting::set('itau_client_secret', $request->itau_client_secret ?: '');
+        \App\Models\Setting::set('itau_cert_path', $request->itau_cert_path ?: '');
+        \App\Models\Setting::set('itau_key_path', $request->itau_key_path ?: '');
+        \App\Models\Setting::set('itau_pix_key', $request->itau_pix_key ?: '');
+
+        \App\Models\Setting::set('santander_enabled', $request->has('santander_enabled') ? '1' : '0');
+        \App\Models\Setting::set('santander_client_id', $request->santander_client_id ?: '');
+        \App\Models\Setting::set('santander_client_secret', $request->santander_client_secret ?: '');
+        \App\Models\Setting::set('santander_cert_path', $request->santander_cert_path ?: '');
+        \App\Models\Setting::set('santander_key_path', $request->santander_key_path ?: '');
+        \App\Models\Setting::set('santander_pix_key', $request->santander_pix_key ?: '');
 
         config(['app.name' => $request->app_name]);
 
