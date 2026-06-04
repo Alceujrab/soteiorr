@@ -14,7 +14,7 @@
                 Acompanhe as vendas, receitas e realize sorteios em tempo real.
             </p>
         </div>
-        <a href="{{ route('admin.raffles.create') }}" class="bg-blue-600 hover:bg-blue-500 text-white font-semibold px-5 py-2.5 rounded-lg transition flex items-center gap-2">
+        <a href="{{ route('admin.raffles.create') }}" class="bg-blue-600 hover:bg-blue-500 text-white font-semibold px-5 py-2.5 rounded-xl transition flex items-center gap-2">
             <i class="fa-solid fa-plus"></i> Criar Nova Rifa
         </a>
     </div>
@@ -62,6 +62,42 @@
             <div>
                 <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Rifas Ativas</div>
                 <div class="text-2xl font-bold text-white mt-1">{{ $kpis['active_raffles'] }}</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gráficos & Relatórios -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Vendas Chart (2/3 colunas) -->
+        <div class="glass-card rounded-2xl p-6 lg:col-span-2 space-y-4">
+            <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                <i class="fa-regular fa-chart-bar text-blue-500"></i> Desempenho de Vendas
+            </h3>
+            <div class="h-64 relative">
+                <canvas id="salesChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Atividades Recentes (1/3 coluna) -->
+        <div class="glass-card rounded-2xl p-6 space-y-4">
+            <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                <i class="fa-solid fa-clock-rotate-left text-blue-500"></i> Atividades Recentes
+            </h3>
+            <div class="space-y-4 text-xs max-h-64 overflow-y-auto pr-2">
+                <div class="flex gap-3 border-b border-slate-800/80 pb-3">
+                    <span class="text-emerald-400 font-bold bg-emerald-500/10 px-2 py-0.5 rounded h-fit">PIX</span>
+                    <div>
+                        <div class="text-white font-medium">Nova compra confirmada</div>
+                        <div class="text-slate-500 mt-0.5">Cliente Teste comprou 3 bilhetes</div>
+                    </div>
+                </div>
+                <div class="flex gap-3 border-b border-slate-800/80 pb-3">
+                    <span class="text-blue-400 font-bold bg-blue-500/10 px-2 py-0.5 rounded h-fit">RIFA</span>
+                    <div>
+                        <div class="text-white font-medium">Nova Rifa Publicada</div>
+                        <div class="text-slate-500 mt-0.5">Gol Quadrado AP Turbo criada por Admin</div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -141,4 +177,60 @@
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const ctx = document.getElementById('salesChart').getContext('2d');
+    
+    // Gradiente para a linha
+    const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+    gradient.addColorStop(0, 'rgba(37, 99, 235, 0.4)');
+    gradient.addColorStop(1, 'rgba(37, 99, 235, 0.0)');
+
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'],
+            datasets: [{
+                label: 'Receita Diária (R$)',
+                data: [350, 480, 220, 690, 820, 1100, 950],
+                borderColor: '#2563eb',
+                borderWidth: 3,
+                backgroundColor: gradient,
+                fill: true,
+                tension: 0.4,
+                pointBackgroundColor: '#3b82f6',
+                pointHoverRadius: 6
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.05)'
+                    },
+                    ticks: {
+                        color: '#94a3b8'
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false
+                    },
+                    ticks: {
+                        color: '#94a3b8'
+                    }
+                }
+            }
+        }
+    });
+});
+</script>
 @endsection

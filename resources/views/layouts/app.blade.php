@@ -12,6 +12,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -19,69 +21,121 @@
             color: #f1f5f9;
         }
         .glass-card {
-            background: rgba(30, 41, 59, 0.7); /* Slate 800 with transparency */
-            backdrop-filter: blur(12px);
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(16px);
             border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+        }
+        .sidebar {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col">
-    <!-- Navbar -->
-    <nav class="glass-card sticky top-0 z-50 border-b border-slate-800">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16 items-center">
-                <div class="flex items-center gap-3">
-                    <div class="bg-blue-600 p-2 rounded-lg text-white font-bold tracking-wide">
-                        <i class="fa-solid fa-car-side text-lg"></i>
-                    </div>
-                    <a href="{{ route('raffles.index') }}" class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400">
-                        Ação RR Veículos
-                    </a>
-                </div>
-                <div class="flex items-center gap-4">
-                    <a href="{{ route('raffles.index') }}" class="text-slate-300 hover:text-white transition px-3 py-2 rounded-md text-sm font-medium">
-                        Rifas
-                    </a>
-                    <a href="{{ route('admin.dashboard') }}" class="bg-slate-800 hover:bg-slate-700 text-white border border-slate-700 transition px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2">
-                        <i class="fa-solid fa-lock"></i> Painel Admin
-                    </a>
-                </div>
+<body class="min-h-screen flex flex-col md:flex-row">
+
+    <!-- Sidebar (Desktop only, fixed) -->
+    <aside class="sidebar w-72 bg-slate-950 border-r border-slate-800/80 flex-col hidden md:flex min-h-screen sticky top-0">
+        <!-- Logo -->
+        <div class="h-20 flex items-center px-6 border-b border-slate-900 gap-3">
+            <div class="bg-blue-600 p-2 rounded-xl text-white font-bold tracking-wide shadow-lg shadow-blue-500/20">
+                <i class="fa-solid fa-car-side text-lg"></i>
+            </div>
+            <a href="{{ route('raffles.index') }}" class="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400">
+                Ação RR Veículos
+            </a>
+        </div>
+
+        <!-- Navigation Links -->
+        <div class="flex-1 px-4 py-6 space-y-2">
+            <a href="{{ route('raffles.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition text-slate-400 hover:text-white hover:bg-slate-900/60 {{ Route::currentRouteName() == 'raffles.index' ? 'bg-slate-900 text-white border-l-4 border-blue-500' : '' }}">
+                <i class="fa-solid fa-car-side text-lg"></i>
+                <span class="font-medium text-sm">Ações / Rifas</span>
+            </a>
+            <a href="{{ route('raffles.my-tickets') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition text-slate-400 hover:text-white hover:bg-slate-900/60 {{ Route::currentRouteName() == 'raffles.my-tickets' ? 'bg-slate-900 text-white border-l-4 border-blue-500' : '' }}">
+                <i class="fa-solid fa-ticket text-lg"></i>
+                <span class="font-medium text-sm">Meus Bilhetes</span>
+            </a>
+            <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition text-slate-400 hover:text-white hover:bg-slate-900/60 {{ Route::currentRouteName() == 'admin.dashboard' ? 'bg-slate-900 text-white border-l-4 border-blue-500' : '' }}">
+                <i class="fa-solid fa-chart-line text-lg"></i>
+                <span class="font-medium text-sm">Dashboard Admin</span>
+            </a>
+            <a href="{{ route('admin.raffles.create') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition text-slate-400 hover:text-white hover:bg-slate-900/60 {{ Route::currentRouteName() == 'admin.raffles.create' ? 'bg-slate-900 text-white border-l-4 border-blue-500' : '' }}">
+                <i class="fa-solid fa-circle-plus text-lg"></i>
+                <span class="font-medium text-sm">Nova Rifa</span>
+            </a>
+        </div>
+
+        <!-- User profile summary -->
+        <div class="p-4 border-t border-slate-900 flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center font-bold text-blue-400 text-sm border border-slate-700">
+                U
+            </div>
+            <div>
+                <div class="text-xs font-semibold text-white">Usuário Geral</div>
+                <div class="text-[10px] text-slate-500">Conectado</div>
             </div>
         </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="flex-grow flex flex-col min-h-screen">
+        <!-- Topbar Mobile only -->
+        <header class="h-16 bg-slate-950 border-b border-slate-900 flex md:hidden items-center justify-between px-6 sticky top-0 z-50">
+            <div class="flex items-center gap-2">
+                <i class="fa-solid fa-car-side text-blue-500 text-lg"></i>
+                <span class="font-bold text-white text-sm">Ação RR Veículos</span>
+            </div>
+            <a href="{{ route('admin.dashboard') }}" class="text-slate-400 hover:text-white">
+                <i class="fa-solid fa-user-shield text-lg"></i>
+            </a>
+        </header>
+
+        <!-- Dynamic Content -->
+        <main class="flex-grow p-4 sm:p-8 max-w-7xl mx-auto w-full pb-24 md:pb-8">
+            @if(session('success'))
+                <div class="mb-6 p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 flex items-center gap-3 animate-fade-in">
+                    <i class="fa-solid fa-circle-check text-lg"></i>
+                    <div class="text-sm font-medium">{{ session('success') }}</div>
+                </div>
+            @endif
+
+            @if($errors->any())
+                <div class="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400">
+                    <div class="flex items-center gap-3 mb-1 text-sm font-semibold">
+                        <i class="fa-solid fa-circle-exclamation text-lg"></i>
+                        <span>Erro encontrado:</span>
+                    </div>
+                    <ul class="list-disc pl-5 text-xs space-y-0.5">
+                        @foreach($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+            @yield('content')
+        </main>
+    </div>
+
+    <!-- Bottom Nav (Mobile only, fixed) -->
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-slate-950/95 border-t border-slate-900 backdrop-blur flex justify-around items-center z-50">
+        <a href="{{ route('raffles.index') }}" class="flex flex-col items-center gap-1 text-slate-400 hover:text-white transition">
+            <i class="fa-solid fa-car-side text-lg"></i>
+            <span class="text-[10px]">Rifas</span>
+        </a>
+        <a href="{{ route('raffles.my-tickets') }}" class="flex flex-col items-center gap-1 text-slate-400 hover:text-white transition">
+            <i class="fa-solid fa-ticket text-lg"></i>
+            <span class="text-[10px]">Bilhetes</span>
+        </a>
+        <a href="{{ route('admin.dashboard') }}" class="flex flex-col items-center gap-1 text-slate-400 hover:text-white transition">
+            <i class="fa-solid fa-chart-line text-lg"></i>
+            <span class="text-[10px]">Dashboard</span>
+        </a>
+        <a href="{{ route('admin.raffles.create') }}" class="flex flex-col items-center gap-1 text-slate-400 hover:text-white transition">
+            <i class="fa-solid fa-circle-plus text-lg"></i>
+            <span class="text-[10px]">Nova</span>
+        </a>
     </nav>
 
-    <!-- Main Content -->
-    <main class="flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
-        @if(session('success'))
-            <div class="mb-6 p-4 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 flex items-center gap-3">
-                <i class="fa-solid fa-circle-check text-lg"></i>
-                <div>{{ session('success') }}</div>
-            </div>
-        @endif
-
-        @if($errors->any())
-            <div class="mb-6 p-4 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400">
-                <div class="flex items-center gap-3 mb-1">
-                    <i class="fa-solid fa-circle-exclamation text-lg"></i>
-                    <strong class="font-semibold">Erro:</strong>
-                </div>
-                <ul class="list-disc pl-5">
-                    @foreach($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
-
-        @yield('content')
-    </main>
-
-    <!-- Footer -->
-    <footer class="mt-auto border-t border-slate-800 bg-slate-950 py-8">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-slate-500 text-sm">
-            <p>&copy; {{ date('Y') }} Ação RR Veículos Entre Amigos. Todos os direitos reservados.</p>
-            <p class="mt-1 text-slate-600">Desenvolvido em Laravel 13 para máxima performance e segurança.</p>
-        </div>
-    </footer>
 </body>
 </html>

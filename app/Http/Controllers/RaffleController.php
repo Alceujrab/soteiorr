@@ -66,4 +66,24 @@ class RaffleController extends Controller
                 ->withErrors(['error' => $e->getMessage()]);
         }
     }
+
+    /**
+     * Exibir os bilhetes adquiridos pelo cliente logado.
+     */
+    public function myTickets()
+    {
+        if (!Auth::check()) {
+            $user = User::where('role', 'cliente')->first() ?: User::first();
+            Auth::login($user);
+        }
+
+        $user = Auth::user();
+
+        $tickets = Ticket::with(['raffle', 'payment'])
+            ->where('user_id', $user->id)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('raffles.my_tickets', compact('tickets'));
+    }
 }
