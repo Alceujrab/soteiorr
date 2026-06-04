@@ -51,7 +51,7 @@ class AdminController extends Controller
     /**
      * Salvar nova rifa.
      */
-    public function storeRaffle(Request $request)
+    public function storeRaffle(Request $request, \App\Actions\LogActivityAction $logActivity)
     {
         $request->validate([
             'title' => 'required|string|max:255',
@@ -64,7 +64,7 @@ class AdminController extends Controller
             'image_url' => 'nullable|url',
         ]);
 
-        Raffle::create([
+        $raffle = Raffle::create([
             'user_id' => Auth::id() ?: User::where('role', 'admin_organizador')->first()->id,
             'title' => $request->title,
             'description' => $request->description,
@@ -77,13 +77,15 @@ class AdminController extends Controller
             'draw_date' => $request->draw_date,
         ]);
 
+        $logActivity->execute("Criou a Rifa ID: {$raffle->id} - {$raffle->title}", json_encode($raffle->toArray()));
+
         return redirect()->route('admin.dashboard')->with('success', 'Rifa criada com sucesso!');
     }
 
     /**
      * Realizar sorteio de forma aleatória entre os bilhetes pagos.
      */
-    public function draw(Raffle $raffle)
+    public function draw(Raffle $raffle, \App\Actions\LogActivityAction $logActivity)
     {
         if ($raffle->status === 'completed') {
             return redirect()->back()->withErrors(['error' => 'Esta rifa já foi sorteada.']);
@@ -101,8 +103,8 @@ class AdminController extends Controller
         // Escolher um ganhador aleatório dos pagos
         $winnerTicket = $paidTickets->random();
 
-        DB::transaction(function () use ($raffle, $winnerTicket) {
-            Draw::create([
+        DB::transaction(function () use ($raffle, $winnerTicket, $logActivity) {
+            $draw = Draw::create([
                 'raffle_id' => $raffle->id,
                 'winning_number' => $winnerTicket->number,
                 'winning_ticket_id' => $winnerTicket->id,
@@ -112,8 +114,64 @@ class AdminController extends Controller
             ]);
 
             $raffle->update(['status' => 'completed']);
+
+            $logActivity->execute("Realizou o sorteio da Rifa ID: {$raffle->id}. Vencedor: número {$winnerTicket->number}", json_encode($draw->toArray()));
         });
 
         return redirect()->route('admin.dashboard')->with('success', 'Sorteio realizado com sucesso! O vencedor foi o número: ' . $winnerTicket->number);
+    }
+
+    /**
+     * Exibir os logs de auditoria (Auditoria e Compliance).
+     */
+    public function logs()
+    {
+        $logs = ActivityLog::with('user')->orderBy('created_at', 'desc')->paginate(15);
+        return view('admin.logs', compact('logs'));
+    }
+
+    /**
+     * Exibir as configurações do sistema.
+     */
+    public function settings()
+    {
+        // Simulando parâmetros globais salvos em cache ou config
+        $settings = [
+            'app_name' => config('app.name'),
+            'gateway_asaas_key' => '*****_asaas_secret_key_*****',
+            'gateway_mercadopago_key' => '*****_mp_secret_key_*****',
+            'min_tickets' => 1,
+            'max_tickets' => 10,
+        ];
+        return view('admin.settings', compact('settings'));
+    }
+
+    /**
+     * Salvar/Atualizar configurações do sistema.
+     */
+    public function updateSettings(Request $request, \App\Actions\LogActivityAction $logActivity)
+    {
+        $request->validate([
+            'app_name' => 'required|string',
+            'min_tickets' => 'required|integer',
+            'max_tickets' => 'required|integer',
+        ]);
+
+        $logActivity->execute("Atualizou as configurações globais do sistema", json_encode($request->all()));
+
+        return redirect()->route('admin.settings')->with('success', 'Configurações atualizadas com sucesso (Simulado)!');
+    }
+
+    /**
+     * Listar todos os participantes (Gestão de Participantes).
+     */
+    public function participants()
+    {
+        $participants = User::where('role', 'cliente')
+            ->withCount('tickets')
+            ->orderBy('name', 'asc')
+            ->get();
+
+        return view('admin.participants', compact('participants'));
     }
 }

@@ -46,7 +46,7 @@
         </div>
 
         <!-- Navigation Links -->
-        <div class="flex-1 px-4 py-6 space-y-2">
+        <div class="flex-1 px-4 py-6 space-y-2 overflow-y-auto max-h-[calc(100vh-200px)]">
             <a href="{{ route('raffles.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition text-slate-400 hover:text-white hover:bg-slate-900/60 {{ Route::currentRouteName() == 'raffles.index' ? 'bg-slate-900 text-white border-l-4 border-blue-500' : '' }}">
                 <i class="fa-solid fa-car-side text-lg"></i>
                 <span class="font-medium text-sm">Ações / Rifas</span>
@@ -55,14 +55,30 @@
                 <i class="fa-solid fa-ticket text-lg"></i>
                 <span class="font-medium text-sm">Meus Bilhetes</span>
             </a>
-            <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition text-slate-400 hover:text-white hover:bg-slate-900/60 {{ Route::currentRouteName() == 'admin.dashboard' ? 'bg-slate-900 text-white border-l-4 border-blue-500' : '' }}">
-                <i class="fa-solid fa-chart-line text-lg"></i>
-                <span class="font-medium text-sm">Dashboard Admin</span>
+            <a href="{{ route('support.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition text-slate-400 hover:text-white hover:bg-slate-900/60 {{ Route::currentRouteName() == 'support.index' ? 'bg-slate-900 text-white border-l-4 border-blue-500' : '' }}">
+                <i class="fa-solid fa-headset text-lg"></i>
+                <span class="font-medium text-sm">Suporte / FAQs</span>
             </a>
-            <a href="{{ route('admin.raffles.create') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition text-slate-400 hover:text-white hover:bg-slate-900/60 {{ Route::currentRouteName() == 'admin.raffles.create' ? 'bg-slate-900 text-white border-l-4 border-blue-500' : '' }}">
-                <i class="fa-solid fa-circle-plus text-lg"></i>
-                <span class="font-medium text-sm">Nova Rifa</span>
-            </a>
+            
+            <div class="pt-4 border-t border-slate-900/80">
+                <span class="text-[10px] uppercase font-bold text-slate-500 px-4 block mb-2 tracking-wider">Painel Admin</span>
+                <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition text-slate-400 hover:text-white hover:bg-slate-900/60 {{ Route::currentRouteName() == 'admin.dashboard' ? 'bg-slate-900 text-white border-l-4 border-blue-500' : '' }}">
+                    <i class="fa-solid fa-chart-line text-lg"></i>
+                    <span class="font-medium text-sm">Estatísticas</span>
+                </a>
+                <a href="{{ route('admin.participants') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition text-slate-400 hover:text-white hover:bg-slate-900/60 {{ Route::currentRouteName() == 'admin.participants' ? 'bg-slate-900 text-white border-l-4 border-blue-500' : '' }}">
+                    <i class="fa-solid fa-users text-lg"></i>
+                    <span class="font-medium text-sm">Participantes</span>
+                </a>
+                <a href="{{ route('admin.logs') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition text-slate-400 hover:text-white hover:bg-slate-900/60 {{ Route::currentRouteName() == 'admin.logs' ? 'bg-slate-900 text-white border-l-4 border-blue-500' : '' }}">
+                    <i class="fa-solid fa-shield-halved text-lg"></i>
+                    <span class="font-medium text-sm">Auditoria logs</span>
+                </a>
+                <a href="{{ route('admin.settings') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition text-slate-400 hover:text-white hover:bg-slate-900/60 {{ Route::currentRouteName() == 'admin.settings' ? 'bg-slate-900 text-white border-l-4 border-blue-500' : '' }}">
+                    <i class="fa-solid fa-gears text-lg"></i>
+                    <span class="font-medium text-sm">Configurações</span>
+                </a>
+            </div>
         </div>
 
         <!-- User profile summary -->

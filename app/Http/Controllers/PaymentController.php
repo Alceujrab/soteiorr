@@ -31,9 +31,11 @@ class PaymentController extends Controller
     /**
      * Simular a aprovação do pagamento pelo gateway (PIX confirmado).
      */
-    public function confirm(Payment $payment, PaymentService $paymentService)
+    public function confirm(Payment $payment, PaymentService $paymentService, \App\Actions\LogActivityAction $logActivity)
     {
         $paymentService->confirmPayment($payment);
+
+        $logActivity->execute("Pagamento aprovado. ID Transação: {$payment->gateway_transaction_id}. Valor: R$ {$payment->amount}", json_encode($payment->toArray()));
 
         return redirect()->route('payments.show', $payment->id)
             ->with('success', 'Pagamento confirmado com sucesso! Seus bilhetes já são seus.');

@@ -8,20 +8,29 @@ Este arquivo serve como a única fonte de verdade sobre o estado atual do projet
   - [Ticket](file:///d:/sorteio/soteiorr/app/Models/Ticket.php) (Bilhetes)
   - [Payment](file:///d:/sorteio/soteiorr/app/Models/Payment.php) (Pagamentos/PIX)
   - [Draw](file:///d:/sorteio/soteiorr/app/Models/Draw.php) (Sorteios)
+  - [ActivityLog](file:///d:/sorteio/soteiorr/app/Models/ActivityLog.php) (Logs de Auditoria)
+  - [SupportTicket](file:///d:/sorteio/soteiorr/app/Models/SupportTicket.php) (Tickets de Suporte)
 - **Controllers & Rotas**:
   - [web.php](file:///d:/sorteio/soteiorr/routes/web.php) (Rotas)
   - [RaffleController](file:///d:/sorteio/soteiorr/app/Http/Controllers/RaffleController.php)
   - [PaymentController](file:///d:/sorteio/soteiorr/app/Http/Controllers/PaymentController.php)
   - [AdminController](file:///d:/sorteio/soteiorr/app/Http/Controllers/AdminController.php)
+  - [SupportController](file:///d:/sorteio/soteiorr/app/Http/Controllers/SupportController.php)
 - **Ações & Serviços**:
   - [ReserveTicketsAction](file:///d:/sorteio/soteiorr/app/Actions/ReserveTicketsAction.php) (Garante atomicidade na reserva)
   - [PaymentService](file:///d:/sorteio/soteiorr/app/Services/PaymentService.php) (Checkout PIX simulado e webhook)
+  - [LogActivityAction](file:///d:/sorteio/soteiorr/app/Actions/LogActivityAction.php) (Registrador de auditoria)
 - **Views (Blade)**:
   - [layout](file:///d:/sorteio/soteiorr/resources/views/layouts/app.blade.php) (Glassmorphism dark theme)
   - [index](file:///d:/sorteio/soteiorr/resources/views/raffles/index.blade.php)
   - [show](file:///d:/sorteio/soteiorr/resources/views/raffles/show.blade.php)
   - [checkout](file:///d:/sorteio/soteiorr/resources/views/payments/show.blade.php)
+  - [my_tickets](file:///d:/sorteio/soteiorr/resources/views/raffles/my_tickets.blade.php)
   - [admin dashboard](file:///d:/sorteio/soteiorr/resources/views/admin/dashboard.blade.php)
+  - [admin logs](file:///d:/sorteio/soteiorr/resources/views/admin/logs.blade.php) (Logs de compliance)
+  - [admin settings](file:///d:/sorteio/soteiorr/resources/views/admin/settings.blade.php) (Configurações globais)
+  - [admin participants](file:///d:/sorteio/soteiorr/resources/views/admin/participants.blade.php) (Gestão de participantes)
+  - [support index](file:///d:/sorteio/soteiorr/resources/views/support/index.blade.php) (FAQs e Abertura de tickets)
 
 ## 2. Status das Funcionalidades
 - [x] Inicialização do Laravel (Concluído)
@@ -29,11 +38,16 @@ Este arquivo serve como a única fonte de verdade sobre o estado atual do projet
 - [x] Módulo de Pagamentos / Checkout (Concluído)
 - [x] Compra de Números (Concluído)
 - [x] Painel do Administrador e Sorteios (Concluído)
+- [x] Histórico/Meus Bilhetes para Clientes (Concluído)
+- [x] Gestão de Participantes (Concluído)
+- [x] Auditoria e Compliance logs (Concluído)
+- [x] Configurações Globais (Concluído)
+- [x] Suporte e Tickets (Concluído)
 
 ## 3. Últimas Alterações Realizadas
-- Inicializado o projeto Laravel 13 e configurada a base de dados SQLite.
-- Criadas as migrações e modelos para `User`, `Raffle`, `Ticket`, `Payment` e `Draw`.
-- Implementados os padrões Service/Action para reservas seguras e checkout PIX.
-- Criada a interface frontend com Tailwind CSS e Glassmorphism.
-- Desenvolvido o Painel Admin para controle de KPIs e sorteio instantâneo.
-- Escritos testes automatizados em `tests/Feature/RaffleTest.php` e validados via PHPUnit.
+- Criadas as tabelas e migrações para logs de auditoria (`activity_logs`) e tickets de suporte (`support_tickets`).
+- Criados os modelos `ActivityLog` e `SupportTicket` com suas relações.
+- Criado o helper de auditoria `LogActivityAction` e acoplado na criação de rifas, sorteios e confirmações de pagamento.
+- Implementado o `SupportController` e tela de FAQ com formulário de envio de ticket de ajuda.
+- Adicionadas as telas administrativas de Logs de Auditoria, Configurações Globais (gateways e limites de cotas) e listagem/contador de cotas de Participantes.
+- Atualizados os links de navegação da sidebar principal e validados testes via PHPUnit.
