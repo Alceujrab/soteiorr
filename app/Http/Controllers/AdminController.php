@@ -198,4 +198,46 @@ class AdminController extends Controller
         $users = User::orderBy('name', 'asc')->get();
         return view('admin.users', compact('users'));
     }
+
+    /**
+     * Exibir o histórico de notificações e templates (Notificações e Comunicação).
+     */
+    public function notifications()
+    {
+        $logs = \App\Models\NotificationLog::with('user')->orderBy('created_at', 'desc')->paginate(15);
+        return view('admin.notifications', compact('logs'));
+    }
+
+    /**
+     * Enviar notificação em massa para os clientes cadastrados.
+     */
+    public function sendNotification(Request $request, \App\Actions\LogActivityAction $logActivity)
+    {
+        $request->validate([
+            'channel' => 'required|string',
+            'template_name' => 'required|string',
+            'message' => 'required|string',
+        ]);
+
+        // Selecionar todos os clientes cadastrados
+        $clients = User::where('role', 'cliente')->get();
+
+        if ($clients->isEmpty()) {
+            return redirect()->back()->withErrors(['error' => 'Nenhum cliente cadastrado para receber notificações.']);
+        }
+
+        foreach ($clients as $client) {
+            \App\Models\NotificationLog::create([
+                'user_id' => $client->id,
+                'channel' => $request->channel,
+                'template_name' => $request->template_name,
+                'message' => $request->message,
+                'status' => 'sent',
+            ]);
+        }
+
+        $logActivity->execute("Disparou notificação em massa via " . strtoupper($request->channel) . " sobre " . str_replace('_', ' ', $request->template_name));
+
+        return redirect()->route('admin.notifications')->with('success', 'Notificação enviada com sucesso para ' . $clients->count() . ' participantes!');
+    }
 }

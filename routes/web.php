@@ -43,6 +43,8 @@ Route::post('/admin/settings', [AdminController::class, 'updateSettings'])->name
 Route::get('/admin/participants', [AdminController::class, 'participants'])->name('admin.participants');
 Route::get('/admin/reports', [AdminController::class, 'reports'])->name('admin.reports');
 Route::get('/admin/users', [AdminController::class, 'users'])->name('admin.users');
+Route::get('/admin/notifications', [AdminController::class, 'notifications'])->name('admin.notifications');
+Route::post('/admin/notifications/send', [AdminController::class, 'sendNotification'])->name('admin.notifications.send');
 
 // Rotas de API e Webhooks
 use App\Http\Controllers\ApiController;
