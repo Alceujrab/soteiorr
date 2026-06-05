@@ -99,6 +99,9 @@
                     </button>
 
                     <a href="/" class="text-sm font-medium text-slate-300 hover:text-white transition">Rifas Ativas</a>
+                    <a href="{{ route('pages.about') }}" class="text-sm font-medium text-slate-300 hover:text-white transition">Sobre Nós</a>
+                    <a href="{{ route('pages.contact') }}" class="text-sm font-medium text-slate-300 hover:text-white transition">Contato</a>
+                    <a href="{{ route('pages.faqs') }}" class="text-sm font-medium text-slate-300 hover:text-white transition">Dúvidas</a>
                     @auth
                         @if(in_array(auth()->user()->role, ['cliente', 'vendedor']))
                             <a href="{{ route('customer.dashboard') }}" class="text-sm font-medium text-blue-400 hover:text-blue-300 transition flex items-center gap-1">
@@ -158,6 +161,18 @@
                 <i class="fa-solid fa-ticket text-lg"></i>
                 <span class="font-medium text-sm">Rifas Ativas</span>
             </a>
+            <a href="{{ route('pages.about') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:text-white hover:bg-slate-900/60 transition">
+                <i class="fa-solid fa-circle-info text-lg"></i>
+                <span class="font-medium text-sm">Sobre Nós</span>
+            </a>
+            <a href="{{ route('pages.contact') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:text-white hover:bg-slate-900/60 transition">
+                <i class="fa-solid fa-envelope text-lg"></i>
+                <span class="font-medium text-sm">Contato</span>
+            </a>
+            <a href="{{ route('pages.faqs') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:text-white hover:bg-slate-900/60 transition">
+                <i class="fa-solid fa-circle-question text-lg"></i>
+                <span class="font-medium text-sm">Dúvidas Frequentes</span>
+            </a>
             
             <div class="border-t my-4" style="border-color: var(--border-color);"></div>
 
@@ -216,9 +231,54 @@
     </main>
 
     <!-- Footer -->
-    <footer class="border-t py-8" style="background-color: var(--bg-sidebar); border-color: var(--border-color);">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-slate-500 text-sm">
-            <p>&copy; {{ date('Y') }} Ação RR Veículos Entre Amigos. Todos os direitos reservados.</p>
+    <footer class="border-t py-12" style="background-color: var(--bg-sidebar); border-color: var(--border-color);">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8 text-left">
+                <!-- Info Section -->
+                <div class="space-y-3">
+                    <h3 class="text-sm font-bold text-white uppercase tracking-wider">Ação RR Veículos</h3>
+                    <p class="text-xs text-slate-500 leading-relaxed">
+                        Sua plataforma premium de ações entre amigos e sorteios digitais. Concorra aos melhores veículos com segurança e total transparência.
+                    </p>
+                    <div class="text-xs text-slate-500 font-medium">
+                        <strong>RR Veículos Água Boa - MT</strong><br>
+                        CNPJ: 12.345.678/0001-90<br>
+                        Água Boa - MT
+                    </div>
+                </div>
+
+                <!-- Links Section -->
+                <div class="space-y-3">
+                    <h3 class="text-sm font-bold text-white uppercase tracking-wider">Navegação</h3>
+                    <ul class="space-y-2 text-xs text-slate-500">
+                        <li><a href="/" class="hover:text-white transition">Ações / Rifas Ativas</a></li>
+                        <li><a href="{{ route('pages.about') }}" class="hover:text-white transition">Sobre Nós</a></li>
+                        <li><a href="{{ route('pages.contact') }}" class="hover:text-white transition">Fale Conosco / Contato</a></li>
+                        <li><a href="{{ route('pages.faqs') }}" class="hover:text-white transition">Dúvidas Frequentes (FAQs)</a></li>
+                    </ul>
+                </div>
+
+                <!-- Legal Section -->
+                <div class="space-y-3">
+                    <h3 class="text-sm font-bold text-white uppercase tracking-wider">Termos e Regulamento</h3>
+                    <ul class="space-y-2 text-xs text-slate-500">
+                        <li><a href="{{ route('pages.privacy') }}" class="hover:text-white transition">Política de Privacidade</a></li>
+                        <li><a href="{{ route('pages.terms') }}" class="hover:text-white transition">Termos de Uso do Site</a></li>
+                        <li><a href="{{ route('raffles.validate-ticket') }}" class="hover:text-white transition">Validador de Bilhetes Online</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="border-t pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left text-xs text-slate-600" style="border-color: var(--border-color);">
+                <div>
+                    <p>&copy; 2026 RR Veículos Água Boa - MT. Todos os direitos reservados.</p>
+                    <p class="mt-1 text-[10px] text-slate-700">Proibido o uso de qualquer informação ou parte deste sem autorização.</p>
+                </div>
+                <div class="flex items-center gap-1 font-medium">
+                    <span>Desenvolvido por</span>
+                    <a href="https://cfauto.com.br" target="_blank" class="text-blue-500/80 hover:text-blue-400 font-bold transition">cfauto.com.br</a>
+                </div>
+            </div>
         </div>
     </footer>
 

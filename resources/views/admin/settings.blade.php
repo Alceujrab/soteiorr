@@ -199,6 +199,35 @@
                     <input type="text" name="google_maps_key" value="{{ $settings['google_maps_key'] }}" placeholder="AIzaSy..." class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none">
                 </div>
             </div>
+            
+            <!-- Gerenciamento de Páginas Institucionais -->
+            <div class="space-y-4 p-4 rounded-xl border" style="border-color: var(--border-color); background-color: rgba(15, 23, 42, 0.3);">
+                <h3 class="text-base font-bold text-white border-b pb-2 flex items-center gap-2" style="border-color: var(--border-color);">
+                    <i class="fa-solid fa-file-lines text-sm text-blue-400"></i> Páginas Institucionais (Conteúdo HTML)
+                </h3>
+                <div class="space-y-4">
+                    <div class="space-y-1.5">
+                        <label class="text-xs text-slate-400 font-semibold uppercase">Sobre Nós:</label>
+                        <textarea name="page_about_us" rows="4" placeholder="Código HTML para página Sobre Nós" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none font-mono">{{ $settings['page_about_us'] }}</textarea>
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="text-xs text-slate-400 font-semibold uppercase">Contato:</label>
+                        <textarea name="page_contact" rows="4" placeholder="Código HTML para página de Contato" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none font-mono">{{ $settings['page_contact'] }}</textarea>
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="text-xs text-slate-400 font-semibold uppercase">Dúvidas Frequentes (FAQs):</label>
+                        <textarea name="page_faqs" rows="4" placeholder="Código HTML para página de Dúvidas" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none font-mono">{{ $settings['page_faqs'] }}</textarea>
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="text-xs text-slate-400 font-semibold uppercase">Política de Privacidade:</label>
+                        <textarea name="page_privacy_policy" rows="4" placeholder="Código HTML para Política de Privacidade" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none font-mono">{{ $settings['page_privacy_policy'] }}</textarea>
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="text-xs text-slate-400 font-semibold uppercase">Termos de Uso:</label>
+                        <textarea name="page_terms_of_use" rows="4" placeholder="Código HTML para Termos de Uso" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none font-mono">{{ $settings['page_terms_of_use'] }}</textarea>
+                    </div>
+                </div>
+            </div>
 
             <button type="submit" class="w-full text-white font-semibold py-3.5 px-4 rounded-xl transition text-sm flex items-center justify-center gap-2 shadow-lg" style="background-color: var(--accent); hover:background-color: var(--accent-hover);">
                 <i class="fa-solid fa-circle-check"></i> Salvar Configurações

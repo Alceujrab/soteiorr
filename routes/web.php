@@ -47,6 +47,13 @@ Route::get('/payments/{payment}/receipt', [RaffleController::class, 'receipt'])-
 Route::get('/validate-ticket/{payment?}', [RaffleController::class, 'validateTicket'])->name('raffles.validate-ticket');
 Route::post('/validate-ticket', [RaffleController::class, 'validateTicketPost'])->name('raffles.validate-ticket-post');
 
+// Páginas Institucionais Dinâmicas
+Route::get('/sobre-nos', [RaffleController::class, 'about'])->name('pages.about');
+Route::get('/contato', [RaffleController::class, 'contact'])->name('pages.contact');
+Route::get('/duvidas', [RaffleController::class, 'faqs'])->name('pages.faqs');
+Route::get('/politica-de-privacidade', [RaffleController::class, 'privacy'])->name('pages.privacy');
+Route::get('/termos-de-uso', [RaffleController::class, 'terms'])->name('pages.terms');
+
 // Rotas Admin
 Route::get('/admin', [AdminController::class, 'dashboard'])->name('admin.dashboard');
 Route::get('/admin/raffles/create', [AdminController::class, 'createRaffle'])->name('admin.raffles.create');

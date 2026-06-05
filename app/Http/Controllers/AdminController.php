@@ -175,6 +175,13 @@ class AdminController extends Controller
             'santander_cert_path' => \App\Models\Setting::get('santander_cert_path', ''),
             'santander_key_path' => \App\Models\Setting::get('santander_key_path', ''),
             'santander_pix_key' => \App\Models\Setting::get('santander_pix_key', ''),
+
+            // Páginas Institucionais
+            'page_about_us' => \App\Models\Setting::get('page_about_us', '<h1>Sobre Nós</h1><p>A Ação RR Veículos é especialista em realizar sonhos através de ações entre amigos com prêmios de alta qualidade e veículos revisados e garantidos.</p>'),
+            'page_contact' => \App\Models\Setting::get('page_contact', '<h1>Contato</h1><p>Precisa de suporte? Entre em contato conosco pelo e-mail suporte@acaorrveiculos.com.br ou pelo nosso WhatsApp oficial.</p>'),
+            'page_faqs' => \App\Models\Setting::get('page_faqs', '<h1>Dúvidas Frequentes</h1><p>Veja as respostas para as perguntas mais comuns dos nossos participantes.</p>'),
+            'page_privacy_policy' => \App\Models\Setting::get('page_privacy_policy', '<h1>Política de Privacidade</h1><p>Sua privacidade é nossa prioridade. Coletamos e usamos dados apenas para o processamento seguro das cotas.</p>'),
+            'page_terms_of_use' => \App\Models\Setting::get('page_terms_of_use', '<h1>Termos de Uso</h1><p>Ao adquirir cotas na Ação RR Veículos, você concorda com o regulamento oficial do sorteio e com as regras gerais.</p>'),
         ];
         return view('admin.settings', compact('settings'));
     }
@@ -210,6 +217,12 @@ class AdminController extends Controller
             'santander_cert_path' => 'nullable|string',
             'santander_key_path' => 'nullable|string',
             'santander_pix_key' => 'nullable|string',
+
+            'page_about_us' => 'nullable|string',
+            'page_contact' => 'nullable|string',
+            'page_faqs' => 'nullable|string',
+            'page_privacy_policy' => 'nullable|string',
+            'page_terms_of_use' => 'nullable|string',
         ]);
 
         \App\Models\Setting::set('app_name', $request->app_name);
@@ -243,6 +256,12 @@ class AdminController extends Controller
         \App\Models\Setting::set('santander_cert_path', $request->santander_cert_path ?: '');
         \App\Models\Setting::set('santander_key_path', $request->santander_key_path ?: '');
         \App\Models\Setting::set('santander_pix_key', $request->santander_pix_key ?: '');
+
+        \App\Models\Setting::set('page_about_us', $request->page_about_us ?: '');
+        \App\Models\Setting::set('page_contact', $request->page_contact ?: '');
+        \App\Models\Setting::set('page_faqs', $request->page_faqs ?: '');
+        \App\Models\Setting::set('page_privacy_policy', $request->page_privacy_policy ?: '');
+        \App\Models\Setting::set('page_terms_of_use', $request->page_terms_of_use ?: '');
 
         config(['app.name' => $request->app_name]);
 

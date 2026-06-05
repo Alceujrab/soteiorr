@@ -215,4 +215,34 @@ class RaffleController extends Controller
         }
         return $clean[0] . str_repeat('*', 9) . $clean[10];
     }
+
+    public function about()
+    {
+        $content = \App\Models\Setting::get('page_about_us', '<h1>Sobre Nós</h1><p>A Ação RR Veículos é especialista em realizar sonhos através de ações entre amigos com prêmios de alta qualidade e veículos revisados e garantidos.</p>');
+        return view('pages.about', compact('content'));
+    }
+
+    public function contact()
+    {
+        $content = \App\Models\Setting::get('page_contact', '<h1>Contato</h1><p>Precisa de suporte? Entre em contato conosco pelo e-mail suporte@acaorrveiculos.com.br ou pelo nosso WhatsApp oficial.</p>');
+        return view('pages.contact', compact('content'));
+    }
+
+    public function faqs()
+    {
+        $content = \App\Models\Setting::get('page_faqs', '<h1>Dúvidas Frequentes</h1><p>Veja as respostas para as perguntas mais comuns dos nossos participantes.</p>');
+        return view('pages.faqs', compact('content'));
+    }
+
+    public function privacy()
+    {
+        $content = \App\Models\Setting::get('page_privacy_policy', '<h1>Política de Privacidade</h1><p>Sua privacidade é nossa prioridade. Coletamos e usamos dados apenas para o processamento seguro das cotas.</p>');
+        return view('pages.privacy', compact('content'));
+    }
+
+    public function terms()
+    {
+        $content = \App\Models\Setting::get('page_terms_of_use', '<h1>Termos de Uso</h1><p>Ao adquirir cotas na Ação RR Veículos, você concorda com o regulamento oficial do sorteio e com as regras gerais.</p>');
+        return view('pages.terms', compact('content'));
+    }
 }
