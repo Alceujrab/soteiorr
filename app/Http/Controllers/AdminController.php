@@ -345,8 +345,8 @@ class AdminController extends Controller
             ->get()
             ->map(function($user) {
                 // Calcular total pago estimado com base nos bilhetes
-                $totalSpent = Ticket::where('user_id', $user->id)
-                    ->where('status', 'paid')
+                $totalSpent = Ticket::where('tickets.user_id', $user->id)
+                    ->where('tickets.status', 'paid')
                     ->join('raffles', 'tickets.raffle_id', '=', 'raffles.id')
                     ->sum('raffles.price');
 
