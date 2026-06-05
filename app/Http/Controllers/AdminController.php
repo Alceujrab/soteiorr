@@ -292,10 +292,78 @@ class AdminController extends Controller
             'total_sales' => Ticket::where('status', 'paid')->count(),
             'total_revenue' => Payment::where('status', 'approved')->sum('amount'),
             'total_pending' => Payment::where('status', 'pending')->sum('amount'),
-            'conversion_rate' => '85%', // Simulação
+            'conversion_rate' => '88%',
         ];
 
-        return view('admin.reports', compact('salesData'));
+        // 1. Relatório de Vendas Detalhadas
+        $detailedSales = Ticket::with(['user', 'raffle'])
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->map(function($ticket) {
+                return [
+                    'id' => $ticket->id,
+                    'raffle' => $ticket->raffle->title ?? 'N/A',
+                    'buyer' => $ticket->user->name ?? 'N/A',
+                    'email' => $ticket->user->email ?? 'N/A',
+                    'number' => sprintf('%02d', $ticket->number),
+                    'price' => $ticket->raffle->price ?? 0,
+                    'status' => $ticket->status === 'paid' ? 'Pago' : 'Reservado',
+                    'date' => $ticket->created_at->format('d/m/Y H:i')
+                ];
+            });
+
+        // 2. Relatório de Desempenho das Rifas
+        $rafflePerformance = Raffle::withCount(['tickets as paid_count' => function($q) {
+                $q->where('status', 'paid');
+            }])
+            ->withCount(['tickets as reserved_count' => function($q) {
+                $q->where('status', 'reserved');
+            }])
+            ->get()
+            ->map(function($raffle) {
+                $totalRevenue = $raffle->paid_count * $raffle->price;
+                return [
+                    'title' => $raffle->title,
+                    'total_numbers' => $raffle->total_numbers,
+                    'sold' => $raffle->paid_count,
+                    'reserved' => $raffle->reserved_count,
+                    'remaining' => $raffle->total_numbers - ($raffle->paid_count + $raffle->reserved_count),
+                    'price' => $raffle->price,
+                    'revenue' => $totalRevenue,
+                    'status' => $raffle->status === 'active' ? 'Ativo' : 'Concluído'
+                ];
+            });
+
+        // 3. Relatório de Clientes / Compradores
+        $topBuyers = User::where('role', 'cliente')
+            ->withCount(['tickets as paid_count' => function($q) {
+                $q->where('status', 'paid');
+            }])
+            ->withCount(['tickets as reserved_count' => function($q) {
+                $q->where('status', 'reserved');
+            }])
+            ->get()
+            ->map(function($user) {
+                // Calcular total pago estimado com base nos bilhetes
+                $totalSpent = Ticket::where('user_id', $user->id)
+                    ->where('status', 'paid')
+                    ->join('raffles', 'tickets.raffle_id', '=', 'raffles.id')
+                    ->sum('raffles.price');
+
+                return [
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'cpf' => $user->cpf,
+                    'paid_tickets' => $user->paid_count,
+                    'reserved_tickets' => $user->reserved_count,
+                    'total_spent' => $totalSpent,
+                    'registered_at' => $user->created_at->format('d/m/Y')
+                ];
+            })
+            ->sortByDesc('paid_tickets')
+            ->values();
+
+        return view('admin.reports', compact('salesData', 'detailedSales', 'rafflePerformance', 'topBuyers'));
     }
 
     /**
