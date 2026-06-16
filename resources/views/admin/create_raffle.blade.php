@@ -65,10 +65,11 @@
                 </div>
             </div>
 
-            <!-- Upload da Imagem do Prêmio -->
+            <!-- Upload de Múltiplas Imagens do Prêmio -->
             <div class="space-y-1.5">
-                <label class="text-sm font-semibold text-slate-300">Imagem do Prêmio (Upload):</label>
-                <input type="file" name="image" accept="image/*" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-400 focus:outline-none focus:border-slate-700 file:mr-4 file:py-1 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-600/20 file:text-blue-400 hover:file:bg-blue-600/30">
+                <label class="text-sm font-semibold text-slate-300">Imagens do Prêmio (Upload - Selecione múltiplas se desejar):</label>
+                <input type="file" name="images[]" multiple accept="image/*" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-400 focus:outline-none focus:border-slate-700 file:mr-4 file:py-1 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-600/20 file:text-blue-400 hover:file:bg-blue-600/30">
+                <p class="text-[10px] text-slate-500">Dica: Selecione várias imagens ao mesmo tempo para criar uma galeria de fotos.</p>
             </div>
 
             <!-- Link do Vídeo do YouTube -->

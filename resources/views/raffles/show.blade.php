@@ -7,8 +7,33 @@
     <!-- Raffle Info (Left Column - 1 part) -->
     <div class="space-y-6 lg:col-span-1">
         <div class="glass-card rounded-2xl overflow-hidden">
-            <div class="h-64 bg-slate-950 relative">
-                <img src="{{ $raffle->image_url }}" alt="{{ $raffle->title }}" class="w-full h-full object-cover">
+            <div class="h-64 bg-slate-950 relative overflow-hidden group">
+                @php
+                    $images = !empty($raffle->images) && is_array($raffle->images) ? $raffle->images : [$raffle->image_url ?: 'https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?auto=format&fit=crop&w=800&q=80'];
+                @endphp
+                
+                <div class="w-full h-full flex transition-transform duration-500" id="carousel-slides" style="width: {{ count($images) * 100 }}%">
+                    @foreach($images as $image)
+                        <div class="w-full h-full flex-shrink-0 relative" style="width: calc(100% / {{ count($images) }})">
+                            <img src="{{ $image }}" alt="{{ $raffle->title }}" class="w-full h-full object-cover">
+                        </div>
+                    @endforeach
+                </div>
+
+                @if(count($images) > 1)
+                    <button onclick="prevSlide()" class="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/60 hover:bg-black/90 text-white flex items-center justify-center transition opacity-0 group-hover:opacity-100 z-10">
+                        <i class="fa-solid fa-chevron-left text-xs"></i>
+                    </button>
+                    <button onclick="nextSlide()" class="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/60 hover:bg-black/90 text-white flex items-center justify-center transition opacity-0 group-hover:opacity-100 z-10">
+                        <i class="fa-solid fa-chevron-right text-xs"></i>
+                    </button>
+                    
+                    <div class="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
+                        @foreach($images as $index => $image)
+                            <button onclick="setSlide({{ $index }})" class="w-2 h-2 rounded-full transition-all duration-300 carousel-dot {{ $index === 0 ? 'bg-[#aa7c11] scale-125' : 'bg-white/50' }}"></button>
+                        @endforeach
+                    </div>
+                @endif
             </div>
             <div class="p-6 space-y-6">
                 <div>
@@ -230,6 +255,43 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     updateAutoPrice();
+
+    // Carousel JS
+    @if(count($images) > 1)
+        let currentSlide = 0;
+        const slidesCount = {{ count($images) }};
+        
+        window.setSlide = function(index) {
+            if (index < 0 || index >= slidesCount) return;
+            currentSlide = index;
+            const slidesContainer = document.getElementById('carousel-slides');
+            const dots = document.querySelectorAll('.carousel-dot');
+            
+            slidesContainer.style.transform = `translateX(-${(currentSlide * 100) / slidesCount}%)`;
+            
+            dots.forEach((dot, idx) => {
+                if (idx === currentSlide) {
+                    dot.classList.remove('bg-white/50');
+                    dot.classList.add('bg-[#aa7c11]', 'scale-125');
+                } else {
+                    dot.classList.remove('bg-[#aa7c11]', 'scale-125');
+                    dot.classList.add('bg-white/50');
+                }
+            });
+        };
+
+        window.prevSlide = function() {
+            let prev = currentSlide - 1;
+            if (prev < 0) prev = slidesCount - 1;
+            setSlide(prev);
+        };
+
+        window.nextSlide = function() {
+            let next = currentSlide + 1;
+            if (next >= slidesCount) next = 0;
+            setSlide(next);
+        };
+    @endif
 });
 </script>
 @endsection

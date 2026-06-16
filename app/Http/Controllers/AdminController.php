@@ -68,15 +68,24 @@ class AdminController extends Controller
             'prize_name' => 'required|string|max:255',
             'prize_description' => 'nullable|string',
             'draw_date' => 'required|date',
-            'image' => 'nullable|image|max:4096',
+            'images' => 'nullable|array',
+            'images.*' => 'image|max:4096',
             'youtube_url' => 'nullable|url',
         ]);
 
-        $imageUrl = 'https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?auto=format&fit=crop&w=800&q=80';
-        if ($request->hasFile('image') && $request->file('image')->isValid()) {
-            $fileName = time().'_'.uniqid().'.'.$request->file('image')->getClientOriginalExtension();
-            $request->file('image')->move(public_path('uploads/raffles'), $fileName);
-            $imageUrl = '/uploads/raffles/'.$fileName;
+        $uploadedImages = [];
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $file) {
+                if ($file->isValid()) {
+                    $fileName = time().'_'.uniqid().'.'.$file->getClientOriginalExtension();
+                    $file->move(public_path('uploads/raffles'), $fileName);
+                    $uploadedImages[] = '/uploads/raffles/'.$fileName;
+                }
+            }
+        }
+
+        if (empty($uploadedImages)) {
+            $uploadedImages[] = 'https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?auto=format&fit=crop&w=800&q=80';
         }
 
         $raffle = Raffle::create([
@@ -88,7 +97,8 @@ class AdminController extends Controller
             'status' => 'active',
             'prize_name' => $request->prize_name,
             'prize_description' => $request->prize_description,
-            'image_url' => $imageUrl,
+            'image_url' => $uploadedImages[0],
+            'images' => $uploadedImages,
             'youtube_url' => $request->youtube_url,
             'draw_date' => $request->draw_date,
         ]);
@@ -96,6 +106,67 @@ class AdminController extends Controller
         $logActivity->execute("Criou a Rifa ID: {$raffle->id} - {$raffle->title}", json_encode($raffle->toArray()));
 
         return redirect()->route('admin.dashboard')->with('success', 'Rifa criada com sucesso!');
+    }
+
+    /**
+     * Exibir formulário de edição de uma rifa.
+     */
+    public function editRaffle(Raffle $raffle)
+    {
+        return view('admin.edit_raffle', compact('raffle'));
+    }
+
+    /**
+     * Atualizar rifa.
+     */
+    public function updateRaffle(Request $request, Raffle $raffle, LogActivityAction $logActivity)
+    {
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'price' => 'required|numeric|min:0.01',
+            'total_numbers' => 'required|integer|min:10',
+            'prize_name' => 'required|string|max:255',
+            'prize_description' => 'nullable|string',
+            'draw_date' => 'required|date',
+            'new_images' => 'nullable|array',
+            'new_images.*' => 'image|max:4096',
+            'existing_images' => 'nullable|array',
+            'youtube_url' => 'nullable|url',
+        ]);
+
+        $currentImages = $request->existing_images ?: [];
+
+        if ($request->hasFile('new_images')) {
+            foreach ($request->file('new_images') as $file) {
+                if ($file->isValid()) {
+                    $fileName = time().'_'.uniqid().'.'.$file->getClientOriginalExtension();
+                    $file->move(public_path('uploads/raffles'), $fileName);
+                    $currentImages[] = '/uploads/raffles/'.$fileName;
+                }
+            }
+        }
+
+        if (empty($currentImages)) {
+            $currentImages[] = 'https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?auto=format&fit=crop&w=800&q=80';
+        }
+
+        $raffle->update([
+            'title' => $request->title,
+            'description' => $request->description,
+            'price' => $request->price,
+            'total_numbers' => $request->total_numbers,
+            'prize_name' => $request->prize_name,
+            'prize_description' => $request->prize_description,
+            'image_url' => $currentImages[0],
+            'images' => $currentImages,
+            'youtube_url' => $request->youtube_url,
+            'draw_date' => $request->draw_date,
+        ]);
+
+        $logActivity->execute("Atualizou a Rifa ID: {$raffle->id} - {$raffle->title}", json_encode($raffle->toArray()));
+
+        return redirect()->route('admin.dashboard')->with('success', 'Rifa atualizada com sucesso!');
     }
 
     /**

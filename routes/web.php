@@ -3,11 +3,13 @@
 use Illuminate\Support\Facades\Route;
 
 Route::get('/simulate-login/{role}', function ($role) {
-    $user = \App\Models\User::where('role', $role)->first();
+    $user = User::where('role', $role)->first();
     if ($user) {
-        \Illuminate\Support\Facades\Auth::login($user);
-        return redirect()->back()->with('success', 'Perfil alterado para: ' . str_replace('_', ' ', $role));
+        Auth::login($user);
+
+        return redirect()->back()->with('success', 'Perfil alterado para: '.str_replace('_', ' ', $role));
     }
+
     return redirect()->back()->withErrors(['error' => 'Perfil não encontrado.']);
 })->name('simulate-login');
 
@@ -23,10 +25,9 @@ Route::get('/customer', function () {
     return redirect()->route('raffles.my-tickets');
 })->name('customer.dashboard');
 
-use App\Http\Controllers\RaffleController;
-use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\AdminController;
-
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\RaffleController;
 use App\Http\Controllers\SupportController;
 
 // Rotas Clientes
@@ -58,6 +59,8 @@ Route::get('/termos-de-uso', [RaffleController::class, 'terms'])->name('pages.te
 Route::get('/admin', [AdminController::class, 'dashboard'])->name('admin.dashboard');
 Route::get('/admin/raffles/create', [AdminController::class, 'createRaffle'])->name('admin.raffles.create');
 Route::post('/admin/raffles', [AdminController::class, 'storeRaffle'])->name('admin.raffles.store');
+Route::get('/admin/raffles/{raffle}/edit', [AdminController::class, 'editRaffle'])->name('admin.raffles.edit');
+Route::put('/admin/raffles/{raffle}', [AdminController::class, 'updateRaffle'])->name('admin.raffles.update');
 Route::get('/admin/raffles/{raffle}/draw', [AdminController::class, 'draw'])->name('admin.raffles.draw'); // Simulação
 Route::get('/admin/logs', [AdminController::class, 'logs'])->name('admin.logs');
 Route::get('/admin/settings', [AdminController::class, 'settings'])->name('admin.settings');
@@ -73,6 +76,8 @@ Route::post('/admin/banners/{banner}/toggle', [AdminController::class, 'toggleBa
 
 // Rotas de API e Webhooks
 use App\Http\Controllers\ApiController;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 Route::prefix('api')->group(function () {
     Route::get('/raffles', [ApiController::class, 'getRaffles'])->name('api.raffles');
@@ -80,5 +85,3 @@ Route::prefix('api')->group(function () {
     Route::post('/webhook/asaas', [ApiController::class, 'webhookAsaas'])->name('api.webhook.asaas');
     Route::post('/webhook/mercadopago', [ApiController::class, 'webhookMercadoPago'])->name('api.webhook.mercadopago');
 });
-
-

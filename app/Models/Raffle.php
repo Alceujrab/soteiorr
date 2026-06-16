@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 #[Fillable([
     'user_id', 'title', 'description', 'price', 'total_numbers',
-    'status', 'prize_name', 'prize_description', 'image_url',
+    'status', 'prize_name', 'prize_description', 'image_url', 'images',
     'youtube_url', 'draw_date', 'live_url',
 ])]
 class Raffle extends Model
@@ -18,6 +18,7 @@ class Raffle extends Model
             'draw_date' => 'datetime',
             'price' => 'decimal:2',
             'total_numbers' => 'integer',
+            'images' => 'array',
         ];
     }
 

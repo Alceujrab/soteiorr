@@ -152,16 +152,21 @@
                                     </span>
                                 </td>
                                 <td class="px-6 py-4">
-                                    @if($raffle->status === 'active')
-                                        <a href="{{ route('admin.raffles.draw', $raffle->id) }}" class="bg-amber-600 hover:bg-amber-500 text-amber-950 font-bold px-3 py-1.5 rounded-lg text-xs transition flex items-center gap-1.5 w-fit">
-                                            <i class="fa-solid fa-circle-play"></i> Realizar Sorteio
+                                    <div class="flex flex-wrap gap-2 items-center">
+                                        @if($raffle->status === 'active')
+                                            <a href="{{ route('admin.raffles.draw', $raffle->id) }}" class="bg-amber-600 hover:bg-amber-500 text-amber-950 font-bold px-3 py-1.5 rounded-lg text-xs transition flex items-center gap-1.5 w-fit">
+                                                <i class="fa-solid fa-circle-play"></i> Sorteio
+                                            </a>
+                                        @else
+                                            @php $raffle->load('draw'); @endphp
+                                            <div class="text-xs text-slate-400">
+                                                Ganhou: <strong class="text-white">{{ $raffle->draw?->winning_number }}</strong>
+                                            </div>
+                                        @endif
+                                        <a href="{{ route('admin.raffles.edit', $raffle->id) }}" class="bg-slate-800 hover:bg-slate-700 text-white font-semibold px-2.5 py-1.5 rounded-lg text-xs transition flex items-center gap-1.5 w-fit border border-slate-700">
+                                            <i class="fa-solid fa-pen-to-square"></i> Editar
                                         </a>
-                                    @else
-                                        @php $raffle->load('draw'); @endphp
-                                        <div class="text-xs text-slate-400">
-                                            Vencedor: <strong class="text-white">{{ $raffle->draw?->winning_number }}</strong>
-                                        </div>
-                                    @endif
+                                    </div>
                                 </td>
                             </tr>
                         @empty
