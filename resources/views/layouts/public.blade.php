@@ -14,17 +14,17 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* Tema Escuro: Ruby Crimson */
-            --bg-primary: #090d16;
-            --bg-sidebar: #020617;
-            --bg-card: rgba(30, 41, 59, 0.65);
-            --border-color: rgba(239, 68, 68, 0.22);
-            --text-primary: #f1f5f9;
-            --text-secondary: #94a3b8;
-            --accent: #ef4444;
-            --accent-hover: #dc2626;
-            --badge-bg: rgba(239, 68, 68, 0.1);
-            --badge-text: #ef4444;
+            /* Tema Escuro: Luxury Gold & Obsidian */
+            --bg-primary: #08080a;
+            --bg-sidebar: #020203;
+            --bg-card: rgba(22, 22, 26, 0.78);
+            --border-color: rgba(212, 175, 55, 0.22);
+            --text-primary: #f8fafc;
+            --text-secondary: #a1a1aa;
+            --accent: #d4af37;
+            --accent-hover: #bfa030;
+            --badge-bg: rgba(212, 175, 55, 0.12);
+            --badge-text: #d4af37;
         }
 
         body.light-theme {
