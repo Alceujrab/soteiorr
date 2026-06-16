@@ -50,6 +50,23 @@
                             <div class="text-xs mt-1">Ganhador: {{ $raffle->draw->winningUser->name }}</div>
                         </div>
                     @endif
+
+                    @php
+                        $videoId = '';
+                        if (!empty($raffle->youtube_url)) {
+                            if (preg_match('%(?:youtube(?:-nocookie)?\.com/(?:[^/]+/.+/|(?:v|e(?:mbed)?)/|watch\?v=)|youtu\.be/)([^"&?/ ]{11})%i', $raffle->youtube_url, $match)) {
+                                $videoId = $match[1];
+                            }
+                        }
+                    @endphp
+                    @if($videoId)
+                        <div class="border-t pt-4 space-y-2" style="border-color: var(--border-color);">
+                            <label class="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Vídeo de Apresentação:</label>
+                            <div class="relative w-full aspect-video rounded-xl overflow-hidden border" style="border-color: var(--border-color);">
+                                <iframe class="w-full h-full" src="https://www.youtube.com/embed/{{ $videoId }}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                            </div>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>

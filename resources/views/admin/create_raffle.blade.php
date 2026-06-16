@@ -20,7 +20,7 @@
             </p>
         </div>
 
-        <form action="{{ route('admin.raffles.store') }}" method="POST" class="space-y-5">
+        <form action="{{ route('admin.raffles.store') }}" method="POST" enctype="multipart/form-data" class="space-y-5">
             @csrf
 
             <!-- Título -->
@@ -65,13 +65,19 @@
                 </div>
             </div>
 
-            <!-- URL da Imagem -->
+            <!-- Upload da Imagem do Prêmio -->
             <div class="space-y-1.5">
-                <label class="text-sm font-semibold text-slate-300">URL da Imagem do Prêmio (Opcional):</label>
-                <input type="url" name="image_url" placeholder="https://images.unsplash.com/..." class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-slate-700">
+                <label class="text-sm font-semibold text-slate-300">Imagem do Prêmio (Upload):</label>
+                <input type="file" name="image" accept="image/*" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-400 focus:outline-none focus:border-slate-700 file:mr-4 file:py-1 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-600/20 file:text-blue-400 hover:file:bg-blue-600/30">
             </div>
 
-            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3.5 px-4 rounded-xl transition flex items-center justify-center gap-2">
+            <!-- Link do Vídeo do YouTube -->
+            <div class="space-y-1.5">
+                <label class="text-sm font-semibold text-slate-300">Link de Vídeo do YouTube (Opcional):</label>
+                <input type="url" name="youtube_url" placeholder="Ex: https://www.youtube.com/watch?v=dQw4w9WgXcQ" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-slate-700">
+            </div>
+
+            <button type="submit" class="w-full text-white font-bold py-3.5 px-4 rounded-xl transition flex items-center justify-center gap-2" style="background-color: var(--accent);">
                 <i class="fa-solid fa-plus-circle"></i> Salvar e Publicar Rifa
             </button>
         </form>

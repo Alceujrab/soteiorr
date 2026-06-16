@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\LogActivityAction;
+use App\Models\ActivityLog;
+use App\Models\Banner;
+use App\Models\Draw;
+use App\Models\NotificationLog;
+use App\Models\Payment;
 use App\Models\Raffle;
+use App\Models\Setting;
 use App\Models\Ticket;
 use App\Models\User;
-use App\Models\Payment;
-use App\Models\Draw;
-use App\Models\ActivityLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -20,7 +24,7 @@ class AdminController extends Controller
     public function dashboard()
     {
         // Simular login do admin de teste se não estiver logado
-        if (!Auth::check() || Auth::user()->role !== 'admin_organizador') {
+        if (! Auth::check() || Auth::user()->role !== 'admin_organizador') {
             $admin = User::where('role', 'admin_organizador')->first();
             if ($admin) {
                 Auth::login($admin);
@@ -34,11 +38,11 @@ class AdminController extends Controller
             'active_raffles' => Raffle::where('status', 'active')->count(),
         ];
 
-        $raffles = Raffle::withCount(['tickets' => function($q) {
+        $raffles = Raffle::withCount(['tickets' => function ($q) {
             $q->where('status', 'paid');
         }])->get();
 
-        $banners = \App\Models\Banner::orderBy('created_at', 'desc')->get();
+        $banners = Banner::orderBy('created_at', 'desc')->get();
 
         return view('admin.dashboard', compact('kpis', 'raffles', 'banners'));
     }
@@ -54,7 +58,7 @@ class AdminController extends Controller
     /**
      * Salvar nova rifa.
      */
-    public function storeRaffle(Request $request, \App\Actions\LogActivityAction $logActivity)
+    public function storeRaffle(Request $request, LogActivityAction $logActivity)
     {
         $request->validate([
             'title' => 'required|string|max:255',
@@ -64,8 +68,16 @@ class AdminController extends Controller
             'prize_name' => 'required|string|max:255',
             'prize_description' => 'nullable|string',
             'draw_date' => 'required|date',
-            'image_url' => 'nullable|url',
+            'image' => 'nullable|image|max:4096',
+            'youtube_url' => 'nullable|url',
         ]);
+
+        $imageUrl = 'https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?auto=format&fit=crop&w=800&q=80';
+        if ($request->hasFile('image') && $request->file('image')->isValid()) {
+            $fileName = time().'_'.uniqid().'.'.$request->file('image')->getClientOriginalExtension();
+            $request->file('image')->move(public_path('uploads/raffles'), $fileName);
+            $imageUrl = '/uploads/raffles/'.$fileName;
+        }
 
         $raffle = Raffle::create([
             'user_id' => Auth::id() ?: User::where('role', 'admin_organizador')->first()->id,
@@ -76,7 +88,8 @@ class AdminController extends Controller
             'status' => 'active',
             'prize_name' => $request->prize_name,
             'prize_description' => $request->prize_description,
-            'image_url' => $request->image_url ?: 'https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?auto=format&fit=crop&w=800&q=80',
+            'image_url' => $imageUrl,
+            'youtube_url' => $request->youtube_url,
             'draw_date' => $request->draw_date,
         ]);
 
@@ -88,7 +101,7 @@ class AdminController extends Controller
     /**
      * Realizar sorteio de forma aleatória entre os bilhetes pagos.
      */
-    public function draw(Raffle $raffle, \App\Actions\LogActivityAction $logActivity)
+    public function draw(Raffle $raffle, LogActivityAction $logActivity)
     {
         if ($raffle->status === 'completed') {
             return redirect()->back()->withErrors(['error' => 'Esta rifa já foi sorteada.']);
@@ -112,7 +125,7 @@ class AdminController extends Controller
                 'winning_number' => $winnerTicket->number,
                 'winning_ticket_id' => $winnerTicket->id,
                 'winning_user_id' => $winnerTicket->user_id,
-                'live_url' => 'https://youtube.com/live/mock_' . uniqid(),
+                'live_url' => 'https://youtube.com/live/mock_'.uniqid(),
                 'drawn_at' => now(),
             ]);
 
@@ -121,7 +134,7 @@ class AdminController extends Controller
             $logActivity->execute("Realizou o sorteio da Rifa ID: {$raffle->id}. Vencedor: número {$winnerTicket->number}", json_encode($draw->toArray()));
         });
 
-        return redirect()->route('admin.dashboard')->with('success', 'Sorteio realizado com sucesso! O vencedor foi o número: ' . $winnerTicket->number);
+        return redirect()->route('admin.dashboard')->with('success', 'Sorteio realizado com sucesso! O vencedor foi o número: '.$winnerTicket->number);
     }
 
     /**
@@ -130,6 +143,7 @@ class AdminController extends Controller
     public function logs()
     {
         $logs = ActivityLog::with('user')->orderBy('created_at', 'desc')->paginate(15);
+
         return view('admin.logs', compact('logs'));
     }
 
@@ -139,57 +153,58 @@ class AdminController extends Controller
     public function settings()
     {
         $settings = [
-            'app_name' => \App\Models\Setting::get('app_name', config('app.name')),
-            'gateway_asaas_key' => \App\Models\Setting::get('gateway_asaas_key', ''),
-            'gateway_mercadopago_key' => \App\Models\Setting::get('gateway_mercadopago_key', ''),
-            'min_tickets' => \App\Models\Setting::get('min_tickets', 1),
-            'max_tickets' => \App\Models\Setting::get('max_tickets', 10),
-            'show_sold_qty' => \App\Models\Setting::get('show_sold_qty', '1'),
-            
+            'app_name' => Setting::get('app_name', config('app.name')),
+            'gateway_asaas_key' => Setting::get('gateway_asaas_key', ''),
+            'gateway_mercadopago_key' => Setting::get('gateway_mercadopago_key', ''),
+            'min_tickets' => Setting::get('min_tickets', 1),
+            'max_tickets' => Setting::get('max_tickets', 10),
+            'show_sold_qty' => Setting::get('show_sold_qty', '1'),
+
             // Google reCAPTCHA
-            'recaptcha_enabled' => \App\Models\Setting::get('recaptcha_enabled', '0'),
-            'recaptcha_site_key' => \App\Models\Setting::get('recaptcha_site_key', ''),
-            'recaptcha_secret_key' => \App\Models\Setting::get('recaptcha_secret_key', ''),
-            
+            'recaptcha_enabled' => Setting::get('recaptcha_enabled', '0'),
+            'recaptcha_site_key' => Setting::get('recaptcha_site_key', ''),
+            'recaptcha_secret_key' => Setting::get('recaptcha_secret_key', ''),
+
             // Google Login
-            'google_login_enabled' => \App\Models\Setting::get('google_login_enabled', '0'),
-            'google_client_id' => \App\Models\Setting::get('google_client_id', ''),
-            'google_client_secret' => \App\Models\Setting::get('google_client_secret', ''),
-            
+            'google_login_enabled' => Setting::get('google_login_enabled', '0'),
+            'google_client_id' => Setting::get('google_client_id', ''),
+            'google_client_secret' => Setting::get('google_client_secret', ''),
+
             // Google Maps
-            'google_maps_enabled' => \App\Models\Setting::get('google_maps_enabled', '0'),
-            'google_maps_key' => \App\Models\Setting::get('google_maps_key', ''),
+            'google_maps_enabled' => Setting::get('google_maps_enabled', '0'),
+            'google_maps_key' => Setting::get('google_maps_key', ''),
 
             // Itaú API Pix Direct
-            'itau_enabled' => \App\Models\Setting::get('itau_enabled', '0'),
-            'itau_client_id' => \App\Models\Setting::get('itau_client_id', ''),
-            'itau_client_secret' => \App\Models\Setting::get('itau_client_secret', ''),
-            'itau_cert_path' => \App\Models\Setting::get('itau_cert_path', ''),
-            'itau_key_path' => \App\Models\Setting::get('itau_key_path', ''),
-            'itau_pix_key' => \App\Models\Setting::get('itau_pix_key', ''),
+            'itau_enabled' => Setting::get('itau_enabled', '0'),
+            'itau_client_id' => Setting::get('itau_client_id', ''),
+            'itau_client_secret' => Setting::get('itau_client_secret', ''),
+            'itau_cert_path' => Setting::get('itau_cert_path', ''),
+            'itau_key_path' => Setting::get('itau_key_path', ''),
+            'itau_pix_key' => Setting::get('itau_pix_key', ''),
 
             // Santander API Pix Direct
-            'santander_enabled' => \App\Models\Setting::get('santander_enabled', '0'),
-            'santander_client_id' => \App\Models\Setting::get('santander_client_id', ''),
-            'santander_client_secret' => \App\Models\Setting::get('santander_client_secret', ''),
-            'santander_cert_path' => \App\Models\Setting::get('santander_cert_path', ''),
-            'santander_key_path' => \App\Models\Setting::get('santander_key_path', ''),
-            'santander_pix_key' => \App\Models\Setting::get('santander_pix_key', ''),
+            'santander_enabled' => Setting::get('santander_enabled', '0'),
+            'santander_client_id' => Setting::get('santander_client_id', ''),
+            'santander_client_secret' => Setting::get('santander_client_secret', ''),
+            'santander_cert_path' => Setting::get('santander_cert_path', ''),
+            'santander_key_path' => Setting::get('santander_key_path', ''),
+            'santander_pix_key' => Setting::get('santander_pix_key', ''),
 
             // Páginas Institucionais
-            'page_about_us' => \App\Models\Setting::get('page_about_us', '<h1>Sobre Nós</h1><p>A Ação RR Veículos é especialista em realizar sonhos através de ações entre amigos com prêmios de alta qualidade e veículos revisados e garantidos.</p>'),
-            'page_contact' => \App\Models\Setting::get('page_contact', '<h1>Contato</h1><p>Precisa de suporte? Entre em contato conosco pelo e-mail suporte@acaorrveiculos.com.br ou pelo nosso WhatsApp oficial.</p>'),
-            'page_faqs' => \App\Models\Setting::get('page_faqs', '<h1>Dúvidas Frequentes</h1><p>Veja as respostas para as perguntas mais comuns dos nossos participantes.</p>'),
-            'page_privacy_policy' => \App\Models\Setting::get('page_privacy_policy', '<h1>Política de Privacidade</h1><p>Sua privacidade é nossa prioridade. Coletamos e usamos dados apenas para o processamento seguro das cotas.</p>'),
-            'page_terms_of_use' => \App\Models\Setting::get('page_terms_of_use', '<h1>Termos de Uso</h1><p>Ao adquirir cotas na Ação RR Veículos, você concorda com o regulamento oficial do sorteio e com as regras gerais.</p>'),
+            'page_about_us' => Setting::get('page_about_us', '<h1>Sobre Nós</h1><p>A Ação RR Veículos é especialista em realizar sonhos através de ações entre amigos com prêmios de alta qualidade e veículos revisados e garantidos.</p>'),
+            'page_contact' => Setting::get('page_contact', '<h1>Contato</h1><p>Precisa de suporte? Entre em contato conosco pelo e-mail suporte@acaorrveiculos.com.br ou pelo nosso WhatsApp oficial.</p>'),
+            'page_faqs' => Setting::get('page_faqs', '<h1>Dúvidas Frequentes</h1><p>Veja as respostas para as perguntas mais comuns dos nossos participantes.</p>'),
+            'page_privacy_policy' => Setting::get('page_privacy_policy', '<h1>Política de Privacidade</h1><p>Sua privacidade é nossa prioridade. Coletamos e usamos dados apenas para o processamento seguro das cotas.</p>'),
+            'page_terms_of_use' => Setting::get('page_terms_of_use', '<h1>Termos de Uso</h1><p>Ao adquirir cotas na Ação RR Veículos, você concorda com o regulamento oficial do sorteio e com as regras gerais.</p>'),
         ];
+
         return view('admin.settings', compact('settings'));
     }
 
     /**
      * Salvar/Atualizar configurações do sistema.
      */
-    public function updateSettings(Request $request, \App\Actions\LogActivityAction $logActivity)
+    public function updateSettings(Request $request, LogActivityAction $logActivity)
     {
         $request->validate([
             'app_name' => 'required|string',
@@ -197,13 +212,13 @@ class AdminController extends Controller
             'max_tickets' => 'required|integer',
             'gateway_asaas_key' => 'nullable|string',
             'gateway_mercadopago_key' => 'nullable|string',
-            
+
             'recaptcha_site_key' => 'nullable|string',
             'recaptcha_secret_key' => 'nullable|string',
-            
+
             'google_client_id' => 'nullable|string',
             'google_client_secret' => 'nullable|string',
-            
+
             'google_maps_key' => 'nullable|string',
 
             'itau_client_id' => 'nullable|string',
@@ -225,47 +240,47 @@ class AdminController extends Controller
             'page_terms_of_use' => 'nullable|string',
         ]);
 
-        \App\Models\Setting::set('app_name', $request->app_name);
-        \App\Models\Setting::set('min_tickets', $request->min_tickets);
-        \App\Models\Setting::set('max_tickets', $request->max_tickets);
-        \App\Models\Setting::set('gateway_asaas_key', $request->gateway_asaas_key ?: '');
-        \App\Models\Setting::set('gateway_mercadopago_key', $request->gateway_mercadopago_key ?: '');
-        \App\Models\Setting::set('show_sold_qty', $request->has('show_sold_qty') ? '1' : '0');
-        
-        \App\Models\Setting::set('recaptcha_enabled', $request->has('recaptcha_enabled') ? '1' : '0');
-        \App\Models\Setting::set('recaptcha_site_key', $request->recaptcha_site_key ?: '');
-        \App\Models\Setting::set('recaptcha_secret_key', $request->recaptcha_secret_key ?: '');
-        
-        \App\Models\Setting::set('google_login_enabled', $request->has('google_login_enabled') ? '1' : '0');
-        \App\Models\Setting::set('google_client_id', $request->google_client_id ?: '');
-        \App\Models\Setting::set('google_client_secret', $request->google_client_secret ?: '');
-        
-        \App\Models\Setting::set('google_maps_enabled', $request->has('google_maps_enabled') ? '1' : '0');
-        \App\Models\Setting::set('google_maps_key', $request->google_maps_key ?: '');
+        Setting::set('app_name', $request->app_name);
+        Setting::set('min_tickets', $request->min_tickets);
+        Setting::set('max_tickets', $request->max_tickets);
+        Setting::set('gateway_asaas_key', $request->gateway_asaas_key ?: '');
+        Setting::set('gateway_mercadopago_key', $request->gateway_mercadopago_key ?: '');
+        Setting::set('show_sold_qty', $request->has('show_sold_qty') ? '1' : '0');
 
-        \App\Models\Setting::set('itau_enabled', $request->has('itau_enabled') ? '1' : '0');
-        \App\Models\Setting::set('itau_client_id', $request->itau_client_id ?: '');
-        \App\Models\Setting::set('itau_client_secret', $request->itau_client_secret ?: '');
-        \App\Models\Setting::set('itau_cert_path', $request->itau_cert_path ?: '');
-        \App\Models\Setting::set('itau_key_path', $request->itau_key_path ?: '');
-        \App\Models\Setting::set('itau_pix_key', $request->itau_pix_key ?: '');
+        Setting::set('recaptcha_enabled', $request->has('recaptcha_enabled') ? '1' : '0');
+        Setting::set('recaptcha_site_key', $request->recaptcha_site_key ?: '');
+        Setting::set('recaptcha_secret_key', $request->recaptcha_secret_key ?: '');
 
-        \App\Models\Setting::set('santander_enabled', $request->has('santander_enabled') ? '1' : '0');
-        \App\Models\Setting::set('santander_client_id', $request->santander_client_id ?: '');
-        \App\Models\Setting::set('santander_client_secret', $request->santander_client_secret ?: '');
-        \App\Models\Setting::set('santander_cert_path', $request->santander_cert_path ?: '');
-        \App\Models\Setting::set('santander_key_path', $request->santander_key_path ?: '');
-        \App\Models\Setting::set('santander_pix_key', $request->santander_pix_key ?: '');
+        Setting::set('google_login_enabled', $request->has('google_login_enabled') ? '1' : '0');
+        Setting::set('google_client_id', $request->google_client_id ?: '');
+        Setting::set('google_client_secret', $request->google_client_secret ?: '');
 
-        \App\Models\Setting::set('page_about_us', $request->page_about_us ?: '');
-        \App\Models\Setting::set('page_contact', $request->page_contact ?: '');
-        \App\Models\Setting::set('page_faqs', $request->page_faqs ?: '');
-        \App\Models\Setting::set('page_privacy_policy', $request->page_privacy_policy ?: '');
-        \App\Models\Setting::set('page_terms_of_use', $request->page_terms_of_use ?: '');
+        Setting::set('google_maps_enabled', $request->has('google_maps_enabled') ? '1' : '0');
+        Setting::set('google_maps_key', $request->google_maps_key ?: '');
+
+        Setting::set('itau_enabled', $request->has('itau_enabled') ? '1' : '0');
+        Setting::set('itau_client_id', $request->itau_client_id ?: '');
+        Setting::set('itau_client_secret', $request->itau_client_secret ?: '');
+        Setting::set('itau_cert_path', $request->itau_cert_path ?: '');
+        Setting::set('itau_key_path', $request->itau_key_path ?: '');
+        Setting::set('itau_pix_key', $request->itau_pix_key ?: '');
+
+        Setting::set('santander_enabled', $request->has('santander_enabled') ? '1' : '0');
+        Setting::set('santander_client_id', $request->santander_client_id ?: '');
+        Setting::set('santander_client_secret', $request->santander_client_secret ?: '');
+        Setting::set('santander_cert_path', $request->santander_cert_path ?: '');
+        Setting::set('santander_key_path', $request->santander_key_path ?: '');
+        Setting::set('santander_pix_key', $request->santander_pix_key ?: '');
+
+        Setting::set('page_about_us', $request->page_about_us ?: '');
+        Setting::set('page_contact', $request->page_contact ?: '');
+        Setting::set('page_faqs', $request->page_faqs ?: '');
+        Setting::set('page_privacy_policy', $request->page_privacy_policy ?: '');
+        Setting::set('page_terms_of_use', $request->page_terms_of_use ?: '');
 
         config(['app.name' => $request->app_name]);
 
-        $logActivity->execute("Atualizou as configurações globais do sistema", json_encode($request->all()));
+        $logActivity->execute('Atualizou as configurações globais do sistema', json_encode($request->all()));
 
         return redirect()->route('admin.settings')->with('success', 'Configurações atualizadas com sucesso!');
     }
@@ -299,7 +314,7 @@ class AdminController extends Controller
         $detailedSales = Ticket::with(['user', 'raffle'])
             ->orderBy('created_at', 'desc')
             ->get()
-            ->map(function($ticket) {
+            ->map(function ($ticket) {
                 return [
                     'id' => $ticket->id,
                     'raffle' => $ticket->raffle->title ?? 'N/A',
@@ -308,20 +323,21 @@ class AdminController extends Controller
                     'number' => sprintf('%02d', $ticket->number),
                     'price' => $ticket->raffle->price ?? 0,
                     'status' => $ticket->status === 'paid' ? 'Pago' : 'Reservado',
-                    'date' => $ticket->created_at->format('d/m/Y H:i')
+                    'date' => $ticket->created_at->format('d/m/Y H:i'),
                 ];
             });
 
         // 2. Relatório de Desempenho das Rifas
-        $rafflePerformance = Raffle::withCount(['tickets as paid_count' => function($q) {
-                $q->where('status', 'paid');
-            }])
-            ->withCount(['tickets as reserved_count' => function($q) {
+        $rafflePerformance = Raffle::withCount(['tickets as paid_count' => function ($q) {
+            $q->where('status', 'paid');
+        }])
+            ->withCount(['tickets as reserved_count' => function ($q) {
                 $q->where('status', 'reserved');
             }])
             ->get()
-            ->map(function($raffle) {
+            ->map(function ($raffle) {
                 $totalRevenue = $raffle->paid_count * $raffle->price;
+
                 return [
                     'title' => $raffle->title,
                     'total_numbers' => $raffle->total_numbers,
@@ -330,20 +346,20 @@ class AdminController extends Controller
                     'remaining' => $raffle->total_numbers - ($raffle->paid_count + $raffle->reserved_count),
                     'price' => $raffle->price,
                     'revenue' => $totalRevenue,
-                    'status' => $raffle->status === 'active' ? 'Ativo' : 'Concluído'
+                    'status' => $raffle->status === 'active' ? 'Ativo' : 'Concluído',
                 ];
             });
 
         // 3. Relatório de Clientes / Compradores
         $topBuyers = User::where('role', 'cliente')
-            ->withCount(['tickets as paid_count' => function($q) {
+            ->withCount(['tickets as paid_count' => function ($q) {
                 $q->where('status', 'paid');
             }])
-            ->withCount(['tickets as reserved_count' => function($q) {
+            ->withCount(['tickets as reserved_count' => function ($q) {
                 $q->where('status', 'reserved');
             }])
             ->get()
-            ->map(function($user) {
+            ->map(function ($user) {
                 // Calcular total pago estimado com base nos bilhetes
                 $totalSpent = Ticket::where('tickets.user_id', $user->id)
                     ->where('tickets.status', 'paid')
@@ -357,7 +373,7 @@ class AdminController extends Controller
                     'paid_tickets' => $user->paid_count,
                     'reserved_tickets' => $user->reserved_count,
                     'total_spent' => $totalSpent,
-                    'registered_at' => $user->created_at->format('d/m/Y')
+                    'registered_at' => $user->created_at->format('d/m/Y'),
                 ];
             })
             ->sortByDesc('paid_tickets')
@@ -372,6 +388,7 @@ class AdminController extends Controller
     public function users()
     {
         $users = User::orderBy('name', 'asc')->get();
+
         return view('admin.users', compact('users'));
     }
 
@@ -380,14 +397,15 @@ class AdminController extends Controller
      */
     public function notifications()
     {
-        $logs = \App\Models\NotificationLog::with('user')->orderBy('created_at', 'desc')->paginate(15);
+        $logs = NotificationLog::with('user')->orderBy('created_at', 'desc')->paginate(15);
+
         return view('admin.notifications', compact('logs'));
     }
 
     /**
      * Enviar notificação em massa para os clientes cadastrados.
      */
-    public function sendNotification(Request $request, \App\Actions\LogActivityAction $logActivity)
+    public function sendNotification(Request $request, LogActivityAction $logActivity)
     {
         $request->validate([
             'channel' => 'required|string',
@@ -403,7 +421,7 @@ class AdminController extends Controller
         }
 
         foreach ($clients as $client) {
-            \App\Models\NotificationLog::create([
+            NotificationLog::create([
                 'user_id' => $client->id,
                 'channel' => $request->channel,
                 'template_name' => $request->template_name,
@@ -412,15 +430,15 @@ class AdminController extends Controller
             ]);
         }
 
-        $logActivity->execute("Disparou notificação em massa via " . strtoupper($request->channel) . " sobre " . str_replace('_', ' ', $request->template_name));
+        $logActivity->execute('Disparou notificação em massa via '.strtoupper($request->channel).' sobre '.str_replace('_', ' ', $request->template_name));
 
-        return redirect()->route('admin.notifications')->with('success', 'Notificação enviada com sucesso para ' . $clients->count() . ' participantes!');
+        return redirect()->route('admin.notifications')->with('success', 'Notificação enviada com sucesso para '.$clients->count().' participantes!');
     }
 
     /**
      * Gerar banner com Inteligência Artificial baseado em prompt.
      */
-    public function generateBannerAI(Request $request, \App\Actions\LogActivityAction $logActivity)
+    public function generateBannerAI(Request $request, LogActivityAction $logActivity)
     {
         $request->validate([
             'prompt' => 'required|string',
@@ -430,14 +448,14 @@ class AdminController extends Controller
 
         // Simulação de geração via IA DALL-E / Stability
         // Geramos uma imagem conceitual real baseada no prompt
-        $generatedUrl = "https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?auto=format&fit=crop&w=1200&q=80&sig=" . rand(1, 100000);
+        $generatedUrl = 'https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?auto=format&fit=crop&w=1200&q=80&sig='.rand(1, 100000);
         if (str_contains(strtolower($request->prompt), 'mustang') || str_contains(strtolower($request->prompt), 'carro')) {
-            $generatedUrl = "https://images.unsplash.com/photo-1583121274602-3e2820c69888?auto=format&fit=crop&w=1200&q=80&sig=" . rand(1, 100000);
+            $generatedUrl = 'https://images.unsplash.com/photo-1583121274602-3e2820c69888?auto=format&fit=crop&w=1200&q=80&sig='.rand(1, 100000);
         } elseif (str_contains(strtolower($request->prompt), 'moto')) {
-            $generatedUrl = "https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&w=1200&q=80&sig=" . rand(1, 100000);
+            $generatedUrl = 'https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&w=1200&q=80&sig='.rand(1, 100000);
         }
 
-        $banner = \App\Models\Banner::create([
+        $banner = Banner::create([
             'title' => $request->title,
             'subtitle' => $request->subtitle,
             'image_url' => $generatedUrl,
@@ -453,7 +471,7 @@ class AdminController extends Controller
     /**
      * Cadastrar banner manualmente.
      */
-    public function storeBanner(Request $request, \App\Actions\LogActivityAction $logActivity)
+    public function storeBanner(Request $request, LogActivityAction $logActivity)
     {
         $request->validate([
             'title' => 'required|string|max:255',
@@ -461,7 +479,7 @@ class AdminController extends Controller
             'image_url' => 'required|url',
         ]);
 
-        $banner = \App\Models\Banner::create([
+        $banner = Banner::create([
             'title' => $request->title,
             'subtitle' => $request->subtitle,
             'image_url' => $request->image_url,
@@ -476,13 +494,13 @@ class AdminController extends Controller
     /**
      * Ativar/Desativar um banner.
      */
-    public function toggleBanner(\App\Models\Banner $banner, \App\Actions\LogActivityAction $logActivity)
+    public function toggleBanner(Banner $banner, LogActivityAction $logActivity)
     {
         $banner->update([
-            'active' => !$banner->active,
+            'active' => ! $banner->active,
         ]);
 
-        $logActivity->execute("Alterou status do banner ID: {$banner->id} para " . ($banner->active ? 'Ativo' : 'Inativo'));
+        $logActivity->execute("Alterou status do banner ID: {$banner->id} para ".($banner->active ? 'Ativo' : 'Inativo'));
 
         return redirect()->route('admin.dashboard')->with('success', 'Status do banner alterado com sucesso!');
     }
