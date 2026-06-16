@@ -20,13 +20,13 @@
             --bg-primary: #08080a;
             --bg-sidebar: #020203;
             --bg-card: rgba(22, 22, 26, 0.78);
-            --border-color: rgba(212, 175, 55, 0.22);
+            --border-color: rgba(170, 124, 17, 0.22);
             --text-primary: #f8fafc;
             --text-secondary: #a1a1aa;
-            --accent: #d4af37;
-            --accent-hover: #bfa030;
-            --badge-bg: rgba(212, 175, 55, 0.12);
-            --badge-text: #d4af37;
+            --accent: #aa7c11;
+            --accent-hover: #8c6212;
+            --badge-bg: rgba(170, 124, 17, 0.12);
+            --badge-text: #aa7c11;
         }
 
         body.light-theme {

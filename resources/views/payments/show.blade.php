@@ -25,7 +25,7 @@
                 <span class="text-slate-400">Bilhetes Escolhidos:</span>
                 <div class="flex flex-wrap gap-1 justify-end max-w-xs">
                     @foreach($payment->tickets as $ticket)
-                        <span class="px-2 py-0.5 bg-slate-800 text-slate-300 rounded text-xs font-semibold">
+                        <span class="px-2 py-0.5 bg-white text-black border border-slate-200 rounded text-xs font-bold">
                             {{ sprintf('%02d', $ticket->number) }}
                         </span>
                     @endforeach

@@ -58,9 +58,9 @@
                     <div class="text-xs text-slate-400 font-semibold mb-2">Suas Cotas Selecionadas:</div>
                     <div class="grid grid-cols-4 sm:grid-cols-8 md:grid-cols-12 gap-3">
                         @foreach($raffleTickets as $t)
-                            <div class="p-3 border rounded-xl flex flex-col items-center justify-center gap-1 select-none {{ $t->status === 'paid' ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' : 'bg-amber-500/10 border-amber-500/30 text-amber-400' }}">
-                                <span class="text-lg font-bold">{{ sprintf('%02d', $t->number) }}</span>
-                                <span class="text-[9px] uppercase tracking-wider font-semibold">{{ $t->status === 'paid' ? 'Pago' : 'Reservado' }}</span>
+                            <div class="p-3 border rounded-xl flex flex-col items-center justify-center gap-1 select-none bg-white text-black border-slate-200">
+                                <span class="text-lg font-bold text-black">{{ sprintf('%02d', $t->number) }}</span>
+                                <span class="text-[9px] uppercase tracking-wider font-bold {{ $t->status === 'paid' ? 'text-emerald-600' : 'text-amber-600' }}">{{ $t->status === 'paid' ? 'Pago' : 'Reservado' }}</span>
                             </div>
                         @endforeach
                     </div>

@@ -144,19 +144,19 @@
         
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
             <!-- WhatsApp Link -->
-            <a href="https://api.whatsapp.com/send?text={{ urlencode('Estou participando do sorteio da ' . ($payment->tickets->first()->raffle->title ?? 'Rifa') . '! Já garanti minhas cotas no Ação RR Veículos. Veja e participe você também: ' . route('raffles.show', $payment->tickets->first()->raffle_id ?? 1)) }}" target="_blank" class="flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/20 text-xs font-bold transition">
+            <a href="https://api.whatsapp.com/send?text={{ urlencode('Estou participando do sorteio da ' . ($payment->tickets->first()->raffle->title ?? 'Rifa') . '! Já garanti minhas cotas no Ação RR Veículos. Veja e participe você também: ' . route('raffles.show', $payment->tickets->first()->raffle_id ?? 1)) }}" target="_blank" class="flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-[#25D366] hover:bg-[#20ba5a] text-white text-xs font-bold transition shadow-md border-none">
                 <i class="fa-brands fa-whatsapp text-base"></i> WhatsApp
             </a>
             <!-- Facebook -->
-            <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(route('raffles.show', $payment->tickets->first()->raffle_id ?? 1)) }}" target="_blank" class="flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 border border-blue-500/20 text-xs font-bold transition">
+            <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(route('raffles.show', $payment->tickets->first()->raffle_id ?? 1)) }}" target="_blank" class="flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-[#1877F2] hover:bg-[#166fe5] text-white text-xs font-bold transition shadow-md border-none">
                 <i class="fa-brands fa-facebook-f text-sm"></i> Facebook
             </a>
             <!-- LinkedIn -->
-            <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ urlencode(route('raffles.show', $payment->tickets->first()->raffle_id ?? 1)) }}" target="_blank" class="flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-400 border border-indigo-500/20 text-xs font-bold transition">
+            <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ urlencode(route('raffles.show', $payment->tickets->first()->raffle_id ?? 1)) }}" target="_blank" class="flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-[#0A66C2] hover:bg-[#0958a8] text-white text-xs font-bold transition shadow-md border-none">
                 <i class="fa-brands fa-linkedin-in text-sm"></i> LinkedIn
             </a>
             <!-- Copiar Link / Texto Geral (Instagram, YouTube, TikTok, etc) -->
-            <button onclick="copyPromoText()" class="flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 text-xs font-bold transition">
+            <button onclick="copyPromoText()" class="flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-slate-700 hover:bg-slate-600 text-white text-xs font-bold transition shadow-md border-none">
                 <i class="fa-solid fa-copy text-sm"></i> Copiar Post
             </button>
         </div>
