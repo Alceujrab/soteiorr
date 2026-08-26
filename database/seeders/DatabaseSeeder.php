@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Raffle;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -92,8 +93,8 @@ class DatabaseSeeder extends Seeder
             'phone' => '(11) 99999-0006',
         ]);
 
-        // Criar Rifa 1 (Gol Turbo)
-        \App\Models\Raffle::create([
+        // Criar Ação Promocional 1 (Gol Turbo)
+        Raffle::create([
             'user_id' => $admin->id,
             'title' => 'Gol Quadrado 1.8 AP Turbo',
             'description' => 'Carro impecável, motor AP turbo forjado, rodas orbital aro 16, legalizado e pronto para rodar. Envio para todo o Brasil!',
@@ -106,8 +107,8 @@ class DatabaseSeeder extends Seeder
             'draw_date' => now()->addDays(30),
         ]);
 
-        // Criar Rifa 2 (Saveiro Cross)
-        \App\Models\Raffle::create([
+        // Criar Ação Promocional 2 (Saveiro Cross)
+        Raffle::create([
             'user_id' => $admin->id,
             'title' => 'Saveiro Cross Rebaixada',
             'description' => 'Saveiro Cross completa, suspensão a ar legalizada, rodas aro 18, som interno potente, documentação em dia.',

@@ -61,7 +61,7 @@
                 📊 Vendas Detalhadas
             </button>
             <button type="button" onclick="selectReport('desempenho')" id="btn-rep-desempenho" class="rep-tab-btn flex-1 sm:flex-none px-6 py-4 text-xs font-bold uppercase tracking-wider transition border-b-2 text-slate-400 border-transparent hover:text-white">
-                🏎️ Desempenho de Rifas
+                🏎️ Desempenho de Ações Promocionais
             </button>
             <button type="button" onclick="selectReport('clientes')" id="btn-rep-clientes" class="rep-tab-btn flex-1 sm:flex-none px-6 py-4 text-xs font-bold uppercase tracking-wider transition border-b-2 text-slate-400 border-transparent hover:text-white">
                 👥 Ranking de Compradores
@@ -183,7 +183,7 @@
                 <thead>
                     <tr class="bg-slate-900/50 text-[10px] uppercase tracking-wider text-slate-400 border-b border-slate-800">
                         <th class="px-6 py-4 font-bold">Cota ID</th>
-                        <th class="px-6 py-4 font-bold">Rifa / Ação</th>
+                        <th class="px-6 py-4 font-bold">Ação Promocional</th>
                         <th class="px-6 py-4 font-bold">Comprador</th>
                         <th class="px-6 py-4 font-bold">Contato</th>
                         <th class="px-6 py-4 font-bold text-center">Nº Sorte</th>
@@ -218,7 +218,7 @@
             html = `
                 <thead>
                     <tr class="bg-slate-900/50 text-[10px] uppercase tracking-wider text-slate-400 border-b border-slate-800">
-                        <th class="px-6 py-4 font-bold">Rifa / Ação</th>
+                        <th class="px-6 py-4 font-bold">Ação Promocional</th>
                         <th class="px-6 py-4 font-bold text-center">Total Cotas</th>
                         <th class="px-6 py-4 font-bold text-center">Vendid. (Pagas)</th>
                         <th class="px-6 py-4 font-bold text-center">Reservadas</th>

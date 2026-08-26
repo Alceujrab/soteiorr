@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Editar Rifa - Ação RR Veículos')
+@section('title', 'Editar Ação Promocional - Ação RR Veículos')
 
 @section('content')
 <div class="max-w-2xl mx-auto space-y-6">
@@ -13,7 +13,7 @@
     <div class="glass-card rounded-2xl p-6 sm:p-8 space-y-6">
         <div>
             <h1 class="text-2xl font-bold text-white flex items-center gap-2">
-                <i class="fa-solid fa-pen-to-square" style="color: var(--accent);"></i> Editar Rifa
+                <i class="fa-solid fa-pen-to-square" style="color: var(--accent);"></i> Editar Ação Promocional
             </h1>
             <p class="text-slate-400 text-sm mt-1">
                 Altere os detalhes do prêmio, preços e gerencie a galeria de imagens.
@@ -26,7 +26,7 @@
 
             <!-- Título -->
             <div class="space-y-1.5">
-                <label class="text-sm font-semibold text-slate-300">Título da Rifa:</label>
+                <label class="text-sm font-semibold text-slate-300">Título da Ação Promocional:</label>
                 <input type="text" name="title" required value="{{ $raffle->title }}" placeholder="Ex: Gol Quadrado AP Turbo" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-slate-700">
             </div>
 
@@ -61,7 +61,7 @@
                     <input type="text" name="prize_name" required value="{{ $raffle->prize_name }}" placeholder="Ex: Gol Quadrado 1.8 AP Turbo" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-slate-700">
                 </div>
                 <div class="space-y-1.5">
-                    <label class="text-sm font-semibold text-slate-300">Data e Hora do Sorteio:</label>
+                    <label class="text-sm font-semibold text-slate-300">Data e Hora da Ação Promocional:</label>
                     <input type="datetime-local" name="draw_date" required value="{{ $raffle->draw_date->format('Y-m-d\TH:i') }}" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-slate-700">
                 </div>
             </div>

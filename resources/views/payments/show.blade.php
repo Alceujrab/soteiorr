@@ -18,7 +18,7 @@
         <!-- Summary -->
         <div class="p-4 bg-slate-900/60 rounded-xl border border-slate-800 space-y-3">
             <div class="flex justify-between items-center text-sm">
-                <span class="text-slate-400">Rifa:</span>
+                <span class="text-slate-400">Ação Promocional:</span>
                 <span class="text-white font-bold">{{ $payment->tickets->first()->raffle->title }}</span>
             </div>
             <div class="flex justify-between items-center text-sm">

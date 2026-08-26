@@ -1,6 +1,6 @@
 @extends('layouts.public')
 
-@section('title', 'Rifas Ativas - Ação RR Veículos')
+@section('title', 'Ações Promocionais Ativas - Ação RR Veículos')
 
 @section('content')
 <div class="space-y-8">
@@ -23,7 +23,7 @@
                             <p class="text-slate-300 text-sm sm:text-base">
                                 {{ $banner->subtitle }}
                             </p>
-                            <a href="#rifas" class="bg-blue-600 hover:bg-blue-500 text-white font-medium px-6 py-2.5 rounded-lg shadow-lg hover:shadow-blue-500/20 transition text-center w-fit">
+                            <a href="#acoes-promocionais" class="bg-blue-600 hover:bg-blue-500 text-white font-medium px-6 py-2.5 rounded-lg shadow-lg hover:shadow-blue-500/20 transition text-center w-fit">
                                 Comprar Cotas
                             </a>
                         </div>
@@ -69,29 +69,29 @@
             <div class="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-indigo-600/10 pointer-events-none"></div>
             <div class="space-y-4 max-w-xl">
                 <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-blue-500/10 text-blue-400 border border-blue-500/30">
-                    <i class="fa-solid fa-star"></i> Sorteios 100% Auditados
+                    <i class="fa-solid fa-star"></i> Ações Promocionais 100% Auditadas
                 </span>
                 <h1 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
                     Concorra aos melhores veículos com preços imperdíveis!
                 </h1>
                 <p class="text-slate-400 text-base sm:text-lg">
-                    Escolha sua ação, selecione seus números da sorte e realize o pagamento via PIX para participar. O sorteio é realizado ao vivo!
+                    Escolha sua Ação Promocional, selecione seus números da sorte e realize o pagamento via PIX para participar. A apuração é realizada ao vivo!
                 </p>
             </div>
             <div class="w-full md:w-auto flex flex-col sm:flex-row gap-4">
-                <a href="#rifas" class="bg-blue-600 hover:bg-blue-500 text-white font-medium px-6 py-3 rounded-lg shadow-lg hover:shadow-blue-500/20 transition text-center">
-                    Ver Rifas Ativas
+                <a href="#acoes-promocionais" class="bg-blue-600 hover:bg-blue-500 text-white font-medium px-6 py-3 rounded-lg shadow-lg hover:shadow-blue-500/20 transition text-center">
+                    Ver Ações Promocionais Ativas
                 </a>
             </div>
         </div>
     @endif
 
     <!-- Active Raffles Grid -->
-    <div id="rifas" class="space-y-6">
+    <div id="acoes-promocionais" class="space-y-6">
         <div class="flex items-center justify-between">
             <h2 class="text-2xl font-bold text-white flex items-center gap-2">
                 <span class="w-2.5 h-6 bg-blue-500 rounded-full"></span>
-                Ações Ativas
+                Ações Promocionais Ativas
             </h2>
         </div>
 
@@ -118,7 +118,7 @@
 
                         <div class="border-t border-slate-800/80 pt-4 flex items-center justify-between text-xs text-slate-400">
                             <span>
-                                <i class="fa-regular fa-calendar-days mr-1"></i> Sorteio: {{ $raffle->draw_date->format('d/m/Y') }}
+                                <i class="fa-regular fa-calendar-days mr-1"></i> Ação Promocional: {{ $raffle->draw_date->format('d/m/Y') }}
                             </span>
                             <span>
                                 <i class="fa-solid fa-ticket mr-1"></i> {{ $raffle->total_numbers }} números
@@ -135,7 +135,7 @@
                     <div class="text-slate-500 mb-4">
                         <i class="fa-solid fa-receipt text-5xl"></i>
                     </div>
-                    <h3 class="text-lg font-semibold text-white">Nenhuma rifa ativa encontrada</h3>
+                    <h3 class="text-lg font-semibold text-white">Nenhuma Ação Promocional ativa encontrada</h3>
                     <p class="text-slate-400 mt-1">Volte mais tarde ou consulte a administração.</p>
                 </div>
             @endforelse

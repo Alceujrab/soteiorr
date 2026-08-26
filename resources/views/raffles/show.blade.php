@@ -1,6 +1,6 @@
 @extends('layouts.public')
 
-@section('title', $raffle->title . ' - Detalhes da Rifa')
+@section('title', $raffle->title . ' - Detalhes da Ação Promocional')
 
 @section('content')
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -54,7 +54,7 @@
                         <span class="text-white">{{ $raffle->total_numbers }}</span>
                     </div>
                     <div class="flex justify-between text-sm">
-                        <span class="text-slate-400">Data do Sorteio:</span>
+                        <span class="text-slate-400">Data da Ação Promocional:</span>
                         <span class="text-white font-medium">{{ $raffle->draw_date->format('d/m/Y \à\s H:i') }}</span>
                     </div>
                     @if(\App\Models\Setting::get('show_sold_qty', '1') === '1')
@@ -96,10 +96,10 @@
             </div>
         </div>
 
-        <!-- Compartilhar Rifa Card -->
+        <!-- Compartilhar Ação Promocional Card -->
         <div class="glass-card rounded-2xl p-6 space-y-4">
             <h3 class="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
-                <i class="fa-solid fa-share-nodes text-blue-500"></i> Compartilhar Sorteio
+                <i class="fa-solid fa-share-nodes text-blue-500"></i> Compartilhar Ação Promocional
             </h3>
             <p class="text-xs text-slate-400">Ajude a divulgar esta ação entre amigos nas redes sociais!</p>
             

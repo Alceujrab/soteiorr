@@ -48,7 +48,7 @@ class AdminController extends Controller
     }
 
     /**
-     * Exibir formulário de nova rifa.
+     * Exibir formulário de nova Ação Promocional.
      */
     public function createRaffle()
     {
@@ -56,7 +56,7 @@ class AdminController extends Controller
     }
 
     /**
-     * Salvar nova rifa.
+     * Salvar nova Ação Promocional.
      */
     public function storeRaffle(Request $request, LogActivityAction $logActivity)
     {
@@ -103,13 +103,13 @@ class AdminController extends Controller
             'draw_date' => $request->draw_date,
         ]);
 
-        $logActivity->execute("Criou a Rifa ID: {$raffle->id} - {$raffle->title}", json_encode($raffle->toArray()));
+        $logActivity->execute("Criou a Ação Promocional ID: {$raffle->id} - {$raffle->title}", json_encode($raffle->toArray()));
 
-        return redirect()->route('admin.dashboard')->with('success', 'Rifa criada com sucesso!');
+        return redirect()->route('admin.dashboard')->with('success', 'Ação Promocional criada com sucesso!');
     }
 
     /**
-     * Exibir formulário de edição de uma rifa.
+     * Exibir formulário de edição de uma Ação Promocional.
      */
     public function editRaffle(Raffle $raffle)
     {
@@ -117,7 +117,7 @@ class AdminController extends Controller
     }
 
     /**
-     * Atualizar rifa.
+     * Atualizar Ação Promocional.
      */
     public function updateRaffle(Request $request, Raffle $raffle, LogActivityAction $logActivity)
     {
@@ -164,18 +164,18 @@ class AdminController extends Controller
             'draw_date' => $request->draw_date,
         ]);
 
-        $logActivity->execute("Atualizou a Rifa ID: {$raffle->id} - {$raffle->title}", json_encode($raffle->toArray()));
+        $logActivity->execute("Atualizou a Ação Promocional ID: {$raffle->id} - {$raffle->title}", json_encode($raffle->toArray()));
 
-        return redirect()->route('admin.dashboard')->with('success', 'Rifa atualizada com sucesso!');
+        return redirect()->route('admin.dashboard')->with('success', 'Ação Promocional atualizada com sucesso!');
     }
 
     /**
-     * Realizar sorteio de forma aleatória entre os bilhetes pagos.
+     * Realizar apuração da Ação Promocional de forma aleatória entre os bilhetes pagos.
      */
     public function draw(Raffle $raffle, LogActivityAction $logActivity)
     {
         if ($raffle->status === 'completed') {
-            return redirect()->back()->withErrors(['error' => 'Esta rifa já foi sorteada.']);
+            return redirect()->back()->withErrors(['error' => 'Esta Ação Promocional já foi apurada.']);
         }
 
         // Obter bilhetes pagos
@@ -184,7 +184,7 @@ class AdminController extends Controller
             ->get();
 
         if ($paidTickets->isEmpty()) {
-            return redirect()->back()->withErrors(['error' => 'Não é possível realizar o sorteio porque nenhum número foi pago ainda.']);
+            return redirect()->back()->withErrors(['error' => 'Não é possível realizar a Ação Promocional porque nenhum número foi pago ainda.']);
         }
 
         // Escolher um ganhador aleatório dos pagos
@@ -202,10 +202,10 @@ class AdminController extends Controller
 
             $raffle->update(['status' => 'completed']);
 
-            $logActivity->execute("Realizou o sorteio da Rifa ID: {$raffle->id}. Vencedor: número {$winnerTicket->number}", json_encode($draw->toArray()));
+            $logActivity->execute("Realizou a Ação Promocional ID: {$raffle->id}. Vencedor: número {$winnerTicket->number}", json_encode($draw->toArray()));
         });
 
-        return redirect()->route('admin.dashboard')->with('success', 'Sorteio realizado com sucesso! O vencedor foi o número: '.$winnerTicket->number);
+        return redirect()->route('admin.dashboard')->with('success', 'Ação Promocional realizada com sucesso! O vencedor foi o número: '.$winnerTicket->number);
     }
 
     /**
@@ -266,7 +266,7 @@ class AdminController extends Controller
             'page_contact' => Setting::get('page_contact', '<h1>Contato</h1><p>Precisa de suporte? Entre em contato conosco pelo e-mail suporte@acaorrveiculos.com.br ou pelo nosso WhatsApp oficial.</p>'),
             'page_faqs' => Setting::get('page_faqs', '<h1>Dúvidas Frequentes</h1><p>Veja as respostas para as perguntas mais comuns dos nossos participantes.</p>'),
             'page_privacy_policy' => Setting::get('page_privacy_policy', '<h1>Política de Privacidade</h1><p>Sua privacidade é nossa prioridade. Coletamos e usamos dados apenas para o processamento seguro das cotas.</p>'),
-            'page_terms_of_use' => Setting::get('page_terms_of_use', '<h1>Termos de Uso</h1><p>Ao adquirir cotas na Ação RR Veículos, você concorda com o regulamento oficial do sorteio e com as regras gerais.</p>'),
+            'page_terms_of_use' => Setting::get('page_terms_of_use', '<h1>Termos de Uso</h1><p>Ao adquirir cotas na Ação RR Veículos, você concorda com o regulamento oficial da Ação Promocional e com as regras gerais.</p>'),
         ];
 
         return view('admin.settings', compact('settings'));
@@ -398,7 +398,7 @@ class AdminController extends Controller
                 ];
             });
 
-        // 2. Relatório de Desempenho das Rifas
+        // 2. Relatório de Desempenho das Ações Promocionais
         $rafflePerformance = Raffle::withCount(['tickets as paid_count' => function ($q) {
             $q->where('status', 'paid');
         }])

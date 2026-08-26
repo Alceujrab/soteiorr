@@ -30,7 +30,7 @@
                     <select name="template_name" id="template-select" onchange="applyTemplate(this.value)" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-2.5 text-xs text-slate-300 focus:outline-none">
                         <option value="custom">Mensagem Personalizada</option>
                         <option value="pagamento_aprovado">Pagamento Confirmado</option>
-                        <option value="sorteio_ao_vivo">Convite Sorteio Ao Vivo</option>
+                        <option value="acao_promocional_ao_vivo">Convite Ação Promocional Ao Vivo</option>
                         <option value="promocao">Campanha Promocional</option>
                     </select>
                 </div>
@@ -112,7 +112,7 @@
     const templates = {
         custom: "",
         pagamento_aprovado: "Olá! Confirmamos o seu pagamento. Seus bilhetes já foram validados e estão ativos. Boa sorte!",
-        sorteio_ao_vivo: "Atenção! O sorteio do veículo está prestes a começar. Acesse nossa live pelo link oficial e acompanhe ao vivo!",
+        acao_promocional_ao_vivo: "Atenção! A Ação Promocional do veículo está prestes a começar. Acesse nossa live pelo link oficial e acompanhe ao vivo!",
         promocao: "Nova ação de veículos liberada! Participe comprando cotas com desconto especial de lançamento por tempo limitado."
     };
 

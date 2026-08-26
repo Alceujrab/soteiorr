@@ -10,7 +10,7 @@
             <h1 class="text-2xl font-bold text-white flex items-center gap-2">
                 <i class="fa-solid fa-circle-question text-blue-500"></i> Perguntas Frequentes (FAQ)
             </h1>
-            <p class="text-slate-400 text-sm mt-1">Dúvidas comuns sobre o processo de compra e sorteio.</p>
+            <p class="text-slate-400 text-sm mt-1">Dúvidas comuns sobre o processo de compra e Ação Promocional.</p>
         </div>
 
         <div class="space-y-4">
@@ -18,14 +18,14 @@
             <div class="glass-card rounded-xl p-5 space-y-2">
                 <h3 class="font-semibold text-white text-base">Como faço para participar?</h3>
                 <p class="text-slate-400 text-sm leading-relaxed">
-                    Basta navegar na página inicial, escolher a ação ativa, selecionar seus números da sorte e clicar em reservar. Depois, realize o pagamento via PIX copiando o código ou lendo o QR Code gerado para confirmar seus bilhetes.
+                    Basta navegar na página inicial, escolher a Ação Promocional ativa, selecionar seus números da sorte e clicar em reservar. Depois, realize o pagamento via PIX copiando o código ou lendo o QR Code gerado para confirmar seus bilhetes.
                 </p>
             </div>
             <!-- FAQ 2 -->
             <div class="glass-card rounded-xl p-5 space-y-2">
-                <h3 class="font-semibold text-white text-base">O sorteio é confiável?</h3>
+                <h3 class="font-semibold text-white text-base">A Ação Promocional é confiável?</h3>
                 <p class="text-slate-400 text-sm leading-relaxed">
-                    Sim! Nossos sorteios são auditados e transmitidos ao vivo através das nossas redes sociais oficiais. O histórico de todos os bilhetes vendidos e do vencedor fica publicado na plataforma para consulta pública.
+                    Sim! Nossas Ações Promocionais são auditadas e transmitidas ao vivo através das nossas redes sociais oficiais. O histórico de todos os bilhetes vendidos e do vencedor fica publicado na plataforma para consulta pública.
                 </p>
             </div>
             <!-- FAQ 3 -->

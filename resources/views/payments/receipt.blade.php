@@ -41,7 +41,7 @@
                     <span class="text-lg font-black uppercase tracking-wider" style="color: #ef4444;">Ação RR Veículos</span>
                 </div>
                 <div class="text-[10px] text-slate-500 leading-relaxed font-medium">
-                    <div class="font-bold text-slate-700">Ação RR Veículos Sorteios e Promoções Ltda.</div>
+                    <div class="font-bold text-slate-700">Ação RR Veículos Ações Promocionais Ltda.</div>
                     <div>CNPJ: 12.345.678/0001-90</div>
                     <div>Suporte: suporte@acaorrveiculos.com.br | WhatsApp: (11) 99999-9999</div>
                     <div>Avenida das Nações, 1000 - Centro, São Paulo - SP</div>
@@ -81,20 +81,20 @@
             </div>
         </div>
 
-        <!-- Dados da Rifa e do Sorteio -->
+        <!-- Dados da Ação Promocional -->
         <div class="space-y-2">
             <h3 class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Detalhamento da Ação & Prêmio</h3>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 rounded-xl border border-slate-100" style="background-color: #f8fafc;">
                 <div>
-                    <span class="text-[9px] text-slate-400 uppercase block font-semibold">Ação / Rifa</span>
-                    <span class="text-xs text-slate-800 font-bold">{{ $payment->tickets->first()->raffle->title ?? 'Sorteio Principal' }}</span>
+                    <span class="text-[9px] text-slate-400 uppercase block font-semibold">Ação Promocional</span>
+                    <span class="text-xs text-slate-800 font-bold">{{ $payment->tickets->first()->raffle->title ?? 'Ação Promocional Principal' }}</span>
                 </div>
                 <div>
                     <span class="text-[9px] text-slate-400 uppercase block font-semibold">Prêmio da Ação</span>
                     <span class="text-xs font-bold" style="color: #ef4444;">{{ $payment->tickets->first()->raffle->prize_name ?? 'Prêmio Principal' }}</span>
                 </div>
                 <div>
-                    <span class="text-[9px] text-slate-400 uppercase block font-semibold">Data/Hora Oficial do Sorteio</span>
+                    <span class="text-[9px] text-slate-400 uppercase block font-semibold">Data/Hora Oficial da Ação Promocional</span>
                     <span class="text-xs text-slate-800 font-bold">{{ $payment->tickets->first()->raffle->draw_date->format('d/m/Y H:i') }}</span>
                 </div>
                 <div>
@@ -130,7 +130,7 @@
         <!-- Termos e Condições Rodapé -->
         <div class="border-t border-slate-100 pt-4 text-center">
             <p class="text-[8px] text-slate-400 leading-normal">
-                Este recibo digital é emitido eletronicamente pela Ação RR Veículos e cumpre todas as regras do regulamento oficial da ação entre amigos. O sorteio oficial será transmitido ao vivo em nossas redes sociais. Para validar este recibo online, aponte a câmera do seu celular para o QR Code acima.
+                Este recibo digital é emitido eletronicamente pela Ação RR Veículos e cumpre todas as regras do regulamento oficial da ação entre amigos. A Ação Promocional oficial será transmitida ao vivo em nossas redes sociais. Para validar este recibo online, aponte a câmera do seu celular para o QR Code acima.
             </p>
         </div>
     </div>
@@ -138,13 +138,13 @@
     <!-- Compartilhar nas Redes Sociais -->
     <div class="glass-card rounded-2xl p-6 space-y-4">
         <h3 class="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
-            <i class="fa-solid fa-share-nodes text-blue-500"></i> Divulgar Participação & Compartilhar Sorteio
+            <i class="fa-solid fa-share-nodes text-blue-500"></i> Divulgar Participação & Compartilhar Ação Promocional
         </h3>
         <p class="text-xs text-slate-400">Divulgue seus números da sorte e o link oficial da ação com seus amigos:</p>
         
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
             <!-- WhatsApp Link -->
-            <a href="https://api.whatsapp.com/send?text={{ urlencode('Estou participando do sorteio da ' . ($payment->tickets->first()->raffle->title ?? 'Rifa') . '! Já garanti minhas cotas no Ação RR Veículos. Veja e participe você também: ' . route('raffles.show', $payment->tickets->first()->raffle_id ?? 1)) }}" target="_blank" class="flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-[#25D366] hover:bg-[#20ba5a] text-white text-xs font-bold transition shadow-md border-none">
+            <a href="https://api.whatsapp.com/send?text={{ urlencode('Estou participando da Ação Promocional ' . ($payment->tickets->first()->raffle->title ?? 'Ação Promocional') . '! Já garanti minhas cotas no Ação RR Veículos. Veja e participe você também: ' . route('raffles.show', $payment->tickets->first()->raffle_id ?? 1)) }}" target="_blank" class="flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-[#25D366] hover:bg-[#20ba5a] text-white text-xs font-bold transition shadow-md border-none">
                 <i class="fa-brands fa-whatsapp text-base"></i> WhatsApp
             </a>
             <!-- Facebook -->
@@ -219,7 +219,7 @@
     }
 
     function copyPromoText() {
-        const text = "🏆 Participe também da ação entre amigos da Ação RR Veículos!\n🔥 Rifa: {{ $payment->tickets->first()->raffle->title ?? 'Sorteio Especial' }}\n🎁 Prêmio: {{ $payment->tickets->first()->raffle->prize_name ?? 'Prêmio Principal' }}\n👉 Garanta seus números da sorte em: {{ route('raffles.show', $payment->tickets->first()->raffle_id ?? 1) }}";
+        const text = "🏆 Participe também da ação entre amigos da Ação RR Veículos!\n🔥 Ação Promocional: {{ $payment->tickets->first()->raffle->title ?? 'Ação Promocional Especial' }}\n🎁 Prêmio: {{ $payment->tickets->first()->raffle->prize_name ?? 'Prêmio Principal' }}\n👉 Garanta seus números da sorte em: {{ route('raffles.show', $payment->tickets->first()->raffle_id ?? 1) }}";
         
         navigator.clipboard.writeText(text).then(() => {
             const toast = document.getElementById('share-toast');

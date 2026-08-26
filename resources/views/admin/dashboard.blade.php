@@ -11,11 +11,11 @@
                 <i class="fa-solid fa-chart-line text-blue-500"></i> Painel Administrativo
             </h1>
             <p class="text-slate-400 text-sm mt-1">
-                Acompanhe as vendas, receitas e realize sorteios em tempo real.
+                Acompanhe as vendas, receitas e realize Ações Promocionais em tempo real.
             </p>
         </div>
         <a href="{{ route('admin.raffles.create') }}" class="bg-blue-600 hover:bg-blue-500 text-white font-semibold px-5 py-2.5 rounded-xl transition flex items-center gap-2">
-            <i class="fa-solid fa-plus"></i> Criar Nova Rifa
+            <i class="fa-solid fa-plus"></i> Criar Nova Ação Promocional
         </a>
     </div>
 
@@ -54,13 +54,13 @@
             </div>
         </div>
 
-        <!-- Rifas Ativas -->
+        <!-- Ações Promocionais Ativas -->
         <div class="glass-card rounded-xl p-6 flex items-center gap-4">
             <div class="p-3.5 bg-purple-500/10 border border-purple-500/20 text-purple-400 rounded-lg text-2xl">
                 <i class="fa-solid fa-car"></i>
             </div>
             <div>
-                <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Rifas Ativas</div>
+                <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Ações Promocionais Ativas</div>
                 <div class="text-2xl font-bold text-white mt-1">{{ $kpis['active_raffles'] }}</div>
             </div>
         </div>
@@ -92,9 +92,9 @@
                     </div>
                 </div>
                 <div class="flex gap-3 border-b border-slate-800/80 pb-3">
-                    <span class="text-blue-400 font-bold bg-blue-500/10 px-2 py-0.5 rounded h-fit">RIFA</span>
+                    <span class="text-blue-400 font-bold bg-blue-500/10 px-2 py-0.5 rounded h-fit">AÇÃO</span>
                     <div>
-                        <div class="text-white font-medium">Nova Rifa Publicada</div>
+                        <div class="text-white font-medium">Nova Ação Promocional Publicada</div>
                         <div class="text-slate-500 mt-0.5">Gol Quadrado AP Turbo criada por Admin</div>
                     </div>
                 </div>
@@ -102,11 +102,11 @@
         </div>
     </div>
 
-    <!-- Rifas List -->
+    <!-- Lista de Ações Promocionais -->
     <div class="space-y-4">
         <h2 class="text-xl font-bold text-white flex items-center gap-2">
             <span class="w-2.5 h-5 bg-blue-500 rounded-full"></span>
-            Gerenciar Sorteios
+            Gerenciar Ações Promocionais
         </h2>
 
         <div class="glass-card rounded-2xl overflow-hidden">
@@ -114,7 +114,7 @@
                 <table class="w-full text-left border-collapse">
                     <thead>
                         <tr class="border-b border-slate-800 text-slate-400 text-xs font-semibold uppercase tracking-wider bg-slate-900/50">
-                            <th class="px-6 py-4">Rifa</th>
+                            <th class="px-6 py-4">Ação Promocional</th>
                             <th class="px-6 py-4">Prêmio</th>
                             <th class="px-6 py-4">Valor Núm.</th>
                             <th class="px-6 py-4">Vendas</th>
@@ -155,7 +155,7 @@
                                     <div class="flex flex-wrap gap-2 items-center">
                                         @if($raffle->status === 'active')
                                             <a href="{{ route('admin.raffles.draw', $raffle->id) }}" class="bg-amber-600 hover:bg-amber-500 text-amber-950 font-bold px-3 py-1.5 rounded-lg text-xs transition flex items-center gap-1.5 w-fit">
-                                                <i class="fa-solid fa-circle-play"></i> Sorteio
+                                                <i class="fa-solid fa-circle-play"></i> Apurar
                                             </a>
                                         @else
                                             @php $raffle->load('draw'); @endphp
@@ -172,7 +172,7 @@
                         @empty
                             <tr>
                                 <td colspan="6" class="px-6 py-8 text-center text-slate-500">
-                                    Nenhuma rifa cadastrada ainda.
+                                    Nenhuma Ação Promocional cadastrada ainda.
                                 </td>
                             </tr>
                         @endforelse
@@ -197,7 +197,7 @@
                     @csrf
                     <div class="space-y-1">
                         <label class="text-[10px] text-slate-400 font-bold uppercase block">Título do Destaque:</label>
-                        <input type="text" name="title" required placeholder="Ex: Sorteio do Mustang 68" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none">
+                        <input type="text" name="title" required placeholder="Ex: Ação Promocional do Mustang 68" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none">
                     </div>
                     <div class="space-y-1">
                         <label class="text-[10px] text-slate-400 font-bold uppercase block">Subtítulo/Descrição:</label>
@@ -226,7 +226,7 @@
                     </div>
                     <div class="space-y-1">
                         <label class="text-[10px] text-slate-400 font-bold uppercase block">Subtítulo/Descrição:</label>
-                        <input type="text" name="subtitle" placeholder="Ex: Sorteio no próximo domingo" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none">
+                        <input type="text" name="subtitle" placeholder="Ex: Ação Promocional no próximo domingo" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none">
                     </div>
                     <div class="space-y-1">
                         <label class="text-[10px] text-slate-400 font-bold uppercase block">URL da Imagem:</label>

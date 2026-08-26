@@ -12,7 +12,7 @@
         </span>
         <h1 class="text-3xl font-extrabold text-white tracking-tight">Dúvidas Frequentes</h1>
         <p class="text-slate-400 text-sm max-w-lg mx-auto">
-            Tem alguma pergunta sobre os sorteios, pagamentos ou segurança? Encontre a resposta rápida abaixo.
+            Tem alguma pergunta sobre as Ações Promocionais, pagamentos ou segurança? Encontre a resposta rápida abaixo.
         </p>
     </div>
 

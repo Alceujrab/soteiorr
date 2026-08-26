@@ -90,8 +90,8 @@
                     <h3 class="text-xs text-slate-400 font-bold uppercase tracking-wider">Informações da Transação</h3>
                     <div class="bg-slate-900/50 p-4 rounded-xl border space-y-3" style="border-color: var(--border-color);">
                         <div class="flex justify-between text-sm">
-                            <span class="text-slate-500">Rifa Associada</span>
-                            <span class="text-slate-200 font-medium">{{ $payment->tickets->first()->raffle->title ?? 'Sorteio' }}</span>
+                            <span class="text-slate-500">Ação Promocional Associada</span>
+                            <span class="text-slate-200 font-medium">{{ $payment->tickets->first()->raffle->title ?? 'Ação Promocional' }}</span>
                         </div>
                         <div class="flex justify-between text-sm">
                             <span class="text-slate-500">Status do Pagamento</span>

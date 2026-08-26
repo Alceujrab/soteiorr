@@ -21,17 +21,6 @@ return new class extends Migration
             <li><strong>Valores:</strong> Transparência total, compromisso com a verdade, segurança de dados (LGPD) e respeito incondicional aos regulamentos de Ações Promocionais.</li>
         </ul>');
 
-        Setting::set('page_contact', '<h1>Fale Conosco</h1>
-        <p>Precisa de suporte com suas cotas ou tem alguma dúvida? Nossa central de atendimento da Ação RR Veículos Água Boa - MT está de braços abertos para ajudar.</p>
-        <h2>Canais de Atendimento Oficiais</h2>
-        <ul>
-            <li><strong>WhatsApp Suporte:</strong> (66) 99999-9999 (Atendimento prioritário)</li>
-            <li><strong>E-mail Corporativo:</strong> suporte@acaorrveiculos.com.br</li>
-            <li><strong>Endereço Comercial:</strong> Avenida das Nações, 1000 - Centro, Água Boa - MT</li>
-        </ul>
-        <h2>Horário de Atendimento</h2>
-        <p>Segunda a Sexta-feira: 08:00 às 18:00<br>Sábados: 08:00 às 12:00</p>');
-
         Setting::set('page_faqs', '<h1>Dúvidas Frequentes (FAQs)</h1>
         <p>Encontre respostas rápidas para as principais dúvidas de nossos participantes sobre as compras e Ações Promocionais.</p>
         

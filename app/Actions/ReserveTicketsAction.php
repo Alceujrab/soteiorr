@@ -3,27 +3,26 @@
 namespace App\Actions;
 
 use App\Models\Raffle;
-use App\Models\User;
 use App\Models\Ticket;
-use Illuminate\Support\Facades\DB;
+use App\Models\User;
 use Exception;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\DB;
 
 class ReserveTicketsAction
 {
     /**
-     * Reservar números para um usuário em uma rifa específica.
+     * Reservar números para um usuário em uma Ação Promocional específica.
      *
-     * @param User $user
-     * @param Raffle $raffle
-     * @param array $numbers
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return Collection
+     *
      * @throws Exception
      */
     public function execute(User $user, Raffle $raffle, array $numbers)
     {
         // Validar se há números repetidos na requisição
         if (count($numbers) !== count(array_unique($numbers))) {
-            throw new Exception("Existem números duplicados na sua seleção.");
+            throw new Exception('Existem números duplicados na sua seleção.');
         }
 
         return DB::transaction(function () use ($user, $raffle, $numbers) {
@@ -34,7 +33,7 @@ class ReserveTicketsAction
                 ->pluck('number')
                 ->toArray();
 
-            if (!empty($existingTickets)) {
+            if (! empty($existingTickets)) {
                 $duplicates = implode(', ', $existingTickets);
                 throw new Exception("Os seguintes números já estão ocupados: {$duplicates}");
             }
@@ -42,7 +41,7 @@ class ReserveTicketsAction
             // Validar limites dos números
             foreach ($numbers as $number) {
                 if ($number < 1 || $number > $raffle->total_numbers) {
-                    throw new Exception("O número {$number} é inválido para esta rifa.");
+                    throw new Exception("O número {$number} é inválido para esta Ação Promocional.");
                 }
             }
 

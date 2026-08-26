@@ -98,7 +98,7 @@
                         <i class="fa-solid fa-circle-half-stroke text-lg"></i>
                     </button>
 
-                    <a href="/" class="text-sm font-medium text-slate-300 hover:text-white transition">Rifas Ativas</a>
+                    <a href="/" class="text-sm font-medium text-slate-300 hover:text-white transition">Ações Promocionais Ativas</a>
                     <a href="{{ route('pages.about') }}" class="text-sm font-medium text-slate-300 hover:text-white transition">Sobre Nós</a>
                     <a href="{{ route('pages.contact') }}" class="text-sm font-medium text-slate-300 hover:text-white transition">Contato</a>
                     <a href="{{ route('pages.faqs') }}" class="text-sm font-medium text-slate-300 hover:text-white transition">Dúvidas</a>
@@ -159,7 +159,7 @@
         <div class="flex-1 px-4 py-6 space-y-3">
             <a href="/" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:text-white hover:bg-slate-900/60 transition">
                 <i class="fa-solid fa-ticket text-lg"></i>
-                <span class="font-medium text-sm">Rifas Ativas</span>
+                <span class="font-medium text-sm">Ações Promocionais Ativas</span>
             </a>
             <a href="{{ route('pages.about') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:text-white hover:bg-slate-900/60 transition">
                 <i class="fa-solid fa-circle-info text-lg"></i>
@@ -238,7 +238,7 @@
                 <div class="space-y-3">
                     <h3 class="text-sm font-bold text-white uppercase tracking-wider">Ação RR Veículos</h3>
                     <p class="text-xs text-slate-500 leading-relaxed">
-                        Sua plataforma premium de ações entre amigos e sorteios digitais. Concorra aos melhores veículos com segurança e total transparência.
+                        Sua plataforma premium de ações entre amigos e Ações Promocionais digitais. Concorra aos melhores veículos com segurança e total transparência.
                     </p>
                     <div class="text-xs text-slate-500 font-medium">
                         <strong>RR Veículos Água Boa - MT</strong><br>
@@ -251,7 +251,7 @@
                 <div class="space-y-3">
                     <h3 class="text-sm font-bold text-white uppercase tracking-wider">Navegação</h3>
                     <ul class="space-y-2 text-xs text-slate-500">
-                        <li><a href="/" class="hover:text-white transition">Ações / Rifas Ativas</a></li>
+                        <li><a href="/" class="hover:text-white transition">Ações Promocionais Ativas</a></li>
                         <li><a href="{{ route('pages.about') }}" class="hover:text-white transition">Sobre Nós</a></li>
                         <li><a href="{{ route('pages.contact') }}" class="hover:text-white transition">Fale Conosco / Contato</a></li>
                         <li><a href="{{ route('pages.faqs') }}" class="hover:text-white transition">Dúvidas Frequentes (FAQs)</a></li>

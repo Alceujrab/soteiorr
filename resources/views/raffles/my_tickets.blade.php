@@ -14,7 +14,7 @@
     </div>
 
     @php
-        // Agrupar bilhetes por Rifa
+        // Agrupar bilhetes por Ação Promocional
         $grouped = $tickets->groupBy('raffle_id');
     @endphp
 
@@ -29,7 +29,7 @@
                         </div>
                         <div>
                             <h3 class="text-lg font-bold text-white">{{ $raffle->title }}</h3>
-                            <p class="text-xs text-slate-500">Sorteio em: {{ $raffle->draw_date->format('d/m/Y H:i') }}</p>
+                            <p class="text-xs text-slate-500">Ação Promocional em: {{ $raffle->draw_date->format('d/m/Y H:i') }}</p>
                         </div>
                     </div>
                     <div class="flex flex-wrap gap-2">
@@ -74,7 +74,7 @@
                 <h3 class="text-lg font-semibold text-white">Nenhum bilhete comprado ainda</h3>
                 <p class="text-slate-400 mt-1">Navegue pelas ações ativas e escolha seus números!</p>
                 <a href="{{ route('raffles.index') }}" class="mt-4 inline-flex bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2.5 px-6 rounded-xl transition">
-                    Ver Rifas
+                    Ver Ações Promocionais
                 </a>
             </div>
         @endforelse

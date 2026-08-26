@@ -102,7 +102,7 @@
             </a>
             <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition text-slate-400 hover:text-white hover:bg-slate-900/60 {{ Route::currentRouteName() == 'admin.dashboard' ? 'bg-slate-900 text-white' : '' }}">
                 <i class="fa-solid fa-chart-line text-base"></i>
-                <span class="font-medium text-sm">Dashboard / Rifas</span>
+                <span class="font-medium text-sm">Dashboard / Ações Promocionais</span>
             </a>
             <a href="{{ route('admin.participants') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition text-slate-400 hover:text-white hover:bg-slate-900/60 {{ Route::currentRouteName() == 'admin.participants' ? 'bg-slate-900 text-white' : '' }}">
                 <i class="fa-solid fa-users text-base"></i>
@@ -216,7 +216,7 @@
                 </a>
                 <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition text-slate-400 hover:text-white hover:bg-slate-900/60 {{ Route::currentRouteName() == 'admin.dashboard' ? 'bg-slate-900 text-white' : '' }}">
                     <i class="fa-solid fa-chart-line text-base"></i>
-                    <span class="font-medium text-sm">Dashboard / Rifas</span>
+                    <span class="font-medium text-sm">Dashboard / Ações Promocionais</span>
                 </a>
                 <a href="{{ route('admin.participants') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition text-slate-400 hover:text-white hover:bg-slate-900/60 {{ Route::currentRouteName() == 'admin.participants' ? 'bg-slate-900 text-white' : '' }}">
                     <i class="fa-solid fa-users text-base"></i>

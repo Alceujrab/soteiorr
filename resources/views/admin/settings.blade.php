@@ -316,8 +316,8 @@
                         <button type="button" onclick="setAITopic('Como funciona o Pix e aprovação?')" class="px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 hover:text-white text-xs transition">
                             ⚡ Pix & Aprovação
                         </button>
-                        <button type="button" onclick="setAITopic('Como é realizado o sorteio do veículo?')" class="px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 hover:text-white text-xs transition">
-                            🏆 Realização do Sorteio
+                        <button type="button" onclick="setAITopic('Como é realizada a Ação Promocional do veículo?')" class="px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 hover:text-white text-xs transition">
+                            🏆 Realização da Ação Promocional
                         </button>
                         <button type="button" onclick="setAITopic('Qual o prazo para pagamento das cotas reservadas?')" class="px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 hover:text-white text-xs transition">
                             ⏳ Prazo de Reservas
@@ -446,10 +446,10 @@
                 <p style="font-size: 13px; color: #94a3b8; line-height: 1.6;">O pagamento via <strong>PIX</strong> é totalmente automatizado e integrado. Ao escanear o QR Code ou utilizar o código "Copia e Cola", a transação é aprovada instantaneamente. O sistema reconhece a aprovação do banco e, em menos de 10 segundos, atualiza o status de suas cotas para "Pago", gerando e enviando o comprovante diretamente no seu painel de usuário.</p>
             </div>
         `,
-        'como é realizado o sorteio do veículo?': `
+        'como é realizada a ação promocional do veículo?': `
             <div class="faq-item mb-4" style="margin-bottom: 20px;">
-                <h3 style="font-size: 15px; font-weight: bold; color: #ef4444; margin-bottom: 5px;">Como e quando é realizado o sorteio do prêmio?</h3>
-                <p style="font-size: 13px; color: #94a3b8; line-height: 1.6;">Todos os nossos sorteios são executados com total transparência e auditabilidade. A data oficial de sorteio é marcada previamente no painel da ação. Para definir o bilhete ganhador, utilizamos a extração oficial da <strong>Loteria Federal</strong> ou realizamos uma transmissão ao vivo de forma aleatória e auditada através de nossas redes sociais. O ganhador é notificado instantaneamente por e-mail e WhatsApp.</p>
+                <h3 style="font-size: 15px; font-weight: bold; color: #ef4444; margin-bottom: 5px;">Como e quando é realizada a Ação Promocional do prêmio?</h3>
+                <p style="font-size: 13px; color: #94a3b8; line-height: 1.6;">Todas as nossas Ações Promocionais são executadas com total transparência e auditabilidade. A data oficial da Ação Promocional é marcada previamente no painel da ação. Para definir o bilhete ganhador, utilizamos a extração oficial da <strong>Loteria Federal</strong> ou realizamos uma transmissão ao vivo de forma aleatória e auditada através de nossas redes sociais. O ganhador é notificado instantaneamente por e-mail e WhatsApp.</p>
             </div>
         `,
         'qual o prazo para pagamento das cotas reservadas?': `

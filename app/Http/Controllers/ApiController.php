@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Raffle;
-use App\Models\Payment;
-use App\Services\PaymentService;
 use App\Actions\LogActivityAction;
+use App\Models\Payment;
+use App\Models\Raffle;
+use App\Services\PaymentService;
 use Illuminate\Http\Request;
 
 class ApiController extends Controller
 {
     /**
-     * Obter lista de todas as rifas ativas via API.
+     * Obter lista de todas as Ações Promocionais ativas via API.
      */
     public function getRaffles()
     {
@@ -26,7 +26,7 @@ class ApiController extends Controller
     }
 
     /**
-     * Obter detalhes de uma rifa via API.
+     * Obter detalhes de uma Ação Promocional via API.
      */
     public function getRaffleDetails(Raffle $raffle)
     {
@@ -55,6 +55,7 @@ class ApiController extends Controller
             if ($payment) {
                 $paymentService->confirmPayment($payment);
                 $logActivity->execute("Webhook Asaas: Pagamento aprovado ID {$payment->id}", json_encode($request->all()));
+
                 return response()->json(['success' => true, 'message' => 'Payment approved']);
             }
         }
@@ -76,6 +77,7 @@ class ApiController extends Controller
             if ($payment) {
                 $paymentService->confirmPayment($payment);
                 $logActivity->execute("Webhook Mercado Pago: Pagamento aprovado ID {$payment->id}", json_encode($request->all()));
+
                 return response()->json(['success' => true, 'message' => 'Payment approved']);
             }
         }
