@@ -11,72 +11,80 @@
     <!-- Google Fonts Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
-            /* Tema Escuro: Luxury Gold & Obsidian */
-            --bg-primary: #08080a;
-            --bg-sidebar: #020203;
-            --bg-card: rgba(22, 22, 26, 0.78);
-            --border-color: rgba(170, 124, 17, 0.22);
-            --text-primary: #f8fafc;
-            --text-secondary: #a1a1aa;
-            --accent: #aa7c11;
-            --accent-hover: #8c6212;
-            --badge-bg: rgba(170, 124, 17, 0.12);
-            --badge-text: #aa7c11;
+            /* Versão 2 — Graphite & Vermelho Corrida */
+            --bg-primary: #0c0e12;
+            --bg-sidebar: #08090c;
+            --bg-card: rgba(22, 26, 33, 0.92);
+            --border-color: rgba(225, 29, 46, 0.22);
+            --text-primary: #f4f4f5;
+            --text-secondary: #9ca3af;
+            --accent: #e11d2e;
+            --accent-hover: #be1525;
+            --badge-bg: rgba(225, 29, 46, 0.12);
+            --badge-text: #ff4d5a;
         }
 
         body.light-theme {
-            /* Tema Claro: Indigo Lavender */
-            --bg-primary: #f8fafc;
-            --bg-sidebar: #f1f5f9;
-            --bg-card: rgba(255, 255, 255, 0.82);
-            --border-color: rgba(99, 102, 241, 0.28);
-            --text-primary: #0f172a;
-            --text-secondary: #475569;
-            --accent: #6366f1;
-            --accent-hover: #4f46e5;
-            --badge-bg: rgba(99, 102, 241, 0.12);
-            --badge-text: #6366f1;
+            --bg-primary: #f4f5f7;
+            --bg-sidebar: #eceef2;
+            --bg-card: rgba(255, 255, 255, 0.94);
+            --border-color: rgba(225, 29, 46, 0.2);
+            --text-primary: #111827;
+            --text-secondary: #4b5563;
+            --accent: #dc1628;
+            --accent-hover: #b91020;
+            --badge-bg: rgba(220, 22, 40, 0.1);
+            --badge-text: #dc1628;
         }
 
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'DM Sans', sans-serif;
             background-color: var(--bg-primary) !important;
             color: var(--text-primary) !important;
             transition: background-color 0.3s ease, color 0.3s ease;
         }
 
+        h1, h2, h3, .font-display {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
         .glass-card {
             background: var(--bg-card) !important;
             border-color: var(--border-color) !important;
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 8px 28px rgba(0, 0, 0, 0.28);
         }
 
-        /* Mapeamento dinâmico para os elementos do Tailwind */
         .text-slate-400, .text-slate-500, .text-slate-300 {
             color: var(--text-secondary) !important;
         }
         .text-white {
             color: var(--text-primary) !important;
         }
-        .bg-blue-600, .bg-emerald-600, .bg-slate-800, .bg-slate-950 {
+        .bg-blue-600, .bg-emerald-600, .bg-slate-800, .bg-slate-950, .bg-amber-600 {
             background-color: var(--accent) !important;
         }
-        .hover\:bg-blue-500:hover, .hover\:bg-emerald-500:hover, .hover\:bg-slate-700:hover {
+        .hover\:bg-blue-500:hover, .hover\:bg-emerald-500:hover, .hover\:bg-slate-700:hover, .hover\:bg-amber-500:hover {
             background-color: var(--accent-hover) !important;
         }
-        .text-blue-500, .text-blue-400, .text-emerald-400 {
+        .text-blue-500, .text-blue-400, .text-emerald-400, .text-amber-400 {
             color: var(--badge-text) !important;
         }
-        .bg-blue-500\/10, .bg-emerald-500\/10, .bg-blue-600\/10 {
+        .bg-blue-500\/10, .bg-emerald-500\/10, .bg-blue-600\/10, .bg-amber-500\/10, .bg-indigo-500\/10, .bg-purple-500\/10 {
             background-color: var(--badge-bg) !important;
         }
-        .border-blue-500\/30, .border-emerald-500\/30, .border-slate-800 {
+        .border-blue-500\/30, .border-emerald-500\/30, .border-slate-800, .border-amber-500\/30, .border-indigo-500\/20, .border-purple-500\/20 {
             border-color: var(--border-color) !important;
+        }
+        .text-indigo-400, .text-purple-400 {
+            color: var(--badge-text) !important;
+        }
+        .text-amber-950 {
+            color: #fff !important;
         }
     </style>
 </head>
@@ -89,8 +97,8 @@
             <div class="p-2 rounded-xl text-white font-bold tracking-wide shadow-lg" style="background-color: var(--accent);">
                 <i class="fa-solid fa-user-shield text-lg"></i>
             </div>
-            <a href="/" class="text-sm font-bold text-transparent bg-clip-text bg-gradient-to-r" style="background-image: linear-gradient(to right, var(--accent), var(--text-primary));">
-                Ação RR Admin
+            <a href="/" class="text-sm font-bold font-display tracking-tight text-white">
+                RR <span style="color: var(--accent);">Admin</span>
             </a>
         </div>
 
@@ -300,7 +308,7 @@
     </div>
 
     <!-- Bottom Nav Mobile -->
-    <nav class="md:hidden fixed bottom-0 left-0 right-0 h-16 border-t backdrop-blur flex justify-around items-center z-50" style="background-color: var(--bg-sidebar); border-color: var(--border-color);">
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 h-16 border-t backdrop-blur flex justify-around items-center z-50" style="background-color: rgba(8,9,12,0.95); border-color: var(--border-color); padding-bottom: env(safe-area-inset-bottom);">
         <a href="/" class="flex flex-col items-center gap-1 text-slate-400 hover:text-white">
             <i class="fa-solid fa-house text-lg"></i>
             <span class="text-[10px]">Início</span>
@@ -308,6 +316,9 @@
         <a href="{{ route('admin.dashboard') }}" class="flex flex-col items-center gap-1 text-slate-400 hover:text-white">
             <i class="fa-solid fa-chart-line text-lg"></i>
             <span class="text-[10px]">Dashboard</span>
+        </a>
+        <a href="{{ route('admin.raffles.create') }}" class="relative -mt-5 flex items-center justify-center w-12 h-12 rounded-full text-white shadow-lg" style="background: var(--accent); box-shadow: 0 8px 20px rgba(225,29,46,0.4);">
+            <i class="fa-solid fa-plus text-lg"></i>
         </a>
         <a href="{{ route('admin.reports') }}" class="flex flex-col items-center gap-1 text-slate-400 hover:text-white">
             <i class="fa-solid fa-chart-pie text-lg"></i>

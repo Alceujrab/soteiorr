@@ -21,7 +21,12 @@ class RaffleController extends Controller
      */
     public function index()
     {
-        $raffles = Raffle::where('status', 'active')->get();
+        $raffles = Raffle::where('status', 'active')
+            ->withCount([
+                'tickets as paid_tickets_count' => fn ($q) => $q->where('status', 'paid'),
+                'tickets as taken_tickets_count' => fn ($q) => $q->whereIn('status', ['paid', 'reserved']),
+            ])
+            ->get();
         $banners = Banner::where('active', true)->get();
 
         // Se não houver nenhum banner, cria alguns banners padrão para exibição inicial premium

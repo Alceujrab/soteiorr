@@ -11,47 +11,52 @@
     <!-- Google Fonts Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* Tema Escuro: Luxury Gold & Obsidian */
-            --bg-primary: #08080a;
-            --bg-sidebar: #020203;
-            --bg-card: rgba(22, 22, 26, 0.78);
-            --border-color: rgba(170, 124, 17, 0.22);
-            --text-primary: #f8fafc;
-            --text-secondary: #a1a1aa;
-            --accent: #aa7c11;
-            --accent-hover: #8c6212;
-            --badge-bg: rgba(170, 124, 17, 0.12);
-            --badge-text: #aa7c11;
+            /* Versão 2 — Graphite & Vermelho Corrida */
+            --bg-primary: #0c0e12;
+            --bg-sidebar: #08090c;
+            --bg-card: rgba(22, 26, 33, 0.92);
+            --border-color: rgba(225, 29, 46, 0.22);
+            --text-primary: #f4f4f5;
+            --text-secondary: #9ca3af;
+            --accent: #e11d2e;
+            --accent-hover: #be1525;
+            --badge-bg: rgba(225, 29, 46, 0.12);
+            --badge-text: #ff4d5a;
+            --metal: #8b939e;
         }
 
         body.light-theme {
-            /* Tema Claro: Indigo Lavender */
-            --bg-primary: #f8fafc;
-            --bg-sidebar: #e2e8f0;
-            --bg-card: rgba(255, 255, 255, 0.82);
-            --border-color: rgba(99, 102, 241, 0.28);
-            --text-primary: #0f172a;
-            --text-secondary: #475569;
-            --accent: #6366f1;
-            --accent-hover: #4f46e5;
-            --badge-bg: rgba(99, 102, 241, 0.12);
-            --badge-text: #6366f1;
+            --bg-primary: #f4f5f7;
+            --bg-sidebar: #eceef2;
+            --bg-card: rgba(255, 255, 255, 0.94);
+            --border-color: rgba(225, 29, 46, 0.2);
+            --text-primary: #111827;
+            --text-secondary: #4b5563;
+            --accent: #dc1628;
+            --accent-hover: #b91020;
+            --badge-bg: rgba(220, 22, 40, 0.1);
+            --badge-text: #dc1628;
+            --metal: #6b7280;
         }
 
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'DM Sans', sans-serif;
             background-color: var(--bg-primary) !important;
             color: var(--text-primary) !important;
             transition: background-color 0.3s ease, color 0.3s ease;
         }
 
+        h1, h2, h3, .font-display {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
         .glass-card {
             background: var(--bg-card) !important;
             border-color: var(--border-color) !important;
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 8px 28px rgba(0, 0, 0, 0.28);
         }
 
         /* Mapeamento dinâmico para os elementos do Tailwind */
@@ -61,20 +66,23 @@
         .text-white {
             color: var(--text-primary) !important;
         }
-        .bg-blue-600, .bg-emerald-600, .bg-slate-800, .bg-slate-950 {
+        .bg-blue-600, .bg-emerald-600, .bg-slate-800, .bg-slate-950, .bg-amber-600 {
             background-color: var(--accent) !important;
         }
-        .hover\:bg-blue-500:hover, .hover\:bg-emerald-500:hover, .hover\:bg-slate-700:hover {
+        .hover\:bg-blue-500:hover, .hover\:bg-emerald-500:hover, .hover\:bg-slate-700:hover, .hover\:bg-amber-500:hover {
             background-color: var(--accent-hover) !important;
         }
-        .text-blue-500, .text-blue-400, .text-emerald-400 {
+        .text-blue-500, .text-blue-400, .text-emerald-400, .text-amber-400 {
             color: var(--badge-text) !important;
         }
-        .bg-blue-500\/10, .bg-emerald-500\/10, .bg-blue-600\/10 {
+        .bg-blue-500\/10, .bg-emerald-500\/10, .bg-blue-600\/10, .bg-amber-500\/10 {
             background-color: var(--badge-bg) !important;
         }
-        .border-blue-500\/30, .border-emerald-500\/30, .border-slate-800 {
+        .border-blue-500\/30, .border-emerald-500\/30, .border-slate-800, .border-amber-500\/30 {
             border-color: var(--border-color) !important;
+        }
+        .text-amber-950 {
+            color: #fff !important;
         }
     </style>
 </head>
@@ -88,21 +96,22 @@
                     <div class="p-2 rounded-xl text-white font-bold tracking-wide" style="background-color: var(--accent);">
                         <i class="fa-solid fa-car-side text-lg"></i>
                     </div>
-                    <a href="/" class="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r" style="background-image: linear-gradient(to right, var(--accent), var(--text-primary));">
-                        Ação RR Veículos
+                    <a href="/" class="text-lg font-bold font-display tracking-tight text-white">
+                        RR <span style="color: var(--accent);">Veículos</span>
                     </a>
                 </div>
-                <div class="hidden md:flex items-center gap-4">
+                <div class="hidden md:flex items-center gap-5">
                     <!-- Theme Toggle Button -->
                     <button onclick="toggleTheme()" class="p-2 rounded-lg text-slate-400 hover:text-white transition" title="Alternar Tema">
                         <i class="fa-solid fa-circle-half-stroke text-lg"></i>
                     </button>
 
-                    <a href="/" class="text-sm font-medium text-slate-300 hover:text-white transition">Ações Promocionais Ativas</a>
-                    <a href="{{ route('pages.about') }}" class="text-sm font-medium text-slate-300 hover:text-white transition">Sobre Nós</a>
-                    <a href="{{ route('pages.contact') }}" class="text-sm font-medium text-slate-300 hover:text-white transition">Contato</a>
-                    <a href="{{ route('pages.faqs') }}" class="text-sm font-medium text-slate-300 hover:text-white transition">Dúvidas</a>
-                    <a href="{{ route('pages.regulation') }}" class="text-sm font-medium text-slate-300 hover:text-white transition">Regulamento</a>
+                    <a href="/" class="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-300 hover:text-white transition">Início</a>
+                    <a href="#pacotes" class="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-300 hover:text-white transition">Pacotes</a>
+                    <a href="#acoes-promocionais" class="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-300 hover:text-white transition">Ações</a>
+                    <a href="{{ route('pages.faqs') }}" class="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-300 hover:text-white transition">FAQ</a>
+                    <a href="{{ route('pages.regulation') }}" class="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-300 hover:text-white transition">Regulamento</a>
+                    <a href="{{ route('pages.contact') }}" class="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-300 hover:text-white transition">Contato</a>
                     @auth
                         @if(in_array(auth()->user()->role, ['cliente', 'vendedor']))
                             <a href="{{ route('customer.dashboard') }}" class="text-sm font-medium text-blue-400 hover:text-blue-300 transition flex items-center gap-1">
@@ -214,7 +223,7 @@
     </div>
 
     <!-- Main Public Area -->
-    <main class="flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 pb-16">
+    <main class="flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 pb-28 md:pb-16">
         @if(session('success'))
             <div class="mb-6 p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 flex items-center gap-3">
                 <i class="fa-solid fa-circle-check text-lg"></i>
@@ -288,6 +297,46 @@
         </div>
     </footer>
 
+    <!-- Mobile bottom navigation -->
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 z-50 border-t backdrop-blur-xl" style="background-color: rgba(8,9,12,0.94); border-color: var(--border-color); padding-bottom: env(safe-area-inset-bottom);">
+        <div class="h-16 flex justify-around items-center px-1">
+            <a href="/" class="flex flex-col items-center gap-1 min-w-[3.5rem] {{ request()->routeIs('raffles.index') ? 'text-white' : 'text-slate-400' }}">
+                <i class="fa-solid fa-house text-base" style="{{ request()->routeIs('raffles.index') ? 'color: var(--accent);' : '' }}"></i>
+                <span class="text-[10px] font-medium">Início</span>
+            </a>
+            <a href="/#pacotes" class="flex flex-col items-center gap-1 min-w-[3.5rem] text-slate-400">
+                <i class="fa-solid fa-boxes-stacked text-base"></i>
+                <span class="text-[10px] font-medium">Pacotes</span>
+            </a>
+            <a href="/#acoes-promocionais" class="flex flex-col items-center gap-1 min-w-[3.5rem] text-slate-400">
+                <i class="fa-solid fa-car text-base"></i>
+                <span class="text-[10px] font-medium">Ações</span>
+            </a>
+            <a href="{{ route('pages.regulation') }}" class="flex flex-col items-center gap-1 min-w-[3.5rem] {{ request()->routeIs('pages.regulation') ? 'text-white' : 'text-slate-400' }}">
+                <i class="fa-solid fa-scale-balanced text-base" style="{{ request()->routeIs('pages.regulation') ? 'color: var(--accent);' : '' }}"></i>
+                <span class="text-[10px] font-medium">Regras</span>
+            </a>
+            @auth
+                @if(in_array(auth()->user()->role, ['cliente', 'vendedor']))
+                    <a href="{{ route('customer.dashboard') }}" class="flex flex-col items-center gap-1 min-w-[3.5rem] text-slate-400">
+                        <i class="fa-solid fa-user text-base"></i>
+                        <span class="text-[10px] font-medium">Perfil</span>
+                    </a>
+                @else
+                    <a href="{{ route('admin.dashboard') }}" class="flex flex-col items-center gap-1 min-w-[3.5rem] text-slate-400">
+                        <i class="fa-solid fa-gauge-high text-base"></i>
+                        <span class="text-[10px] font-medium">Admin</span>
+                    </a>
+                @endif
+            @else
+                <a href="{{ route('login') }}" class="flex flex-col items-center gap-1 min-w-[3.5rem] text-slate-400">
+                    <i class="fa-solid fa-right-to-bracket text-base"></i>
+                    <span class="text-[10px] font-medium">Entrar</span>
+                </a>
+            @endauth
+        </div>
+    </nav>
+
     <!-- Back to top (hidden near top; stays clear of mobile nav/drawer) -->
     <button
         type="button"
@@ -296,7 +345,7 @@
         aria-label="Voltar ao topo"
         title="Voltar ao topo"
         class="fixed z-40 opacity-0 pointer-events-none translate-y-2 transition-all duration-300 ease-out
-               right-4 bottom-5 sm:right-6 sm:bottom-8
+               right-4 bottom-20 md:right-6 md:bottom-8
                w-10 h-10 sm:w-11 sm:h-11
                rounded-full border shadow-lg backdrop-blur
                flex items-center justify-center

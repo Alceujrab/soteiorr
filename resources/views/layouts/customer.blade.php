@@ -11,50 +11,52 @@
     <!-- Google Fonts Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* Tema Escuro: Luxury Gold & Obsidian */
-            --bg-primary: #08080a;
-            --bg-sidebar: #020203;
-            --bg-card: rgba(22, 22, 26, 0.78);
-            --border-color: rgba(170, 124, 17, 0.22);
-            --text-primary: #f8fafc;
-            --text-secondary: #a1a1aa;
-            --accent: #aa7c11;
-            --accent-hover: #8c6212;
-            --badge-bg: rgba(170, 124, 17, 0.12);
-            --badge-text: #aa7c11;
+            /* Versão 2 — Graphite & Vermelho Corrida */
+            --bg-primary: #0c0e12;
+            --bg-sidebar: #08090c;
+            --bg-card: rgba(22, 26, 33, 0.92);
+            --border-color: rgba(225, 29, 46, 0.22);
+            --text-primary: #f4f4f5;
+            --text-secondary: #9ca3af;
+            --accent: #e11d2e;
+            --accent-hover: #be1525;
+            --badge-bg: rgba(225, 29, 46, 0.12);
+            --badge-text: #ff4d5a;
         }
 
         body.light-theme {
-            /* Tema Claro: Indigo Lavender */
-            --bg-primary: #f8fafc;
-            --bg-sidebar: #f1f5f9;
-            --bg-card: rgba(255, 255, 255, 0.82);
-            --border-color: rgba(99, 102, 241, 0.28);
-            --text-primary: #0f172a;
-            --text-secondary: #475569;
-            --accent: #6366f1;
-            --accent-hover: #4f46e5;
-            --badge-bg: rgba(99, 102, 241, 0.12);
-            --badge-text: #6366f1;
+            --bg-primary: #f4f5f7;
+            --bg-sidebar: #eceef2;
+            --bg-card: rgba(255, 255, 255, 0.94);
+            --border-color: rgba(225, 29, 46, 0.2);
+            --text-primary: #111827;
+            --text-secondary: #4b5563;
+            --accent: #dc1628;
+            --accent-hover: #b91020;
+            --badge-bg: rgba(220, 22, 40, 0.1);
+            --badge-text: #dc1628;
         }
 
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'DM Sans', sans-serif;
             background-color: var(--bg-primary) !important;
             color: var(--text-primary) !important;
             transition: background-color 0.3s ease, color 0.3s ease;
         }
 
+        h1, h2, h3, .font-display {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
         .glass-card {
             background: var(--bg-card) !important;
             border-color: var(--border-color) !important;
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 8px 28px rgba(0, 0, 0, 0.28);
         }
 
-        /* Mapeamento dinâmico para os elementos do Tailwind */
         .text-slate-400, .text-slate-500, .text-slate-300 {
             color: var(--text-secondary) !important;
         }

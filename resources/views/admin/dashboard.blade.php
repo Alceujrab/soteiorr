@@ -7,8 +7,8 @@
     <!-- Header -->
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-800 pb-6">
         <div>
-            <h1 class="text-3xl font-extrabold text-white flex items-center gap-2">
-                <i class="fa-solid fa-chart-line text-blue-500"></i> Painel Administrativo
+            <h1 class="text-3xl font-extrabold font-display text-white flex items-center gap-2">
+                <i class="fa-solid fa-chart-line" style="color: var(--accent);"></i> Painel Administrativo
             </h1>
             <p class="text-slate-400 text-sm mt-1">
                 Acompanhe as vendas, receitas e realize Ações Promocionais em tempo real.
@@ -288,8 +288,8 @@ document.addEventListener("DOMContentLoaded", function() {
     
     // Gradiente para a linha
     const gradient = ctx.createLinearGradient(0, 0, 0, 400);
-    gradient.addColorStop(0, 'rgba(37, 99, 235, 0.4)');
-    gradient.addColorStop(1, 'rgba(37, 99, 235, 0.0)');
+    gradient.addColorStop(0, 'rgba(225, 29, 46, 0.4)');
+    gradient.addColorStop(1, 'rgba(225, 29, 46, 0.0)');
 
     new Chart(ctx, {
         type: 'line',
@@ -298,12 +298,12 @@ document.addEventListener("DOMContentLoaded", function() {
             datasets: [{
                 label: 'Receita Diária (R$)',
                 data: [350, 480, 220, 690, 820, 1100, 950],
-                borderColor: '#2563eb',
+                borderColor: '#e11d2e',
                 borderWidth: 3,
                 backgroundColor: gradient,
                 fill: true,
                 tension: 0.4,
-                pointBackgroundColor: '#3b82f6',
+                pointBackgroundColor: '#ff4d5a',
                 pointHoverRadius: 6
             }]
         },
