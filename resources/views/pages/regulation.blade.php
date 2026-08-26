@@ -75,6 +75,20 @@
             }
         });
 
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (!entry.isIntersecting) {
+                    return;
+                }
+                links.forEach(({ id, el }) => {
+                    el.classList.toggle('is-active', id === entry.target.id);
+                });
+            });
+        }, {
+            rootMargin: '-20% 0px -65% 0px',
+            threshold: 0.01,
+        });
+
         headings.forEach((heading) => observer.observe(heading));
     })();
 </script>
