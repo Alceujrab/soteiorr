@@ -2,12 +2,12 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Model;
 
 #[Fillable([
-    'user_id', 'amount', 'gateway', 'gateway_transaction_id', 
-    'status', 'payment_method', 'pix_qr_code', 'pix_qr_code_url'
+    'user_id', 'raffle_package_id', 'amount', 'gateway', 'gateway_transaction_id',
+    'status', 'payment_method', 'pix_qr_code', 'pix_qr_code_url',
 ])]
 class Payment extends Model
 {
@@ -26,5 +26,10 @@ class Payment extends Model
     public function tickets()
     {
         return $this->hasMany(Ticket::class);
+    }
+
+    public function package()
+    {
+        return $this->belongsTo(RafflePackage::class, 'raffle_package_id');
     }
 }

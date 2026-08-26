@@ -6,6 +6,7 @@ use App\Actions\ReserveTicketsAction;
 use App\Models\Banner;
 use App\Models\Payment;
 use App\Models\Raffle;
+use App\Models\RafflePackage;
 use App\Models\Setting;
 use App\Models\Ticket;
 use App\Models\User;
@@ -22,6 +23,7 @@ class RaffleController extends Controller
     public function index()
     {
         $raffles = Raffle::where('status', 'active')
+            ->with('packages')
             ->withCount([
                 'tickets as paid_tickets_count' => fn ($q) => $q->where('status', 'paid'),
                 'tickets as taken_tickets_count' => fn ($q) => $q->whereIn('status', ['paid', 'reserved']),
@@ -50,16 +52,17 @@ class RaffleController extends Controller
     }
 
     /**
-     * Exibir detalhes de uma Ação Promocional e o grid de números.
+     * Exibir detalhes de uma Ação Promocional e os pacotes de participação.
      */
     public function show(Raffle $raffle)
     {
-        // Carregar bilhetes ocupados (reservados e pagos)
-        $takenTickets = Ticket::where('raffle_id', $raffle->id)
-            ->get()
-            ->keyBy('number');
+        $raffle->load('packages');
 
-        return view('raffles.show', compact('raffle', 'takenTickets'));
+        $takenCount = Ticket::where('raffle_id', $raffle->id)
+            ->whereIn('status', ['paid', 'reserved'])
+            ->count();
+
+        return view('raffles.show', compact('raffle', 'takenCount'));
     }
 
     /**
@@ -67,43 +70,14 @@ class RaffleController extends Controller
      */
     public function buy(Request $request, Raffle $raffle, ReserveTicketsAction $reserveAction, PaymentService $paymentService)
     {
-        $mode = $request->input('mode', 'manual');
+        $request->validate([
+            'package_id' => 'required|integer|exists:raffle_packages,id',
+        ]);
 
-        if ($mode === 'auto') {
-            $request->validate([
-                'quantity' => 'required|integer|min:1|max:100',
-            ]);
+        $package = RafflePackage::where('raffle_id', $raffle->id)
+            ->where('id', $request->integer('package_id'))
+            ->firstOrFail();
 
-            $quantity = (int) $request->input('quantity');
-
-            // Encontrar números disponíveis
-            $takenNumbers = Ticket::where('raffle_id', $raffle->id)
-                ->pluck('number')
-                ->toArray();
-
-            $availableNumbers = [];
-            for ($i = 1; $i <= $raffle->total_numbers; $i++) {
-                if (! in_array($i, $takenNumbers)) {
-                    $availableNumbers[] = $i;
-                }
-            }
-
-            if (count($availableNumbers) < $quantity) {
-                return redirect()->back()->withErrors(['error' => 'Não há números disponíveis suficientes para a quantidade solicitada.']);
-            }
-
-            // Selecionar aleatoriamente
-            shuffle($availableNumbers);
-            $numbers = array_slice($availableNumbers, 0, $quantity);
-        } else {
-            $request->validate([
-                'numbers' => 'required|array|min:1',
-                'numbers.*' => 'integer',
-            ]);
-            $numbers = $request->input('numbers');
-        }
-
-        // Simular login do cliente de teste se não estiver logado
         if (! Auth::check()) {
             $user = User::where('role', 'cliente')->first() ?: User::first();
             Auth::login($user);
@@ -112,14 +86,19 @@ class RaffleController extends Controller
         $user = Auth::user();
 
         try {
-            // 1. Reservar os números
+            $numbers = $reserveAction->pickRandomAvailableNumbers($raffle, $package->numbers_qty);
             $tickets = $reserveAction->execute($user, $raffle, $numbers);
-
-            // 2. Criar o pagamento correspondente
-            $payment = $paymentService->createPayment($user, $tickets);
+            $payment = $paymentService->createPayment(
+                $user,
+                $tickets,
+                'asaas',
+                'pix',
+                (float) $package->price,
+                $package->id
+            );
 
             return redirect()->route('payments.show', $payment->id)
-                ->with('success', 'Números reservados! Efetue o pagamento PIX para confirmar.');
+                ->with('success', "Pacote {$package->name} reservado! Efetue o pagamento PIX para confirmar.");
         } catch (\Exception $e) {
             return redirect()->back()
                 ->withErrors(['error' => $e->getMessage()]);

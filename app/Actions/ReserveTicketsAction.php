@@ -14,19 +14,17 @@ class ReserveTicketsAction
     /**
      * Reservar números para um usuário em uma Ação Promocional específica.
      *
-     * @return Collection
+     * @return Collection<int, Ticket>
      *
      * @throws Exception
      */
-    public function execute(User $user, Raffle $raffle, array $numbers)
+    public function execute(User $user, Raffle $raffle, array $numbers): Collection
     {
-        // Validar se há números repetidos na requisição
         if (count($numbers) !== count(array_unique($numbers))) {
             throw new Exception('Existem números duplicados na sua seleção.');
         }
 
         return DB::transaction(function () use ($user, $raffle, $numbers) {
-            // Verificar se os números já estão reservados ou pagos
             $existingTickets = Ticket::where('raffle_id', $raffle->id)
                 ->whereIn('number', $numbers)
                 ->lockForUpdate()
@@ -38,15 +36,14 @@ class ReserveTicketsAction
                 throw new Exception("Os seguintes números já estão ocupados: {$duplicates}");
             }
 
-            // Validar limites dos números
             foreach ($numbers as $number) {
                 if ($number < 1 || $number > $raffle->total_numbers) {
                     throw new Exception("O número {$number} é inválido para esta Ação Promocional.");
                 }
             }
 
-            // Criar os bilhetes
-            $tickets = collect();
+            $tickets = new Collection;
+
             foreach ($numbers as $number) {
                 $ticket = Ticket::create([
                     'raffle_id' => $raffle->id,
@@ -59,5 +56,69 @@ class ReserveTicketsAction
 
             return $tickets;
         });
+    }
+
+    /**
+     * Seleciona números disponíveis de forma aleatória, sem percorrer 1..N.
+     *
+     * @return list<int>
+     *
+     * @throws Exception
+     */
+    public function pickRandomAvailableNumbers(Raffle $raffle, int $quantity): array
+    {
+        if ($quantity < 1) {
+            throw new Exception('A quantidade de números deve ser maior que zero.');
+        }
+
+        $takenCount = Ticket::where('raffle_id', $raffle->id)->count();
+        $availableCount = $raffle->total_numbers - $takenCount;
+
+        if ($availableCount < $quantity) {
+            throw new Exception('Não há números disponíveis suficientes para o pacote selecionado.');
+        }
+
+        $takenSet = array_flip(
+            Ticket::where('raffle_id', $raffle->id)->pluck('number')->all()
+        );
+
+        $picked = [];
+        $attempts = 0;
+        $maxAttempts = max($quantity * 80, 2000);
+
+        while (count($picked) < $quantity && $attempts < $maxAttempts) {
+            $attempts++;
+            $candidate = random_int(1, $raffle->total_numbers);
+
+            if (isset($takenSet[$candidate]) || isset($picked[$candidate])) {
+                continue;
+            }
+
+            $picked[$candidate] = $candidate;
+        }
+
+        if (count($picked) < $quantity) {
+            // Fallback para ações quase esgotadas: monta lista residual.
+            $remaining = [];
+            for ($i = 1; $i <= $raffle->total_numbers; $i++) {
+                if (! isset($takenSet[$i]) && ! isset($picked[$i])) {
+                    $remaining[] = $i;
+                }
+            }
+
+            shuffle($remaining);
+            foreach ($remaining as $number) {
+                $picked[$number] = $number;
+                if (count($picked) >= $quantity) {
+                    break;
+                }
+            }
+        }
+
+        if (count($picked) < $quantity) {
+            throw new Exception('Não foi possível selecionar números disponíveis suficientes.');
+        }
+
+        return array_values($picked);
     }
 }

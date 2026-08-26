@@ -2,30 +2,37 @@
 
 namespace App\Services;
 
-use App\Models\User;
 use App\Models\Payment;
-use App\Models\Ticket;
 use App\Models\Setting;
+use App\Models\Ticket;
+use App\Models\User;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class PaymentService
 {
     /**
      * Criar um novo pagamento (PIX ou Boleto) associado aos bilhetes reservados.
+     *
+     * @param  Collection<int, Ticket>|array<int, Ticket>  $tickets
      */
-    public function createPayment(User $user, $tickets, string $gateway = 'asaas', string $paymentMethod = 'pix')
+    public function createPayment(User $user, $tickets, string $gateway = 'asaas', string $paymentMethod = 'pix', ?float $fixedAmount = null, ?int $rafflePackageId = null)
     {
-        return DB::transaction(function () use ($user, $tickets, $gateway, $paymentMethod) {
-            $totalAmount = 0;
-            foreach ($tickets as $ticket) {
-                $totalAmount += $ticket->raffle->price;
+        return DB::transaction(function () use ($user, $tickets, $gateway, $paymentMethod, $fixedAmount, $rafflePackageId) {
+            if ($fixedAmount !== null) {
+                $totalAmount = $fixedAmount;
+            } else {
+                $totalAmount = 0;
+                foreach ($tickets as $ticket) {
+                    $totalAmount += $ticket->raffle->price;
+                }
             }
 
-            $transactionId = 'tx_' . Str::random(12);
-            $pixKey = "";
-            
+            $transactionId = 'tx_'.Str::random(12);
+            $pixKey = '';
+
             // Verificar gateway escolhido e configurado
             if ($gateway === 'itau' && Setting::get('itau_enabled') === '1') {
                 $pixData = $this->createItauPix($totalAmount);
@@ -43,21 +50,21 @@ class PaymentService
 
             // Fallback para simulação se as chaves/conexão falharem ou não estiverem configuradas
             if (empty($pixKey)) {
-                $pixKey = "00020101021226870014br.gov.bcb.pix2565qr.example.com/pix/" . $transactionId . "5204000053039865405" . number_format($totalAmount, 2, '.', '') . "5802BR5913RR_VEICULOS6009SAO_PAULO62070503***6304" . Str::upper(Str::random(4));
+                $pixKey = '00020101021226870014br.gov.bcb.pix2565qr.example.com/pix/'.$transactionId.'5204000053039865405'.number_format($totalAmount, 2, '.', '').'5802BR5913RR_VEICULOS6009SAO_PAULO62070503***6304'.Str::upper(Str::random(4));
             }
 
             $payment = Payment::create([
                 'user_id' => $user->id,
+                'raffle_package_id' => $rafflePackageId,
                 'amount' => $totalAmount,
                 'gateway' => $gateway,
                 'gateway_transaction_id' => $transactionId,
                 'status' => 'pending',
                 'payment_method' => $paymentMethod,
                 'pix_qr_code' => $pixKey,
-                'pix_qr_code_url' => "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=" . urlencode($pixKey),
+                'pix_qr_code_url' => 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data='.urlencode($pixKey),
             ]);
 
-            // Atualizar os bilhetes com o ID do pagamento
             foreach ($tickets as $ticket) {
                 $ticket->update([
                     'payment_id' => $payment->id,
@@ -102,8 +109,9 @@ class PaymentService
         $keyPath = Setting::get('itau_key_path');
         $pixKey = Setting::get('itau_pix_key');
 
-        if (!$clientId || !$clientSecret || !$certPath || !$keyPath) {
+        if (! $clientId || ! $clientSecret || ! $certPath || ! $keyPath) {
             Log::warning('Configurações do Itaú Pix incompletas. Utilizando simulação.');
+
             return null;
         }
 
@@ -113,14 +121,15 @@ class PaymentService
             $postFields = http_build_query([
                 'grant_type' => 'client_credentials',
                 'client_id' => $clientId,
-                'client_secret' => $clientSecret
+                'client_secret' => $clientSecret,
             ]);
 
             $authResponse = $this->executeCurlWithCert($tokenUrl, $postFields, [], $certPath, $keyPath);
             $authData = json_decode($authResponse, true);
 
-            if (!isset($authData['access_token'])) {
-                Log::error('Falha ao autenticar na API do Itaú: ' . $authResponse);
+            if (! isset($authData['access_token'])) {
+                Log::error('Falha ao autenticar na API do Itaú: '.$authResponse);
+
                 return null;
             }
 
@@ -132,12 +141,12 @@ class PaymentService
                 'calendario' => ['expiracao' => 3600],
                 'valor' => ['original' => number_format($amount, 2, '.', '')],
                 'chave' => $pixKey,
-                'solicitacaoPagador' => 'Compra de cotas no Acao RR'
+                'solicitacaoPagador' => 'Compra de cotas no Acao RR',
             ]);
 
             $headers = [
-                'Authorization: Bearer ' . $accessToken,
-                'Content-Type: application/json'
+                'Authorization: Bearer '.$accessToken,
+                'Content-Type: application/json',
             ];
 
             $cobResponse = $this->executeCurlWithCert($cobUrl, $body, $headers, $certPath, $keyPath);
@@ -147,10 +156,12 @@ class PaymentService
                 return $cobData;
             }
 
-            Log::error('Erro ao gerar cobrança Pix no Itaú: ' . $cobResponse);
+            Log::error('Erro ao gerar cobrança Pix no Itaú: '.$cobResponse);
+
             return null;
         } catch (\Exception $e) {
-            Log::error('Exceção ao conectar no Itaú Pix: ' . $e->getMessage());
+            Log::error('Exceção ao conectar no Itaú Pix: '.$e->getMessage());
+
             return null;
         }
     }
@@ -166,8 +177,9 @@ class PaymentService
         $keyPath = Setting::get('santander_key_path');
         $pixKey = Setting::get('santander_pix_key');
 
-        if (!$clientId || !$clientSecret || !$certPath || !$keyPath) {
+        if (! $clientId || ! $clientSecret || ! $certPath || ! $keyPath) {
             Log::warning('Configurações do Santander Pix incompletas. Utilizando simulação.');
+
             return null;
         }
 
@@ -177,14 +189,15 @@ class PaymentService
             $postFields = http_build_query([
                 'grant_type' => 'client_credentials',
                 'client_id' => $clientId,
-                'client_secret' => $clientSecret
+                'client_secret' => $clientSecret,
             ]);
 
             $authResponse = $this->executeCurlWithCert($tokenUrl, $postFields, [], $certPath, $keyPath);
             $authData = json_decode($authResponse, true);
 
-            if (!isset($authData['access_token'])) {
-                Log::error('Falha ao autenticar na API do Santander: ' . $authResponse);
+            if (! isset($authData['access_token'])) {
+                Log::error('Falha ao autenticar na API do Santander: '.$authResponse);
+
                 return null;
             }
 
@@ -192,18 +205,18 @@ class PaymentService
 
             // 2. Criar Cobrança Pix Cob v2 (txid aleatório)
             $txid = Str::lower(Str::random(32));
-            $cobUrl = 'https://api.santander.com.br/pix_recebimentos/v2/cob/' . $txid;
-            
+            $cobUrl = 'https://api.santander.com.br/pix_recebimentos/v2/cob/'.$txid;
+
             $body = json_encode([
                 'calendario' => ['expiracao' => 3600],
                 'valor' => ['original' => number_format($amount, 2, '.', '')],
                 'chave' => $pixKey,
-                'solicitacaoPagador' => 'Compra de cotas no Acao RR'
+                'solicitacaoPagador' => 'Compra de cotas no Acao RR',
             ]);
 
             $headers = [
-                'Authorization: Bearer ' . $accessToken,
-                'Content-Type: application/json'
+                'Authorization: Bearer '.$accessToken,
+                'Content-Type: application/json',
             ];
 
             // Santander exige PUT para TXID pré-determinado ou POST dependendo do fluxo
@@ -214,10 +227,12 @@ class PaymentService
                 return $cobData;
             }
 
-            Log::error('Erro ao gerar cobrança Pix no Santander: ' . $cobResponse);
+            Log::error('Erro ao gerar cobrança Pix no Santander: '.$cobResponse);
+
             return null;
         } catch (\Exception $e) {
-            Log::error('Exceção ao conectar no Santander Pix: ' . $e->getMessage());
+            Log::error('Exceção ao conectar no Santander Pix: '.$e->getMessage());
+
             return null;
         }
     }
@@ -236,25 +251,25 @@ class PaymentService
         // Certificados mTLS exigidos pelos bancos tradicionais
         curl_setopt($ch, CURLOPT_SSLCERT, $certPath);
         curl_setopt($ch, CURLOPT_SSLKEY, $keyPath);
-        
+
         // Evitar falha de verificação SSL em servidores de teste
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
 
-        if (!empty($headers)) {
+        if (! empty($headers)) {
             curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         }
 
         $response = curl_exec($ch);
-        
+
         if (curl_errno($ch)) {
             $error = curl_error($ch);
             curl_close($ch);
-            throw new \Exception("Erro na chamada cURL mTLS: " . $error);
+            throw new \Exception('Erro na chamada cURL mTLS: '.$error);
         }
 
         curl_close($ch);
+
         return $response;
     }
 }
-

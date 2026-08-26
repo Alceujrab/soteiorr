@@ -84,26 +84,25 @@
 
         <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
             @php
-                $packages = [
-                    ['name' => 'Essencial', 'numbers' => 20, 'price' => '9,90', 'note' => 'Para começar', 'featured' => false],
-                    ['name' => 'Popular', 'numbers' => 50, 'price' => '21,90', 'note' => 'Mais chances', 'featured' => false],
-                    ['name' => 'Avançado', 'numbers' => 120, 'price' => '44,90', 'note' => 'Mais escolhido', 'featured' => true],
-                    ['name' => 'Premium', 'numbers' => 200, 'price' => '69,90', 'note' => 'Melhor custo-benefício', 'featured' => false],
-                ];
+                $homePackages = $heroRaffle && $heroRaffle->packages->isNotEmpty()
+                    ? $heroRaffle->packages
+                    : collect(\App\Models\RafflePackage::defaultDefinitions())->map(fn ($p) => (object) $p);
             @endphp
 
-            @foreach($packages as $package)
-                <div class="relative glass-card rounded-2xl p-5 border flex flex-col gap-4 {{ $package['featured'] ? 'ring-1' : '' }}" style="{{ $package['featured'] ? 'ring-color: var(--accent); border-color: rgba(225,29,46,0.45);' : '' }}">
-                    @if($package['featured'])
+            @foreach($homePackages as $package)
+                <div class="relative glass-card rounded-2xl p-5 border flex flex-col gap-4 {{ $package->is_featured ? 'ring-1' : '' }}" style="{{ $package->is_featured ? 'ring-color: var(--accent); border-color: rgba(225,29,46,0.45);' : '' }}">
+                    @if($package->is_featured)
                         <span class="absolute -top-2.5 left-4 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded text-white" style="background: var(--accent);">Mais escolhido</span>
                     @endif
                     <div>
-                        <div class="text-xs font-bold uppercase tracking-[0.14em] text-slate-500">{{ $package['name'] }}</div>
-                        <div class="font-display text-3xl font-bold text-white mt-2">R$ {{ $package['price'] }}</div>
-                        <div class="text-sm text-slate-400 mt-1">{{ $package['numbers'] }} números</div>
+                        <div class="text-xs font-bold uppercase tracking-[0.14em] text-slate-500">{{ $package->name }}</div>
+                        <div class="font-display text-3xl font-bold text-white mt-2">R$ {{ number_format((float) $package->price, 2, ',', '.') }}</div>
+                        <div class="text-sm text-slate-400 mt-1">{{ $package->numbers_qty }} números</div>
                     </div>
-                    <p class="text-xs text-slate-500">{{ $package['note'] }}</p>
-                    <a href="{{ $firstRaffleUrl }}" class="mt-auto w-full text-center py-2.5 rounded-xl text-sm font-bold transition {{ $package['featured'] ? 'text-white' : 'border text-white hover:bg-white/5' }}" style="{{ $package['featured'] ? 'background: var(--accent);' : 'border-color: var(--border-color);' }}">
+                    @if(!empty($package->highlight))
+                        <p class="text-xs text-slate-500">{{ $package->highlight }}</p>
+                    @endif
+                    <a href="{{ $firstRaffleUrl }}" class="mt-auto w-full text-center py-2.5 rounded-xl text-sm font-bold transition {{ $package->is_featured ? 'text-white' : 'border text-white hover:bg-white/5' }}" style="{{ $package->is_featured ? 'background: var(--accent);' : 'border-color: var(--border-color);' }}">
                         Comprar
                     </a>
                 </div>
@@ -130,7 +129,7 @@
                     <div class="h-52 w-full relative overflow-hidden bg-black">
                         <img src="{{ $raffle->image_url }}" alt="{{ $raffle->title }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
                         <div class="absolute top-4 right-4 text-white font-bold px-3 py-1 rounded-lg text-sm shadow" style="background: var(--accent);">
-                            R$ {{ number_format($raffle->price, 2, ',', '.') }}
+                            a partir de R$ {{ number_format($raffle->startingPrice(), 2, ',', '.') }}
                         </div>
                     </div>
                     <div class="p-5 sm:p-6 flex-grow flex flex-col gap-4">
@@ -143,7 +142,7 @@
 
                         <div class="space-y-1.5">
                             <div class="flex justify-between text-[11px] text-slate-500">
-                                <span>{{ $sold }} / {{ $raffle->total_numbers }} números</span>
+                                <span>{{ number_format($sold, 0, ',', '.') }} / {{ number_format($raffle->total_numbers, 0, ',', '.') }} números</span>
                                 <span>{{ $pct }}%</span>
                             </div>
                             <div class="h-1.5 rounded-full bg-black/35 overflow-hidden">

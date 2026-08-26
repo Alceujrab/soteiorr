@@ -35,23 +35,14 @@
                 <textarea name="description" rows="3" placeholder="Insira os detalhes do carro, regulamento, etc." class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-slate-700"></textarea>
             </div>
 
-            <!-- Grid de Valores e Números -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div class="space-y-1.5">
-                    <label class="text-sm font-semibold text-slate-300">Preço por Número (R$):</label>
-                    <input type="number" step="0.01" min="0.01" name="price" required placeholder="10.00" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-slate-700">
-                </div>
-                <div class="space-y-1.5">
-                    <label class="text-sm font-semibold text-slate-300">Quantidade de Números:</label>
-                    <select name="total_numbers" required class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-slate-700">
-                        <option value="50">50 números</option>
-                        <option value="100" selected>100 números</option>
-                        <option value="200">200 números</option>
-                        <option value="500">500 números</option>
-                        <option value="1000">1000 números</option>
-                    </select>
-                </div>
+            <!-- Quantidade total de números -->
+            <div class="space-y-1.5">
+                <label class="text-sm font-semibold text-slate-300">Quantidade total de números:</label>
+                <input type="number" name="total_numbers" required min="10" max="1000000" value="200000" placeholder="Ex: 200000" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-slate-700">
+                <p class="text-[10px] text-slate-500">Livre para o criador. Ex.: 200.000 números.</p>
             </div>
+
+            @include('admin.partials.package_fields')
 
             <!-- Prêmio -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">

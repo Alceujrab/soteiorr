@@ -9,6 +9,7 @@ use App\Models\Draw;
 use App\Models\NotificationLog;
 use App\Models\Payment;
 use App\Models\Raffle;
+use App\Models\RafflePackage;
 use App\Models\Setting;
 use App\Models\Ticket;
 use App\Models\User;
@@ -39,9 +40,10 @@ class AdminController extends Controller
             'active_raffles' => Raffle::where('status', 'active')->count(),
         ];
 
-        $raffles = Raffle::withCount(['tickets' => function ($q) {
-            $q->where('status', 'paid');
-        }])->get();
+        $raffles = Raffle::with('packages')
+            ->withCount(['tickets' => function ($q) {
+                $q->where('status', 'paid');
+            }])->get();
 
         $banners = Banner::orderBy('created_at', 'desc')->get();
 
@@ -53,7 +55,9 @@ class AdminController extends Controller
      */
     public function createRaffle()
     {
-        return view('admin.create_raffle');
+        $defaultPackages = RafflePackage::defaultDefinitions();
+
+        return view('admin.create_raffle', compact('defaultPackages'));
     }
 
     /**
@@ -64,14 +68,19 @@ class AdminController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'price' => 'required|numeric|min:0.01',
-            'total_numbers' => 'required|integer|min:10',
+            'total_numbers' => 'required|integer|min:10|max:1000000',
             'prize_name' => 'required|string|max:255',
             'prize_description' => 'nullable|string',
             'draw_date' => 'required|date',
             'images' => 'nullable|array',
             'images.*' => 'image|max:4096',
             'youtube_url' => 'nullable|url',
+            'packages' => 'required|array|min:1',
+            'packages.*.name' => 'required|string|max:100',
+            'packages.*.numbers_qty' => 'required|integer|min:1',
+            'packages.*.price' => 'required|numeric|min:0.01',
+            'packages.*.highlight' => 'nullable|string|max:120',
+            'packages.*.is_featured' => 'nullable|boolean',
         ]);
 
         $uploadedImages = [];
@@ -89,11 +98,27 @@ class AdminController extends Controller
             $uploadedImages[] = 'https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?auto=format&fit=crop&w=800&q=80';
         }
 
+        $packages = collect($request->packages)
+            ->map(function (array $package, int $index) {
+                return [
+                    'name' => $package['name'],
+                    'numbers_qty' => (int) $package['numbers_qty'],
+                    'price' => (float) $package['price'],
+                    'highlight' => $package['highlight'] ?? null,
+                    'is_featured' => ! empty($package['is_featured']),
+                    'sort_order' => $index + 1,
+                ];
+            })
+            ->values()
+            ->all();
+
+        $startingPrice = collect($packages)->min('price') ?: 0.01;
+
         $raffle = Raffle::create([
             'user_id' => Auth::id() ?: User::where('role', 'admin_organizador')->first()->id,
             'title' => $request->title,
             'description' => $request->description,
-            'price' => $request->price,
+            'price' => $startingPrice,
             'total_numbers' => $request->total_numbers,
             'status' => 'active',
             'prize_name' => $request->prize_name,
@@ -104,7 +129,9 @@ class AdminController extends Controller
             'draw_date' => $request->draw_date,
         ]);
 
-        $logActivity->execute("Criou a Ação Promocional ID: {$raffle->id} - {$raffle->title}", json_encode($raffle->toArray()));
+        $raffle->syncPackages($packages);
+
+        $logActivity->execute("Criou a Ação Promocional ID: {$raffle->id} - {$raffle->title}", json_encode($raffle->load('packages')->toArray()));
 
         return redirect()->route('admin.dashboard')->with('success', 'Ação Promocional criada com sucesso!');
     }
@@ -114,7 +141,10 @@ class AdminController extends Controller
      */
     public function editRaffle(Raffle $raffle)
     {
-        return view('admin.edit_raffle', compact('raffle'));
+        $raffle->load('packages');
+        $defaultPackages = RafflePackage::defaultDefinitions();
+
+        return view('admin.edit_raffle', compact('raffle', 'defaultPackages'));
     }
 
     /**
@@ -125,8 +155,7 @@ class AdminController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'price' => 'required|numeric|min:0.01',
-            'total_numbers' => 'required|integer|min:10',
+            'total_numbers' => 'required|integer|min:10|max:1000000',
             'prize_name' => 'required|string|max:255',
             'prize_description' => 'nullable|string',
             'draw_date' => 'required|date',
@@ -134,6 +163,12 @@ class AdminController extends Controller
             'new_images.*' => 'image|max:4096',
             'existing_images' => 'nullable|array',
             'youtube_url' => 'nullable|url',
+            'packages' => 'required|array|min:1',
+            'packages.*.name' => 'required|string|max:100',
+            'packages.*.numbers_qty' => 'required|integer|min:1',
+            'packages.*.price' => 'required|numeric|min:0.01',
+            'packages.*.highlight' => 'nullable|string|max:120',
+            'packages.*.is_featured' => 'nullable|boolean',
         ]);
 
         $currentImages = $request->existing_images ?: [];
@@ -152,10 +187,26 @@ class AdminController extends Controller
             $currentImages[] = 'https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?auto=format&fit=crop&w=800&q=80';
         }
 
+        $packages = collect($request->packages)
+            ->map(function (array $package, int $index) {
+                return [
+                    'name' => $package['name'],
+                    'numbers_qty' => (int) $package['numbers_qty'],
+                    'price' => (float) $package['price'],
+                    'highlight' => $package['highlight'] ?? null,
+                    'is_featured' => ! empty($package['is_featured']),
+                    'sort_order' => $index + 1,
+                ];
+            })
+            ->values()
+            ->all();
+
+        $startingPrice = collect($packages)->min('price') ?: $raffle->price;
+
         $raffle->update([
             'title' => $request->title,
             'description' => $request->description,
-            'price' => $request->price,
+            'price' => $startingPrice,
             'total_numbers' => $request->total_numbers,
             'prize_name' => $request->prize_name,
             'prize_description' => $request->prize_description,
@@ -165,9 +216,44 @@ class AdminController extends Controller
             'draw_date' => $request->draw_date,
         ]);
 
-        $logActivity->execute("Atualizou a Ação Promocional ID: {$raffle->id} - {$raffle->title}", json_encode($raffle->toArray()));
+        $raffle->syncPackages($packages);
+
+        $logActivity->execute("Atualizou a Ação Promocional ID: {$raffle->id} - {$raffle->title}", json_encode($raffle->load('packages')->toArray()));
 
         return redirect()->route('admin.dashboard')->with('success', 'Ação Promocional atualizada com sucesso!');
+    }
+
+    /**
+     * Excluir Ação Promocional e registros relacionados.
+     */
+    public function destroyRaffle(Raffle $raffle, LogActivityAction $logActivity)
+    {
+        $title = $raffle->title;
+        $id = $raffle->id;
+
+        DB::transaction(function () use ($raffle) {
+            $paymentIds = Ticket::where('raffle_id', $raffle->id)
+                ->whereNotNull('payment_id')
+                ->pluck('payment_id')
+                ->unique()
+                ->filter()
+                ->values();
+
+            Ticket::where('raffle_id', $raffle->id)->delete();
+            $raffle->packages()->delete();
+            $raffle->draw()?->delete();
+            $raffle->delete();
+
+            if ($paymentIds->isNotEmpty()) {
+                Payment::whereIn('id', $paymentIds)
+                    ->whereDoesntHave('tickets')
+                    ->delete();
+            }
+        });
+
+        $logActivity->execute("Excluiu a Ação Promocional ID: {$id} - {$title}");
+
+        return redirect()->route('admin.dashboard')->with('success', 'Ação Promocional excluída com sucesso!');
     }
 
     /**

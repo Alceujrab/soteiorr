@@ -94,31 +94,33 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // Criar Ação Promocional 1 (Gol Turbo)
-        Raffle::create([
+        $raffle1 = Raffle::create([
             'user_id' => $admin->id,
             'title' => 'Gol Quadrado 1.8 AP Turbo',
             'description' => 'Carro impecável, motor AP turbo forjado, rodas orbital aro 16, legalizado e pronto para rodar. Envio para todo o Brasil!',
-            'price' => 10.00,
-            'total_numbers' => 100,
+            'price' => 9.90,
+            'total_numbers' => 200000,
             'status' => 'active',
             'prize_name' => 'Gol Quadrado 1.8 AP Turbo 1994',
             'prize_description' => 'Gol Quadrado na cor cinza chumbo, bancos Recaro originais, instrumentação ODG, pneus novos.',
             'image_url' => 'https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?auto=format&fit=crop&w=800&q=80',
             'draw_date' => now()->addDays(30),
         ]);
+        $raffle1->seedDefaultPackages();
 
         // Criar Ação Promocional 2 (Saveiro Cross)
-        Raffle::create([
+        $raffle2 = Raffle::create([
             'user_id' => $admin->id,
             'title' => 'Saveiro Cross Rebaixada',
             'description' => 'Saveiro Cross completa, suspensão a ar legalizada, rodas aro 18, som interno potente, documentação em dia.',
-            'price' => 15.00,
-            'total_numbers' => 200,
+            'price' => 9.90,
+            'total_numbers' => 200000,
             'status' => 'active',
             'prize_name' => 'Saveiro Cross 2015 Rebaixada',
             'prize_description' => 'Saveiro na cor branca, bancos de couro, faróis de LED, capota marítima nova.',
             'image_url' => 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=800&q=80',
             'draw_date' => now()->addDays(45),
         ]);
+        $raffle2->seedDefaultPackages();
     }
 }

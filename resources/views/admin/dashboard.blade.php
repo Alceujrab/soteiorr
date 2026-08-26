@@ -132,7 +132,8 @@
                                     {{ $raffle->prize_name }}
                                 </td>
                                 <td class="px-6 py-4 text-emerald-400 font-medium">
-                                    R$ {{ number_format($raffle->price, 2, ',', '.') }}
+                                    R$ {{ number_format($raffle->startingPrice(), 2, ',', '.') }}
+                                    <span class="block text-[10px] text-slate-500 font-normal">a partir de</span>
                                 </td>
                                 <td class="px-6 py-4">
                                     <div class="flex items-center gap-2">
@@ -166,6 +167,13 @@
                                         <a href="{{ route('admin.raffles.edit', $raffle->id) }}" class="bg-slate-800 hover:bg-slate-700 text-white font-semibold px-2.5 py-1.5 rounded-lg text-xs transition flex items-center gap-1.5 w-fit border border-slate-700">
                                             <i class="fa-solid fa-pen-to-square"></i> Editar
                                         </a>
+                                        <form action="{{ route('admin.raffles.destroy', $raffle->id) }}" method="POST" onsubmit="return confirm('Excluir esta Ação Promocional? Esta ação remove bilhetes e pacotes vinculados.');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="bg-red-500/10 hover:bg-red-500/20 text-red-400 font-semibold px-2.5 py-1.5 rounded-lg text-xs transition flex items-center gap-1.5 w-fit border border-red-500/30">
+                                                <i class="fa-solid fa-trash"></i> Excluir
+                                            </button>
+                                        </form>
                                     </div>
                                 </td>
                             </tr>

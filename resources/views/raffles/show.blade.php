@@ -46,12 +46,12 @@
 
                 <div class="border-t pt-4 space-y-3" style="border-color: var(--border-color);">
                     <div class="flex justify-between text-sm">
-                        <span class="text-slate-400">Preço por número:</span>
-                        <strong class="text-emerald-400 font-bold">R$ {{ number_format($raffle->price, 2, ',', '.') }}</strong>
+                        <span class="text-slate-400">A partir de:</span>
+                        <strong class="text-emerald-400 font-bold">R$ {{ number_format($raffle->startingPrice(), 2, ',', '.') }}</strong>
                     </div>
                     <div class="flex justify-between text-sm">
                         <span class="text-slate-400">Total de números:</span>
-                        <span class="text-white">{{ $raffle->total_numbers }}</span>
+                        <span class="text-white">{{ number_format($raffle->total_numbers, 0, ',', '.') }}</span>
                     </div>
                     <div class="flex justify-between text-sm">
                         <span class="text-slate-400">Data da Ação Promocional:</span>
@@ -61,10 +61,10 @@
                         <div class="space-y-1.5 pt-2 border-t" style="border-color: var(--border-color);">
                             <div class="flex justify-between text-xs text-slate-400">
                                 <span>Progresso de Vendas:</span>
-                                <span class="font-bold text-white">{{ $takenTickets->count() }} / {{ $raffle->total_numbers }} vendidos</span>
+                                <span class="font-bold text-white">{{ number_format($takenCount, 0, ',', '.') }} / {{ number_format($raffle->total_numbers, 0, ',', '.') }}</span>
                             </div>
                             <div class="w-full bg-slate-900 rounded-full h-2 overflow-hidden border" style="border-color: var(--border-color);">
-                                <div class="bg-blue-500 h-2 rounded-full" style="width: {{ ($takenTickets->count() / $raffle->total_numbers) * 100 }}%"></div>
+                                <div class="bg-blue-500 h-2 rounded-full" style="width: {{ $raffle->total_numbers > 0 ? min(100, ($takenCount / $raffle->total_numbers) * 100) : 0 }}%"></div>
                             </div>
                         </div>
                     @endif
@@ -177,104 +177,73 @@
     <div class="lg:col-span-2 space-y-6">
         <div class="glass-card rounded-2xl p-6 space-y-6">
             <h2 class="text-xl font-bold text-white flex items-center gap-2">
-                <i class="fa-solid fa-wand-magic-sparkles" style="color: var(--accent);"></i> Adquirir Cotas (Escolha Automática)
+                <i class="fa-solid fa-boxes-stacked" style="color: var(--accent);"></i> Escolha seu pacote
             </h2>
+            <p class="text-sm text-slate-400">Os números são atribuídos automaticamente após a confirmação do pagamento.</p>
 
-            <!-- Progresso de Vendas -->
             @if(\App\Models\Setting::get('show_sold_qty', '1') === '1')
                 <div class="p-4 bg-slate-950 rounded-xl border space-y-3" style="border-color: var(--border-color);">
                     <div class="flex justify-between items-center text-sm">
-                        <span class="text-slate-400 font-medium">Números Vendidos:</span>
-                        <span class="text-white font-bold">{{ $takenTickets->count() }} / {{ $raffle->total_numbers }} vendidos</span>
+                        <span class="text-slate-400 font-medium">Números reservados/pagos:</span>
+                        <span class="text-white font-bold">{{ number_format($takenCount, 0, ',', '.') }} / {{ number_format($raffle->total_numbers, 0, ',', '.') }}</span>
                     </div>
                     <div class="w-full bg-slate-900 rounded-full h-3 overflow-hidden border" style="border-color: var(--border-color);">
-                        <div class="h-3 rounded-full" style="width: {{ ($takenTickets->count() / $raffle->total_numbers) * 100 }}%; background-color: var(--accent);"></div>
+                        <div class="h-3 rounded-full" style="width: {{ $raffle->total_numbers > 0 ? min(100, ($takenCount / $raffle->total_numbers) * 100) : 0 }}%; background-color: var(--accent);"></div>
                     </div>
                 </div>
             @endif
 
-            <!-- Automatic/Surpresinha Mode Container -->
-            <div id="container-auto" class="space-y-6">
-                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                    <button type="button" onclick="selectAutoQty(1)" class="p-4 rounded-xl text-center transition font-extrabold text-white shadow-md hover:opacity-90 transition-all duration-200" style="background-color: var(--accent);">
-                        +1 Cota
-                    </button>
-                    <button type="button" onclick="selectAutoQty(5)" class="p-4 rounded-xl text-center transition font-extrabold text-white shadow-md hover:opacity-90 transition-all duration-200" style="background-color: var(--accent);">
-                        +5 Cotas
-                    </button>
-                    <button type="button" onclick="selectAutoQty(10)" class="p-4 rounded-xl text-center transition font-extrabold text-white shadow-md hover:opacity-90 transition-all duration-200" style="background-color: var(--accent);">
-                        +10 Cotas
-                    </button>
-                    <button type="button" onclick="selectAutoQty(20)" class="p-4 rounded-xl text-center transition font-extrabold text-white shadow-md hover:opacity-90 transition-all duration-200" style="background-color: var(--accent);">
-                        +20 Cotas
-                    </button>
-                </div>
-
-                <div class="border-t my-6" style="border-color: var(--border-color);"></div>
-
-                <form action="{{ route('raffles.buy', $raffle->id) }}" method="POST" class="space-y-4 max-w-md">
-                    @csrf
-                    <input type="hidden" name="mode" value="auto">
-                    
-                    <div class="space-y-1.5">
-                        <label class="text-xs text-slate-400 font-semibold uppercase">Quantidade Personalizada:</label>
-                        <input type="number" id="auto-qty-input" name="quantity" min="1" max="100" value="1" oninput="updateAutoPrice()" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                @forelse($raffle->packages as $package)
+                    <form action="{{ route('raffles.buy', $raffle->id) }}" method="POST" class="relative glass-card rounded-2xl p-5 border flex flex-col gap-3 {{ $package->is_featured ? 'ring-1' : '' }}" style="{{ $package->is_featured ? 'ring-color: var(--accent); border-color: rgba(225,29,46,0.45);' : 'border-color: var(--border-color);' }}">
+                        @csrf
+                        <input type="hidden" name="package_id" value="{{ $package->id }}">
+                        @if($package->is_featured)
+                            <span class="absolute -top-2.5 left-4 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded text-white" style="background: var(--accent);">Mais escolhido</span>
+                        @endif
+                        <div>
+                            <div class="text-xs font-bold uppercase tracking-[0.14em] text-slate-500">{{ $package->name }}</div>
+                            <div class="font-display text-3xl font-bold text-white mt-2">R$ {{ number_format($package->price, 2, ',', '.') }}</div>
+                            <div class="text-sm text-slate-400 mt-1">{{ $package->numbers_qty }} números</div>
+                        </div>
+                        @if($package->highlight)
+                            <p class="text-xs text-slate-500">{{ $package->highlight }}</p>
+                        @endif
+                        <p class="text-[11px] text-slate-500">Custo efetivo: R$ {{ number_format($package->effectiveCostPerNumber(), 4, ',', '.') }} / número</p>
+                        <button type="submit" class="mt-auto w-full text-center py-2.5 rounded-xl text-sm font-bold transition text-white" style="background: var(--accent);">
+                            Comprar pacote
+                        </button>
+                    </form>
+                @empty
+                    <div class="sm:col-span-2 text-sm text-slate-400">
+                        Nenhum pacote cadastrado para esta ação. Peça ao administrador para configurar os planos.
                     </div>
-
-                    <div class="flex justify-between items-center py-2">
-                        <span class="text-sm text-slate-400 font-semibold">Total a Pagar:</span>
-                        <strong class="text-xl font-bold text-emerald-400" id="auto-total-label">R$ 0,00</strong>
-                    </div>
-
-                    <button type="submit" class="w-full text-white font-bold py-3.5 px-4 rounded-xl transition flex items-center justify-center gap-2 shadow-lg hover:opacity-95" style="background-color: var(--accent);">
-                        Comprar Surpresinha <i class="fa-solid fa-wand-magic-sparkles"></i>
-                    </button>
-                </form>
+                @endforelse
             </div>
-
         </div>
     </div>
 </div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const pricePerNumber = {{ $raffle->price }};
-
-    window.selectAutoQty = function(qty) {
-        const input = document.getElementById('auto-qty-input');
-        input.value = qty;
-        updateAutoPrice();
-    };
-
-    window.updateAutoPrice = function() {
-        const input = document.getElementById('auto-qty-input');
-        const totalLabel = document.getElementById('auto-total-label');
-        const qty = parseInt(input.value) || 0;
-        const total = qty * pricePerNumber;
-        totalLabel.textContent = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(total);
-    };
-
-    updateAutoPrice();
-
-    // Carousel JS
     @if(count($images) > 1)
         let currentSlide = 0;
         const slidesCount = {{ count($images) }};
-        
+
         window.setSlide = function(index) {
             if (index < 0 || index >= slidesCount) return;
             currentSlide = index;
             const slidesContainer = document.getElementById('carousel-slides');
             const dots = document.querySelectorAll('.carousel-dot');
-            
+
             slidesContainer.style.transform = `translateX(-${(currentSlide * 100) / slidesCount}%)`;
-            
+
             dots.forEach((dot, idx) => {
                 if (idx === currentSlide) {
                     dot.classList.remove('bg-white/50');
-                    dot.classList.add('bg-[#aa7c11]', 'scale-125');
+                    dot.classList.add('bg-[#e11d2e]', 'scale-125');
                 } else {
-                    dot.classList.remove('bg-[#aa7c11]', 'scale-125');
+                    dot.classList.remove('bg-[#e11d2e]', 'scale-125');
                     dot.classList.add('bg-white/50');
                 }
             });

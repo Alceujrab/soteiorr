@@ -62,6 +62,7 @@ Route::get('/admin/raffles/create', [AdminController::class, 'createRaffle'])->n
 Route::post('/admin/raffles', [AdminController::class, 'storeRaffle'])->name('admin.raffles.store');
 Route::get('/admin/raffles/{raffle}/edit', [AdminController::class, 'editRaffle'])->name('admin.raffles.edit');
 Route::put('/admin/raffles/{raffle}', [AdminController::class, 'updateRaffle'])->name('admin.raffles.update');
+Route::delete('/admin/raffles/{raffle}', [AdminController::class, 'destroyRaffle'])->name('admin.raffles.destroy');
 Route::get('/admin/raffles/{raffle}/draw', [AdminController::class, 'draw'])->name('admin.raffles.draw'); // Simulação
 Route::get('/admin/logs', [AdminController::class, 'logs'])->name('admin.logs');
 Route::get('/admin/settings', [AdminController::class, 'settings'])->name('admin.settings');
