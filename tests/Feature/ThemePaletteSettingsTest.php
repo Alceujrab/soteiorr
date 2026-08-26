@@ -20,9 +20,11 @@ class ThemePaletteSettingsTest extends TestCase
         $response->assertSee('--accent: #e61e25', false);
         $response->assertSee('--bg-primary:', false);
         $response->assertSee('--text-primary:', false);
+        $response->assertDontSee('class="admin-panel', false);
+        $response->assertDontSee('partials.admin-theme', false);
     }
 
-    public function test_admin_settings_page_shows_template_editor(): void
+    public function test_admin_settings_page_shows_site_and_admin_template_editors(): void
     {
         $admin = User::factory()->create([
             'role' => 'admin_organizador',
@@ -32,13 +34,16 @@ class ThemePaletteSettingsTest extends TestCase
 
         $response->assertOk();
         $response->assertSee('Editor de Template', false);
-        $response->assertSee('Tema Claro', false);
-        $response->assertSee('Tema Escuro', false);
+        $response->assertSee('Site — Tema Claro', false);
+        $response->assertSee('Admin — Tema Claro', false);
+        $response->assertSee('Admin — Tema Escuro', false);
         $response->assertSee('theme_light[accent]', false);
-        $response->assertSee('theme_dark[accent]', false);
+        $response->assertSee('theme_admin_light[accent]', false);
+        $response->assertSee('theme_admin_dark[input_bg]', false);
+        $response->assertSee('admin-panel', false);
     }
 
-    public function test_admin_can_save_light_and_dark_theme_colors(): void
+    public function test_admin_can_save_site_and_admin_theme_colors_independently(): void
     {
         $admin = User::factory()->create([
             'role' => 'admin_organizador',
@@ -46,9 +51,14 @@ class ThemePaletteSettingsTest extends TestCase
 
         $light = ThemePalette::defaults()['light'];
         $dark = ThemePalette::defaults()['dark'];
+        $adminLight = ThemePalette::defaults()['admin_light'];
+        $adminDark = ThemePalette::defaults()['admin_dark'];
+
         $light['accent'] = '#112233';
         $light['bg_primary'] = '#fafafa';
         $dark['accent'] = '#aabbcc';
+        $adminLight['input_bg'] = '#fefefe';
+        $adminDark['input_bg'] = '#101820';
 
         $payload = [
             'app_name' => 'Ação RR Veículos',
@@ -63,6 +73,8 @@ class ThemePaletteSettingsTest extends TestCase
             'page_terms_of_use' => '',
             'theme_light' => $light,
             'theme_dark' => $dark,
+            'theme_admin_light' => $adminLight,
+            'theme_admin_dark' => $adminDark,
         ];
 
         $response = $this->actingAs($admin)->post(route('admin.settings.update'), $payload);
@@ -71,14 +83,23 @@ class ThemePaletteSettingsTest extends TestCase
 
         $savedLight = json_decode((string) Setting::get(ThemePalette::SETTING_LIGHT), true);
         $savedDark = json_decode((string) Setting::get(ThemePalette::SETTING_DARK), true);
+        $savedAdminLight = json_decode((string) Setting::get(ThemePalette::SETTING_ADMIN_LIGHT), true);
+        $savedAdminDark = json_decode((string) Setting::get(ThemePalette::SETTING_ADMIN_DARK), true);
 
         $this->assertSame('#112233', $savedLight['accent']);
         $this->assertSame('#fafafa', $savedLight['bg_primary']);
         $this->assertSame('#aabbcc', $savedDark['accent']);
+        $this->assertSame('#fefefe', $savedAdminLight['input_bg']);
+        $this->assertSame('#101820', $savedAdminDark['input_bg']);
 
         $this->get('/')
             ->assertOk()
             ->assertSee('--accent: #112233', false)
-            ->assertSee('--bg-primary: #fafafa', false);
+            ->assertSee('--bg-primary: #fafafa', false)
+            ->assertDontSee('--input-bg: #fefefe', false);
+
+        $this->actingAs($admin)->get(route('admin.settings'))
+            ->assertOk()
+            ->assertSee('--input-bg: #fefefe', false);
     }
 }

@@ -323,39 +323,43 @@
         <!-- ================= TAB: EDITOR DE TEMPLATE ================= -->
         <div id="tab-template" class="tab-content glass-card rounded-2xl p-6 sm:p-8 space-y-8 hidden">
             <div class="space-y-2 border-b pb-4" style="border-color: var(--border-color);">
-                <h3 class="text-base font-bold text-white flex items-center gap-2">
+                <h3 class="text-base font-bold theme-title flex items-center gap-2">
                     <i class="fa-solid fa-palette" style="color: var(--accent);"></i> Editor de Template / Cores
                 </h3>
-                <p class="text-xs text-slate-400">
-                    Ajuste todas as cores do tema claro e do tema escuro. O vermelho padrão da marca RR é <strong class="text-white">#E61E25</strong>.
-                    Use hex (<code class="text-[11px]">#ffffff</code>) ou rgba quando precisar de transparência nas bordas.
+                <p class="text-xs theme-muted">
+                    Site público e painel admin têm paletas <strong class="theme-title">separadas</strong>.
+                    Assim mudar o site não quebra o admin. Vermelho padrão da marca: <strong class="theme-title">#E61E25</strong>.
                 </p>
                 <div class="flex flex-wrap gap-2 pt-1">
-                    <button type="button" onclick="resetThemeDefaults('light')" class="text-xs font-semibold px-3 py-1.5 rounded-lg border text-slate-300 hover:text-white" style="border-color: var(--border-color);">
-                        Restaurar claro
-                    </button>
-                    <button type="button" onclick="resetThemeDefaults('dark')" class="text-xs font-semibold px-3 py-1.5 rounded-lg border text-slate-300 hover:text-white" style="border-color: var(--border-color);">
-                        Restaurar escuro
-                    </button>
+                    <button type="button" onclick="resetThemeDefaults('light')" class="text-xs font-semibold px-3 py-1.5 rounded-lg border theme-muted" style="border-color: var(--border-color);">Restaurar site claro</button>
+                    <button type="button" onclick="resetThemeDefaults('dark')" class="text-xs font-semibold px-3 py-1.5 rounded-lg border theme-muted" style="border-color: var(--border-color);">Restaurar site escuro</button>
+                    <button type="button" onclick="resetThemeDefaults('admin_light')" class="text-xs font-semibold px-3 py-1.5 rounded-lg border theme-muted" style="border-color: var(--border-color);">Restaurar admin claro</button>
+                    <button type="button" onclick="resetThemeDefaults('admin_dark')" class="text-xs font-semibold px-3 py-1.5 rounded-lg border theme-muted" style="border-color: var(--border-color);">Restaurar admin escuro</button>
                 </div>
             </div>
 
             @php
-                $colorLikeKeys = ['bg_primary','bg_sidebar','bg_card','text_primary','text_secondary','on_accent','accent','accent_hover','accent_soft','badge_text','danger','metal'];
+                $colorLikeKeys = ['bg_primary','bg_sidebar','bg_card','panel_bg','input_bg','input_border','input_text','text_primary','text_secondary','on_accent','accent','accent_hover','accent_soft','badge_text','danger','metal'];
+                $themeSections = [
+                    'light' => ['label' => 'Site — Tema Claro', 'icon' => 'fa-sun', 'palette' => $themeLight],
+                    'dark' => ['label' => 'Site — Tema Escuro', 'icon' => 'fa-moon', 'palette' => $themeDark],
+                    'admin_light' => ['label' => 'Admin — Tema Claro', 'icon' => 'fa-user-shield', 'palette' => $themeAdminLight],
+                    'admin_dark' => ['label' => 'Admin — Tema Escuro', 'icon' => 'fa-user-shield', 'palette' => $themeAdminDark],
+                ];
             @endphp
 
             <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
-                @foreach(['light' => ['label' => 'Tema Claro', 'palette' => $themeLight], 'dark' => ['label' => 'Tema Escuro', 'palette' => $themeDark]] as $mode => $meta)
+                @foreach($themeSections as $mode => $meta)
                     <div class="space-y-4">
-                        <h4 class="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
-                            <i class="fa-solid {{ $mode === 'light' ? 'fa-sun' : 'fa-moon' }}" style="color: var(--accent);"></i>
+                        <h4 class="text-sm font-bold theme-title uppercase tracking-wider flex items-center gap-2">
+                            <i class="fa-solid {{ $meta['icon'] }}" style="color: var(--accent);"></i>
                             {{ $meta['label'] }}
                         </h4>
 
                         @php $groups = collect($themeDefinitions)->groupBy('group', true); @endphp
                         @foreach($groups as $groupName => $fields)
-                            <div class="rounded-xl border p-4 space-y-3" style="border-color: var(--border-color); background: var(--bg-primary);">
-                                <div class="text-[11px] font-bold uppercase tracking-wider text-slate-500">{{ $groupName }}</div>
+                            <div class="rounded-xl border p-4 space-y-3" style="border-color: var(--border-color); background: var(--panel-bg);">
+                                <div class="text-[11px] font-bold uppercase tracking-wider theme-muted">{{ $groupName }}</div>
                                 <div class="space-y-3">
                                     @foreach($fields as $key => $def)
                                         @php
@@ -365,8 +369,8 @@
                                         @endphp
                                         <div class="grid grid-cols-1 sm:grid-cols-12 gap-2 items-center">
                                             <div class="sm:col-span-5">
-                                                <label class="text-xs font-semibold text-slate-300">{{ $def['label'] }}</label>
-                                                <p class="text-[10px] text-slate-500">{{ $def['hint'] }}</p>
+                                                <label class="text-xs font-semibold theme-title">{{ $def['label'] }}</label>
+                                                <p class="text-[10px] theme-muted">{{ $def['hint'] }}</p>
                                             </div>
                                             <div class="sm:col-span-7 flex items-center gap-2">
                                                 <input
@@ -381,7 +385,8 @@
                                                     id="theme-{{ $mode }}-{{ $key }}"
                                                     name="theme_{{ $mode }}[{{ $key }}]"
                                                     value="{{ $value }}"
-                                                    class="theme-color-text flex-1 w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 font-mono focus:outline-none"
+                                                    class="theme-color-text flex-1 w-full rounded-xl px-3 py-2 text-xs font-mono focus:outline-none border"
+                                                    style="background: var(--input-bg); border-color: var(--input-border); color: var(--input-text);"
                                                     placeholder="{{ $themeDefaults[$mode][$key] ?? '' }}"
                                                 >
                                             </div>
@@ -392,10 +397,11 @@
                         @endforeach
 
                         <div class="rounded-xl border p-4 space-y-3" style="border-color: var(--border-color);">
-                            <div class="text-[11px] font-bold uppercase tracking-wider text-slate-500">Prévia rápida</div>
+                            <div class="text-[11px] font-bold uppercase tracking-wider theme-muted">Prévia rápida</div>
                             <div id="theme-preview-{{ $mode }}" class="rounded-lg p-4 border" style="background: {{ $meta['palette']['bg_card'] }}; border-color: {{ $meta['palette']['border_color'] }}; color: {{ $meta['palette']['text_primary'] }};">
                                 <div class="theme-preview-secondary text-xs mb-2" style="color: {{ $meta['palette']['text_secondary'] }};">Texto secundário</div>
                                 <div class="font-bold mb-3">Exemplo de card</div>
+                                <input type="text" readonly value="Campo de exemplo" class="theme-preview-input w-full mb-3 rounded-lg px-3 py-2 text-xs border" style="background: {{ $meta['palette']['input_bg'] }}; border-color: {{ $meta['palette']['input_border'] }}; color: {{ $meta['palette']['input_text'] }};">
                                 <button type="button" class="theme-preview-btn px-3 py-2 rounded-lg text-xs font-bold" style="background: {{ $meta['palette']['accent'] }}; color: {{ $meta['palette']['on_accent'] ?? '#fff' }};">Botão destaque</button>
                             </div>
                         </div>
@@ -657,7 +663,7 @@
     const themeDefaults = @json($themeDefaults);
 
     function refreshThemePreview(inputId) {
-        const match = String(inputId).match(/^theme-(light|dark)-(.+)$/);
+        const match = String(inputId).match(/^theme-((?:admin_)?(?:light|dark))-(.+)$/);
         if (!match) {
             return;
         }
@@ -680,6 +686,13 @@
         const secondary = preview.querySelector('.theme-preview-secondary');
         if (secondary) {
             secondary.style.color = read('text_secondary');
+        }
+
+        const input = preview.querySelector('.theme-preview-input');
+        if (input) {
+            input.style.background = read('input_bg');
+            input.style.borderColor = read('input_border');
+            input.style.color = read('input_text');
         }
 
         const btn = preview.querySelector('.theme-preview-btn');

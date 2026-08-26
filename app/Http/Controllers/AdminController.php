@@ -443,10 +443,20 @@ class AdminController extends Controller
 
         $themeLight = ThemePalette::light();
         $themeDark = ThemePalette::dark();
+        $themeAdminLight = ThemePalette::adminLight();
+        $themeAdminDark = ThemePalette::adminDark();
         $themeDefinitions = ThemePalette::definitions();
         $themeDefaults = ThemePalette::defaults();
 
-        return view('admin.settings', compact('settings', 'themeLight', 'themeDark', 'themeDefinitions', 'themeDefaults'));
+        return view('admin.settings', compact(
+            'settings',
+            'themeLight',
+            'themeDark',
+            'themeAdminLight',
+            'themeAdminDark',
+            'themeDefinitions',
+            'themeDefaults'
+        ));
     }
 
     /**
@@ -490,8 +500,12 @@ class AdminController extends Controller
             'page_regulation' => 'nullable|string',
             'theme_light' => 'nullable|array',
             'theme_dark' => 'nullable|array',
+            'theme_admin_light' => 'nullable|array',
+            'theme_admin_dark' => 'nullable|array',
             'theme_light.*' => 'nullable|string|max:120',
             'theme_dark.*' => 'nullable|string|max:120',
+            'theme_admin_light.*' => 'nullable|string|max:120',
+            'theme_admin_dark.*' => 'nullable|string|max:120',
         ]);
 
         Setting::set('app_name', $request->app_name);
@@ -542,6 +556,16 @@ class AdminController extends Controller
         if ($request->has('theme_dark')) {
             $dark = ThemePalette::sanitize($request->input('theme_dark', []), 'dark');
             Setting::set(ThemePalette::SETTING_DARK, json_encode($dark));
+        }
+
+        if ($request->has('theme_admin_light')) {
+            $adminLight = ThemePalette::sanitize($request->input('theme_admin_light', []), 'admin_light');
+            Setting::set(ThemePalette::SETTING_ADMIN_LIGHT, json_encode($adminLight));
+        }
+
+        if ($request->has('theme_admin_dark')) {
+            $adminDark = ThemePalette::sanitize($request->input('theme_admin_dark', []), 'admin_dark');
+            Setting::set(ThemePalette::SETTING_ADMIN_DARK, json_encode($adminDark));
         }
 
         config(['app.name' => $request->app_name]);

@@ -41,7 +41,6 @@
         pointer-events: none;
     }
 
-    /* Títulos semânticos (não usar text-white no tema claro) */
     .theme-title {
         color: var(--text-primary) !important;
     }
@@ -49,7 +48,6 @@
         color: var(--text-secondary) !important;
     }
 
-    /* Menu / nav links — hover funciona no claro e no escuro */
     .nav-link {
         color: var(--text-secondary);
         transition: color 0.2s ease, background-color 0.2s ease;
@@ -70,7 +68,6 @@
         color: var(--text-primary) !important;
     }
 
-    /* Hero: máscara suave — sem faixa preta ofuscando a foto */
     .hero-photo-mask {
         background: linear-gradient(to top, rgba(15, 23, 42, 0.18), transparent 45%);
     }
@@ -88,7 +85,6 @@
         }
     }
 
-    /* Texto branco real só em cima de mídia / fundo escuro local */
     .on-media,
     .on-media .text-white {
         color: #ffffff !important;

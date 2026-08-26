@@ -16,8 +16,9 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     @include('partials.site-icons')
     @include('partials.theme-styles')
+    @include('partials.admin-theme-styles')
 </head>
-<body class="min-h-screen flex flex-col md:flex-row">
+<body class="admin-panel min-h-screen flex flex-col md:flex-row">
 
     <!-- Admin Sidebar -->
     <aside class="w-72 border-r flex flex-col hidden md:flex min-h-screen sticky top-0" style="background-color: var(--bg-sidebar); border-color: var(--border-color);">
