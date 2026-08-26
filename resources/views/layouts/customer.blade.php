@@ -12,6 +12,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    @include('partials.site-icons')
     @include('partials.theme-styles')
 </head>
 <body class="min-h-screen flex flex-col md:flex-row">
@@ -27,15 +28,15 @@
 
         <!-- Navigation Links -->
         <div class="flex-1 px-4 py-6 space-y-2">
-            <a href="/" class="flex items-center gap-3 px-4 py-3 rounded-xl transition text-slate-400 hover:text-white hover:bg-slate-900/60">
+            <a href="/" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl">
                 <i class="fa-solid fa-house text-lg"></i>
                 <span class="font-medium text-sm">Ir para o Início</span>
             </a>
-            <a href="{{ route('raffles.my-tickets') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition text-slate-400 hover:text-white hover:bg-slate-900/60 {{ Route::currentRouteName() == 'raffles.my-tickets' ? 'bg-slate-900 text-white' : '' }}">
+            <a href="{{ route('raffles.my-tickets') }}" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl {{ Route::currentRouteName() == 'raffles.my-tickets' ? 'is-active' : '' }}">
                 <i class="fa-solid fa-ticket text-lg"></i>
                 <span class="font-medium text-sm">Meus Bilhetes</span>
             </a>
-            <a href="{{ route('support.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition text-slate-400 hover:text-white hover:bg-slate-900/60 {{ Route::currentRouteName() == 'support.index' ? 'bg-slate-900 text-white' : '' }}">
+            <a href="{{ route('support.index') }}" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl {{ Route::currentRouteName() == 'support.index' ? 'is-active' : '' }}">
                 <i class="fa-solid fa-headset text-lg"></i>
                 <span class="font-medium text-sm">Suporte / FAQs</span>
             </a>
@@ -74,17 +75,17 @@
         <!-- Topbar Mobile only -->
         <header class="h-16 border-b flex md:hidden items-center justify-between px-6 sticky top-0 z-50" style="background-color: var(--bg-sidebar); border-color: var(--border-color);">
             <div class="flex items-center gap-2">
-                <button onclick="toggleMobileMenu()" class="p-2 -ml-2 rounded-lg text-slate-400 hover:text-white transition">
+                <button onclick="toggleMobileMenu()" class="nav-link-quiet p-2 -ml-2 rounded-lg transition">
                     <i class="fa-solid fa-bars text-xl"></i>
                 </button>
                 <i class="fa-solid fa-user-tie text-lg" style="color: var(--accent);"></i>
                 <span class="font-bold text-white text-sm">Área Cliente</span>
             </div>
             <div class="flex items-center gap-3">
-                <button onclick="toggleTheme()" class="text-slate-400 hover:text-white transition">
+                <button onclick="toggleTheme()" class="nav-link-quiet transition">
                     <i class="fa-solid fa-circle-half-stroke text-lg"></i>
                 </button>
-                <a href="/" class="text-slate-400 hover:text-white">
+                <a href="/" class="nav-link-quiet">
                     <i class="fa-solid fa-house text-lg"></i>
                 </a>
             </div>
@@ -102,21 +103,21 @@
                     </div>
                     <span class="font-bold text-white text-sm">Ação RR Cliente</span>
                 </div>
-                <button onclick="toggleMobileMenu()" class="p-2 rounded-lg text-slate-400 hover:text-white transition">
+                <button onclick="toggleMobileMenu()" class="nav-link-quiet p-2 rounded-lg transition">
                     <i class="fa-solid fa-xmark text-xl"></i>
                 </button>
             </div>
 
             <div class="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
-                <a href="/" class="flex items-center gap-3 px-4 py-3 rounded-xl transition text-slate-400 hover:text-white hover:bg-slate-900/60">
+                <a href="/" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl">
                     <i class="fa-solid fa-house text-lg"></i>
                     <span class="font-medium text-sm">Ir para o Início</span>
                 </a>
-                <a href="{{ route('raffles.my-tickets') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition text-slate-400 hover:text-white hover:bg-slate-900/60 {{ Route::currentRouteName() == 'raffles.my-tickets' ? 'bg-slate-900 text-white' : '' }}">
+                <a href="{{ route('raffles.my-tickets') }}" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl {{ Route::currentRouteName() == 'raffles.my-tickets' ? 'is-active' : '' }}">
                     <i class="fa-solid fa-ticket text-lg"></i>
                     <span class="font-medium text-sm">Meus Bilhetes</span>
                 </a>
-                <a href="{{ route('support.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition text-slate-400 hover:text-white hover:bg-slate-900/60 {{ Route::currentRouteName() == 'support.index' ? 'bg-slate-900 text-white' : '' }}">
+                <a href="{{ route('support.index') }}" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl {{ Route::currentRouteName() == 'support.index' ? 'is-active' : '' }}">
                     <i class="fa-solid fa-headset text-lg"></i>
                     <span class="font-medium text-sm">Suporte / FAQs</span>
                 </a>
@@ -156,15 +157,15 @@
 
     <!-- Bottom Nav Mobile -->
     <nav class="md:hidden fixed bottom-0 left-0 right-0 h-16 border-t backdrop-blur flex justify-around items-center z-50" style="background-color: var(--bg-sidebar); border-color: var(--border-color);">
-        <a href="/" class="flex flex-col items-center gap-1 text-slate-400 hover:text-white">
+        <a href="/" class="nav-link-quiet flex flex-col items-center gap-1">
             <i class="fa-solid fa-house text-lg"></i>
             <span class="text-[10px]">Início</span>
         </a>
-        <a href="{{ route('raffles.my-tickets') }}" class="flex flex-col items-center gap-1 text-slate-400 hover:text-white">
+        <a href="{{ route('raffles.my-tickets') }}" class="nav-link-quiet flex flex-col items-center gap-1">
             <i class="fa-solid fa-ticket text-lg"></i>
             <span class="text-[10px]">Bilhetes</span>
         </a>
-        <a href="{{ route('support.index') }}" class="flex flex-col items-center gap-1 text-slate-400 hover:text-white">
+        <a href="{{ route('support.index') }}" class="nav-link-quiet flex flex-col items-center gap-1">
             <i class="fa-solid fa-headset text-lg"></i>
             <span class="text-[10px]">Suporte</span>
         </a>

@@ -14,6 +14,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    @include('partials.site-icons')
     @include('partials.theme-styles')
 </head>
 <body class="min-h-screen flex flex-col md:flex-row">
@@ -29,35 +30,35 @@
 
         <!-- Navigation Links -->
         <div class="flex-1 px-4 py-6 space-y-1 overflow-y-auto max-h-[calc(100vh-250px)]">
-            <a href="/" class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition text-slate-400 hover:text-white hover:bg-slate-900/60">
+            <a href="/" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl">
                 <i class="fa-solid fa-house text-base"></i>
                 <span class="font-medium text-sm">Ver Site Público</span>
             </a>
-            <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition text-slate-400 hover:text-white hover:bg-slate-900/60 {{ Route::currentRouteName() == 'admin.dashboard' ? 'bg-slate-900 text-white' : '' }}">
+            <a href="{{ route('admin.dashboard') }}" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl {{ Route::currentRouteName() == 'admin.dashboard' ? 'is-active' : '' }}">
                 <i class="fa-solid fa-chart-line text-base"></i>
                 <span class="font-medium text-sm">Dashboard / Ações Promocionais</span>
             </a>
-            <a href="{{ route('admin.participants') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition text-slate-400 hover:text-white hover:bg-slate-900/60 {{ Route::currentRouteName() == 'admin.participants' ? 'bg-slate-900 text-white' : '' }}">
+            <a href="{{ route('admin.participants') }}" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl {{ Route::currentRouteName() == 'admin.participants' ? 'is-active' : '' }}">
                 <i class="fa-solid fa-users text-base"></i>
                 <span class="font-medium text-sm">Participantes</span>
             </a>
-            <a href="{{ route('admin.reports') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition text-slate-400 hover:text-white hover:bg-slate-900/60 {{ Route::currentRouteName() == 'admin.reports' ? 'bg-slate-900 text-white' : '' }}">
+            <a href="{{ route('admin.reports') }}" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl {{ Route::currentRouteName() == 'admin.reports' ? 'is-active' : '' }}">
                 <i class="fa-solid fa-chart-pie text-base"></i>
                 <span class="font-medium text-sm">Relatórios</span>
             </a>
-            <a href="{{ route('admin.users') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition text-slate-400 hover:text-white hover:bg-slate-900/60 {{ Route::currentRouteName() == 'admin.users' ? 'bg-slate-900 text-white' : '' }}">
+            <a href="{{ route('admin.users') }}" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl {{ Route::currentRouteName() == 'admin.users' ? 'is-active' : '' }}">
                 <i class="fa-solid fa-user-gear text-base"></i>
                 <span class="font-medium text-sm">Usuários / Perfis</span>
             </a>
-            <a href="{{ route('admin.notifications') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition text-slate-400 hover:text-white hover:bg-slate-900/60 {{ Route::currentRouteName() == 'admin.notifications' ? 'bg-slate-900 text-white' : '' }}">
+            <a href="{{ route('admin.notifications') }}" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl {{ Route::currentRouteName() == 'admin.notifications' ? 'is-active' : '' }}">
                 <i class="fa-solid fa-bullhorn text-base"></i>
                 <span class="font-medium text-sm">Notificações</span>
             </a>
-            <a href="{{ route('admin.logs') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition text-slate-400 hover:text-white hover:bg-slate-900/60 {{ Route::currentRouteName() == 'admin.logs' ? 'bg-slate-900 text-white' : '' }}">
+            <a href="{{ route('admin.logs') }}" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl {{ Route::currentRouteName() == 'admin.logs' ? 'is-active' : '' }}">
                 <i class="fa-solid fa-shield-halved text-base"></i>
                 <span class="font-medium text-sm">Logs de Auditoria</span>
             </a>
-            <a href="{{ route('admin.settings') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition text-slate-400 hover:text-white hover:bg-slate-900/60 {{ Route::currentRouteName() == 'admin.settings' ? 'bg-slate-900 text-white' : '' }}">
+            <a href="{{ route('admin.settings') }}" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl {{ Route::currentRouteName() == 'admin.settings' ? 'is-active' : '' }}">
                 <i class="fa-solid fa-gears text-base"></i>
                 <span class="font-medium text-sm">Configurações</span>
             </a>
@@ -109,17 +110,17 @@
         <!-- Topbar Mobile only -->
         <header class="h-16 border-b flex md:hidden items-center justify-between px-6 sticky top-0 z-50" style="background-color: var(--bg-sidebar); border-color: var(--border-color);">
             <div class="flex items-center gap-2">
-                <button onclick="toggleMobileMenu()" class="p-2 -ml-2 rounded-lg text-slate-400 hover:text-white transition">
+                <button onclick="toggleMobileMenu()" class="nav-link-quiet p-2 -ml-2 rounded-lg transition">
                     <i class="fa-solid fa-bars text-xl"></i>
                 </button>
                 <i class="fa-solid fa-user-shield text-lg" style="color: var(--accent);"></i>
                 <span class="font-bold text-white text-sm">Painel Admin</span>
             </div>
             <div class="flex items-center gap-3">
-                <button onclick="toggleTheme()" class="text-slate-400 hover:text-white transition">
+                <button onclick="toggleTheme()" class="nav-link-quiet transition">
                     <i class="fa-solid fa-circle-half-stroke text-lg"></i>
                 </button>
-                <a href="/" class="text-slate-400 hover:text-white">
+                <a href="/" class="nav-link-quiet">
                     <i class="fa-solid fa-house text-lg"></i>
                 </a>
             </div>
@@ -137,41 +138,41 @@
                     </div>
                     <span class="font-bold text-white text-sm">Ação RR Admin</span>
                 </div>
-                <button onclick="toggleMobileMenu()" class="p-2 rounded-lg text-slate-400 hover:text-white transition">
+                <button onclick="toggleMobileMenu()" class="nav-link-quiet p-2 rounded-lg transition">
                     <i class="fa-solid fa-xmark text-xl"></i>
                 </button>
             </div>
 
             <div class="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
-                <a href="/" class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition text-slate-400 hover:text-white hover:bg-slate-900/60">
+                <a href="/" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl">
                     <i class="fa-solid fa-house text-base"></i>
                     <span class="font-medium text-sm">Ver Site Público</span>
                 </a>
-                <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition text-slate-400 hover:text-white hover:bg-slate-900/60 {{ Route::currentRouteName() == 'admin.dashboard' ? 'bg-slate-900 text-white' : '' }}">
+                <a href="{{ route('admin.dashboard') }}" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl {{ Route::currentRouteName() == 'admin.dashboard' ? 'is-active' : '' }}">
                     <i class="fa-solid fa-chart-line text-base"></i>
                     <span class="font-medium text-sm">Dashboard / Ações Promocionais</span>
                 </a>
-                <a href="{{ route('admin.participants') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition text-slate-400 hover:text-white hover:bg-slate-900/60 {{ Route::currentRouteName() == 'admin.participants' ? 'bg-slate-900 text-white' : '' }}">
+                <a href="{{ route('admin.participants') }}" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl {{ Route::currentRouteName() == 'admin.participants' ? 'is-active' : '' }}">
                     <i class="fa-solid fa-users text-base"></i>
                     <span class="font-medium text-sm">Participantes</span>
                 </a>
-                <a href="{{ route('admin.reports') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition text-slate-400 hover:text-white hover:bg-slate-900/60 {{ Route::currentRouteName() == 'admin.reports' ? 'bg-slate-900 text-white' : '' }}">
+                <a href="{{ route('admin.reports') }}" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl {{ Route::currentRouteName() == 'admin.reports' ? 'is-active' : '' }}">
                     <i class="fa-solid fa-chart-pie text-base"></i>
                     <span class="font-medium text-sm">Relatórios</span>
                 </a>
-                <a href="{{ route('admin.users') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition text-slate-400 hover:text-white hover:bg-slate-900/60 {{ Route::currentRouteName() == 'admin.users' ? 'bg-slate-900 text-white' : '' }}">
+                <a href="{{ route('admin.users') }}" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl {{ Route::currentRouteName() == 'admin.users' ? 'is-active' : '' }}">
                     <i class="fa-solid fa-user-gear text-base"></i>
                     <span class="font-medium text-sm">Usuários / Perfis</span>
                 </a>
-                <a href="{{ route('admin.notifications') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition text-slate-400 hover:text-white hover:bg-slate-900/60 {{ Route::currentRouteName() == 'admin.notifications' ? 'bg-slate-900 text-white' : '' }}">
+                <a href="{{ route('admin.notifications') }}" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl {{ Route::currentRouteName() == 'admin.notifications' ? 'is-active' : '' }}">
                     <i class="fa-solid fa-bullhorn text-base"></i>
                     <span class="font-medium text-sm">Notificações</span>
                 </a>
-                <a href="{{ route('admin.logs') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition text-slate-400 hover:text-white hover:bg-slate-900/60 {{ Route::currentRouteName() == 'admin.logs' ? 'bg-slate-900 text-white' : '' }}">
+                <a href="{{ route('admin.logs') }}" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl {{ Route::currentRouteName() == 'admin.logs' ? 'is-active' : '' }}">
                     <i class="fa-solid fa-shield-halved text-base"></i>
                     <span class="font-medium text-sm">Logs de Auditoria</span>
                 </a>
-                <a href="{{ route('admin.settings') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition text-slate-400 hover:text-white hover:bg-slate-900/60 {{ Route::currentRouteName() == 'admin.settings' ? 'bg-slate-900 text-white' : '' }}">
+                <a href="{{ route('admin.settings') }}" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl {{ Route::currentRouteName() == 'admin.settings' ? 'is-active' : '' }}">
                     <i class="fa-solid fa-gears text-base"></i>
                     <span class="font-medium text-sm">Configurações</span>
                 </a>
@@ -234,22 +235,22 @@
 
     <!-- Bottom Nav Mobile -->
     <nav class="md:hidden fixed bottom-0 left-0 right-0 h-16 border-t backdrop-blur flex justify-around items-center z-50" style="background-color: rgba(8,9,12,0.95); border-color: var(--border-color); padding-bottom: env(safe-area-inset-bottom);">
-        <a href="/" class="flex flex-col items-center gap-1 text-slate-400 hover:text-white">
+        <a href="/" class="nav-link-quiet flex flex-col items-center gap-1">
             <i class="fa-solid fa-house text-lg"></i>
             <span class="text-[10px]">Início</span>
         </a>
-        <a href="{{ route('admin.dashboard') }}" class="flex flex-col items-center gap-1 text-slate-400 hover:text-white">
+        <a href="{{ route('admin.dashboard') }}" class="nav-link-quiet flex flex-col items-center gap-1">
             <i class="fa-solid fa-chart-line text-lg"></i>
             <span class="text-[10px]">Dashboard</span>
         </a>
         <a href="{{ route('admin.raffles.create') }}" class="relative -mt-5 flex items-center justify-center w-12 h-12 rounded-full shadow-lg" style="background: var(--accent); color: var(--on-accent); box-shadow: 0 8px 20px var(--accent-glow);">
             <i class="fa-solid fa-plus text-lg"></i>
         </a>
-        <a href="{{ route('admin.reports') }}" class="flex flex-col items-center gap-1 text-slate-400 hover:text-white">
+        <a href="{{ route('admin.reports') }}" class="nav-link-quiet flex flex-col items-center gap-1">
             <i class="fa-solid fa-chart-pie text-lg"></i>
             <span class="text-[10px]">Relatórios</span>
         </a>
-        <a href="{{ route('admin.settings') }}" class="flex flex-col items-center gap-1 text-slate-400 hover:text-white">
+        <a href="{{ route('admin.settings') }}" class="nav-link-quiet flex flex-col items-center gap-1">
             <i class="fa-solid fa-gears text-lg"></i>
             <span class="text-[10px]">Config</span>
         </a>

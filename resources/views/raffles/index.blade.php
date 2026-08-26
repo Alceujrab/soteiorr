@@ -36,9 +36,9 @@
         <div class="lg:col-span-7 relative min-h-[280px] sm:min-h-[360px] lg:min-h-[440px]">
             <img src="{{ $heroImageDesktop }}" alt="{{ $heroTitle }}" class="absolute inset-0 w-full h-full object-cover hidden sm:block">
             <img src="{{ $heroImageMobile }}" alt="{{ $heroTitle }}" class="absolute inset-0 w-full h-full object-cover sm:hidden">
-            <div class="absolute inset-0 bg-gradient-to-t lg:bg-gradient-to-r from-[#0c0e12] via-[#0c0e12]/55 to-transparent light-hero-mask"></div>
+            <div class="absolute inset-0 hero-photo-mask"></div>
             <img src="{{ asset('images/logo-rr.png') }}" alt="RR Veículos" class="absolute bottom-4 right-4 sm:bottom-6 sm:right-6 h-10 sm:h-12 w-auto opacity-90 drop-shadow-lg">
-            <div class="absolute bottom-4 left-4 sm:bottom-6 sm:left-6 flex flex-wrap gap-2">
+            <div class="absolute bottom-4 left-4 sm:bottom-6 sm:left-6 flex flex-wrap gap-2 on-media">
                 <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded bg-black/55 border border-white/10 text-white">100% Seguro</span>
                 <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded bg-black/55 border border-white/10 text-white">Apuração transparente</span>
                 <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded bg-black/55 border border-white/10 text-white">Veículos reais</span>
@@ -51,24 +51,24 @@
                 <span class="text-[11px] font-bold uppercase tracking-[0.18em]" style="color: var(--badge-text);">Ação Promocional</span>
             </div>
 
-            <h1 class="font-display text-3xl sm:text-4xl lg:text-[2.55rem] font-bold leading-[1.1] tracking-tight text-white">
+            <h1 class="font-display text-3xl sm:text-4xl lg:text-[2.55rem] font-bold leading-[1.1] tracking-tight theme-title">
                 {{ $heroTitle }}
             </h1>
-            <p class="text-sm sm:text-base text-slate-400 leading-relaxed">
+            <p class="text-sm sm:text-base theme-muted leading-relaxed">
                 {{ $heroSubtitle }}
             </p>
 
             <div class="space-y-2 pt-1">
                 <div class="flex items-end justify-between gap-3">
                     <div>
-                        <div class="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-500">Meta da campanha</div>
-                        <div class="font-display text-2xl font-bold text-white">{{ $metaPercent }}%</div>
+                        <div class="text-[10px] font-bold uppercase tracking-[0.16em] theme-muted">Meta da campanha</div>
+                        <div class="font-display text-2xl font-bold theme-title">{{ $metaPercent }}%</div>
                     </div>
-                    <div class="text-right text-xs text-slate-500">
-                        Faltam <strong class="text-white">{{ $remainPercent }}%</strong><br>para a meta
+                    <div class="text-right text-xs theme-muted">
+                        Faltam <strong class="theme-title">{{ $remainPercent }}%</strong><br>para a meta
                     </div>
                 </div>
-                <div class="h-2.5 rounded-full overflow-hidden bg-black/40 border" style="border-color: var(--border-color);">
+                <div class="h-2.5 rounded-full overflow-hidden border" style="border-color: var(--border-color); background: color-mix(in srgb, var(--text-primary) 8%, transparent);">
                     <div class="h-full rounded-full transition-all duration-700" style="width: {{ $metaPercent }}%; background: linear-gradient(90deg, var(--accent), var(--accent-soft));"></div>
                 </div>
             </div>
@@ -77,7 +77,7 @@
                 <a href="{{ $firstRaffleUrl }}" class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-bold text-sm transition shadow-lg" style="background-color: var(--accent); color: var(--on-accent); box-shadow: 0 10px 30px var(--accent-glow);">
                     Quero participar <i class="fa-solid fa-arrow-right text-xs"></i>
                 </a>
-                <a href="#pacotes" class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl border text-sm font-semibold text-white hover:bg-white/5 transition" style="border-color: var(--border-color);">
+                <a href="#pacotes" class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl border text-sm font-semibold theme-title transition" style="border-color: var(--border-color);">
                     Ver pacotes
                 </a>
             </div>
@@ -89,7 +89,7 @@
         <div class="flex items-end justify-between gap-4">
             <div>
                 <p class="text-[11px] font-bold uppercase tracking-[0.18em]" style="color: var(--badge-text);">Escolha seu pacote</p>
-                <h2 class="font-display text-2xl sm:text-3xl font-bold text-white mt-1">Mais números, mais chances</h2>
+                <h2 class="font-display text-2xl sm:text-3xl font-bold theme-title mt-1">Mais números, mais chances</h2>
             </div>
         </div>
 
@@ -107,7 +107,7 @@
                     @endif
                     <div>
                         <div class="text-xs font-bold uppercase tracking-[0.14em] text-slate-500">{{ $package->name }}</div>
-                        <div class="font-display text-3xl font-bold text-white mt-2">R$ {{ number_format((float) $package->price, 2, ',', '.') }}</div>
+                        <div class="font-display text-3xl font-bold theme-title mt-2">R$ {{ number_format((float) $package->price, 2, ',', '.') }}</div>
                         <div class="text-sm text-slate-400 mt-1">{{ $package->numbers_qty }} números</div>
                     </div>
                     @if(!empty($package->highlight))
@@ -124,7 +124,7 @@
     <!-- Ações ativas -->
     <section id="acoes-promocionais" class="space-y-5 scroll-mt-24">
         <div class="flex items-center justify-between gap-3">
-            <h2 class="font-display text-2xl sm:text-3xl font-bold text-white flex items-center gap-3">
+            <h2 class="font-display text-2xl sm:text-3xl font-bold theme-title flex items-center gap-3">
                 <span class="w-1.5 h-7 rounded-full" style="background: var(--accent);"></span>
                 Ações Promocionais Ativas
             </h2>
@@ -140,13 +140,13 @@
                     <div class="h-52 w-full relative overflow-hidden bg-black">
                         <img src="{{ $raffle->image_url }}" alt="{{ $raffle->title }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
                         <img src="{{ asset('images/logo-rr.png') }}" alt="RR Veículos" class="photo-brand-mark">
-                        <div class="absolute top-4 right-4 text-white font-bold px-3 py-1 rounded-lg text-sm shadow" style="background: var(--accent);">
+                        <div class="absolute top-4 right-4 on-media font-bold px-3 py-1 rounded-lg text-sm shadow" style="background: var(--accent); color: var(--on-accent);">
                             a partir de R$ {{ number_format($raffle->startingPrice(), 2, ',', '.') }}
                         </div>
                     </div>
                     <div class="p-5 sm:p-6 flex-grow flex flex-col gap-4">
                         <div class="space-y-2">
-                            <h3 class="font-display text-xl font-bold text-white group-hover:opacity-90 transition">
+                            <h3 class="font-display text-xl font-bold theme-title group-hover:opacity-90 transition">
                                 {{ $raffle->title }}
                             </h3>
                             <p class="text-slate-400 text-sm line-clamp-2">{{ $raffle->description }}</p>
@@ -157,7 +157,7 @@
                                 <span>{{ number_format($sold, 0, ',', '.') }} / {{ number_format($raffle->total_numbers, 0, ',', '.') }} números</span>
                                 <span>{{ $pct }}%</span>
                             </div>
-                            <div class="h-1.5 rounded-full bg-black/35 overflow-hidden">
+                            <div class="h-1.5 rounded-full overflow-hidden" style="background: color-mix(in srgb, var(--text-primary) 10%, transparent);">
                                 <div class="h-full rounded-full" style="width: {{ $pct }}%; background: var(--accent);"></div>
                             </div>
                         </div>

@@ -12,6 +12,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    @include('partials.site-icons')
     @include('partials.theme-styles')
 </head>
 <body class="min-h-screen flex flex-col">
@@ -27,16 +28,16 @@
                 </div>
                 <div class="hidden md:flex items-center gap-5">
                     <!-- Theme Toggle Button -->
-                    <button onclick="toggleTheme()" class="p-2 rounded-lg text-slate-400 hover:text-white transition" title="Alternar Tema">
+                    <button onclick="toggleTheme()" class="nav-link-quiet p-2 rounded-lg transition" title="Alternar Tema">
                         <i class="fa-solid fa-circle-half-stroke text-lg"></i>
                     </button>
 
-                    <a href="/" class="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-300 hover:text-white transition">Início</a>
-                    <a href="#pacotes" class="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-300 hover:text-white transition">Pacotes</a>
-                    <a href="#acoes-promocionais" class="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-300 hover:text-white transition">Ações</a>
-                    <a href="{{ route('pages.faqs') }}" class="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-300 hover:text-white transition">FAQ</a>
-                    <a href="{{ route('pages.regulation') }}" class="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-300 hover:text-white transition">Regulamento</a>
-                    <a href="{{ route('pages.contact') }}" class="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-300 hover:text-white transition">Contato</a>
+                    <a href="/" class="nav-link-quiet text-[11px] font-semibold uppercase tracking-[0.14em] transition">Início</a>
+                    <a href="#pacotes" class="nav-link-quiet text-[11px] font-semibold uppercase tracking-[0.14em] transition">Pacotes</a>
+                    <a href="#acoes-promocionais" class="nav-link-quiet text-[11px] font-semibold uppercase tracking-[0.14em] transition">Ações</a>
+                    <a href="{{ route('pages.faqs') }}" class="nav-link-quiet text-[11px] font-semibold uppercase tracking-[0.14em] transition">FAQ</a>
+                    <a href="{{ route('pages.regulation') }}" class="nav-link-quiet text-[11px] font-semibold uppercase tracking-[0.14em] transition">Regulamento</a>
+                    <a href="{{ route('pages.contact') }}" class="nav-link-quiet text-[11px] font-semibold uppercase tracking-[0.14em] transition">Contato</a>
                     @auth
                         @if(in_array(auth()->user()->role, ['cliente', 'vendedor']))
                             <a href="{{ route('customer.dashboard') }}" class="text-sm font-medium text-blue-400 hover:text-blue-300 transition flex items-center gap-1">
@@ -54,7 +55,7 @@
                             </button>
                         </form>
                     @else
-                        <a href="{{ route('login') }}" class="text-sm font-medium text-slate-300 hover:text-white transition">Entrar</a>
+                        <a href="{{ route('login') }}" class="nav-link-quiet text-sm font-medium transition">Entrar</a>
                         <a href="{{ route('register') }}" class="text-white font-semibold px-4 py-2 rounded-xl text-xs transition" style="background-color: var(--accent);">
                             Cadastrar-se
                         </a>
@@ -63,10 +64,10 @@
 
                 <!-- Mobile Hamburger and Theme Toggle -->
                 <div class="flex md:hidden items-center gap-2">
-                    <button onclick="toggleTheme()" class="p-2 rounded-lg text-slate-400 hover:text-white transition">
+                    <button onclick="toggleTheme()" class="nav-link-quiet p-2 rounded-lg transition">
                         <i class="fa-solid fa-circle-half-stroke text-lg"></i>
                     </button>
-                    <button onclick="toggleMobileMenu()" class="p-2 rounded-lg text-slate-400 hover:text-white transition" title="Abrir Menu">
+                    <button onclick="toggleMobileMenu()" class="nav-link-quiet p-2 rounded-lg transition" title="Abrir Menu">
                         <i class="fa-solid fa-bars text-xl"></i>
                     </button>
                 </div>
@@ -83,29 +84,29 @@
             <div class="flex items-center gap-2">
                 <img src="{{ asset('images/logo-rr.png') }}" alt="RR Veículos" class="h-8 w-auto">
             </div>
-            <button onclick="toggleMobileMenu()" class="p-2 rounded-lg text-slate-400 hover:text-white transition">
+            <button onclick="toggleMobileMenu()" class="nav-link-quiet p-2 rounded-lg transition">
                 <i class="fa-solid fa-xmark text-xl"></i>
             </button>
         </div>
 
         <div class="flex-1 px-4 py-6 space-y-3">
-            <a href="/" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:text-white hover:bg-slate-900/60 transition">
+            <a href="/" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl">
                 <i class="fa-solid fa-ticket text-lg"></i>
                 <span class="font-medium text-sm">Ações Promocionais Ativas</span>
             </a>
-            <a href="{{ route('pages.about') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:text-white hover:bg-slate-900/60 transition">
+            <a href="{{ route('pages.about') }}" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl">
                 <i class="fa-solid fa-circle-info text-lg"></i>
                 <span class="font-medium text-sm">Sobre Nós</span>
             </a>
-            <a href="{{ route('pages.contact') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:text-white hover:bg-slate-900/60 transition">
+            <a href="{{ route('pages.contact') }}" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl">
                 <i class="fa-solid fa-envelope text-lg"></i>
                 <span class="font-medium text-sm">Contato</span>
             </a>
-            <a href="{{ route('pages.faqs') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:text-white hover:bg-slate-900/60 transition">
+            <a href="{{ route('pages.faqs') }}" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl">
                 <i class="fa-solid fa-circle-question text-lg"></i>
                 <span class="font-medium text-sm">Dúvidas Frequentes</span>
             </a>
-            <a href="{{ route('pages.regulation') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:text-white hover:bg-slate-900/60 transition">
+            <a href="{{ route('pages.regulation') }}" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl">
                 <i class="fa-solid fa-scale-balanced text-lg"></i>
                 <span class="font-medium text-sm">Regulamento</span>
             </a>
@@ -132,7 +133,7 @@
                     </button>
                 </form>
             @else
-                <a href="{{ route('login') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:text-white hover:bg-slate-900/60 transition">
+                <a href="{{ route('login') }}" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl">
                     <i class="fa-solid fa-right-to-bracket text-lg"></i>
                     <span class="font-medium text-sm">Entrar</span>
                 </a>
@@ -173,10 +174,10 @@
                 <!-- Info Section -->
                 <div class="space-y-3">
                     <h3 class="text-sm font-bold text-white uppercase tracking-wider">Ação RR Veículos</h3>
-                    <p class="text-xs text-slate-500 leading-relaxed">
+                    <p class="text-xs theme-muted leading-relaxed">
                         Sua plataforma premium de ações entre amigos e Ações Promocionais digitais. Concorra aos melhores veículos com segurança e total transparência.
                     </p>
-                    <div class="text-xs text-slate-500 font-medium">
+                    <div class="text-xs theme-muted font-medium">
                         <strong>RR Veículos Água Boa - MT</strong><br>
                         CNPJ: 12.345.678/0001-90<br>
                         Água Boa - MT
@@ -186,7 +187,7 @@
                 <!-- Links Section -->
                 <div class="space-y-3">
                     <h3 class="text-sm font-bold text-white uppercase tracking-wider">Navegação</h3>
-                    <ul class="space-y-2 text-xs text-slate-500">
+                    <ul class="space-y-2 text-xs theme-muted">
                         <li><a href="/" class="hover:text-white transition">Ações Promocionais Ativas</a></li>
                         <li><a href="{{ route('pages.about') }}" class="hover:text-white transition">Sobre Nós</a></li>
                         <li><a href="{{ route('pages.contact') }}" class="hover:text-white transition">Fale Conosco / Contato</a></li>
@@ -197,7 +198,7 @@
                 <!-- Legal Section -->
                 <div class="space-y-3">
                     <h3 class="text-sm font-bold text-white uppercase tracking-wider">Termos e Regulamento</h3>
-                    <ul class="space-y-2 text-xs text-slate-500">
+                    <ul class="space-y-2 text-xs theme-muted">
                         <li><a href="{{ route('pages.privacy') }}" class="hover:text-white transition">Política de Privacidade</a></li>
                         <li><a href="{{ route('pages.terms') }}" class="hover:text-white transition">Termos de Uso do Site</a></li>
                         <li><a href="{{ route('pages.regulation') }}" class="hover:text-white transition">Regulamento da Promoção</a></li>
@@ -206,10 +207,10 @@
                 </div>
             </div>
 
-            <div class="border-t pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left text-xs text-slate-600" style="border-color: var(--border-color);">
+            <div class="border-t pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left text-xs theme-muted" style="border-color: var(--border-color);">
                 <div>
                     <p>&copy; 2026 RR Veículos Água Boa - MT. Todos os direitos reservados.</p>
-                    <p class="mt-1 text-[10px] text-slate-700">Proibido o uso de qualquer informação ou parte deste sem autorização.</p>
+                    <p class="mt-1 text-[10px] theme-muted">Proibido o uso de qualquer informação ou parte deste sem autorização.</p>
                 </div>
                 <div class="flex items-center gap-1 font-medium">
                     <span>Desenvolvido por</span>
@@ -222,36 +223,36 @@
     <!-- Mobile bottom navigation -->
     <nav class="md:hidden fixed bottom-0 left-0 right-0 z-50 border-t backdrop-blur-xl" style="background-color: var(--bg-sidebar); border-color: var(--border-color); padding-bottom: env(safe-area-inset-bottom);">
         <div class="h-16 flex justify-around items-center px-1">
-            <a href="/" class="flex flex-col items-center gap-1 min-w-[3.5rem] {{ request()->routeIs('raffles.index') ? 'text-white' : 'text-slate-400' }}">
+            <a href="/" class="flex flex-col items-center gap-1 min-w-[3.5rem] {{ request()->routeIs('raffles.index') ? 'theme-title' : 'theme-muted' }}">
                 <i class="fa-solid fa-house text-base" style="{{ request()->routeIs('raffles.index') ? 'color: var(--accent);' : '' }}"></i>
                 <span class="text-[10px] font-medium">Início</span>
             </a>
-            <a href="/#pacotes" class="flex flex-col items-center gap-1 min-w-[3.5rem] text-slate-400">
+            <a href="/#pacotes" class="flex flex-col items-center gap-1 min-w-[3.5rem] theme-muted">
                 <i class="fa-solid fa-boxes-stacked text-base"></i>
                 <span class="text-[10px] font-medium">Pacotes</span>
             </a>
-            <a href="/#acoes-promocionais" class="flex flex-col items-center gap-1 min-w-[3.5rem] text-slate-400">
+            <a href="/#acoes-promocionais" class="flex flex-col items-center gap-1 min-w-[3.5rem] theme-muted">
                 <i class="fa-solid fa-car text-base"></i>
                 <span class="text-[10px] font-medium">Ações</span>
             </a>
-            <a href="{{ route('pages.regulation') }}" class="flex flex-col items-center gap-1 min-w-[3.5rem] {{ request()->routeIs('pages.regulation') ? 'text-white' : 'text-slate-400' }}">
+            <a href="{{ route('pages.regulation') }}" class="flex flex-col items-center gap-1 min-w-[3.5rem] {{ request()->routeIs('pages.regulation') ? 'theme-title' : 'theme-muted' }}">
                 <i class="fa-solid fa-scale-balanced text-base" style="{{ request()->routeIs('pages.regulation') ? 'color: var(--accent);' : '' }}"></i>
                 <span class="text-[10px] font-medium">Regras</span>
             </a>
             @auth
                 @if(in_array(auth()->user()->role, ['cliente', 'vendedor']))
-                    <a href="{{ route('customer.dashboard') }}" class="flex flex-col items-center gap-1 min-w-[3.5rem] text-slate-400">
+                    <a href="{{ route('customer.dashboard') }}" class="flex flex-col items-center gap-1 min-w-[3.5rem] theme-muted">
                         <i class="fa-solid fa-user text-base"></i>
                         <span class="text-[10px] font-medium">Perfil</span>
                     </a>
                 @else
-                    <a href="{{ route('admin.dashboard') }}" class="flex flex-col items-center gap-1 min-w-[3.5rem] text-slate-400">
+                    <a href="{{ route('admin.dashboard') }}" class="flex flex-col items-center gap-1 min-w-[3.5rem] theme-muted">
                         <i class="fa-solid fa-gauge-high text-base"></i>
                         <span class="text-[10px] font-medium">Admin</span>
                     </a>
                 @endif
             @else
-                <a href="{{ route('login') }}" class="flex flex-col items-center gap-1 min-w-[3.5rem] text-slate-400">
+                <a href="{{ route('login') }}" class="flex flex-col items-center gap-1 min-w-[3.5rem] theme-muted">
                     <i class="fa-solid fa-right-to-bracket text-base"></i>
                     <span class="text-[10px] font-medium">Entrar</span>
                 </a>

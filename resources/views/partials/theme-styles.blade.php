@@ -41,26 +41,57 @@
         pointer-events: none;
     }
 
-    .text-slate-400, .text-slate-500, .text-slate-300 {
+    /* Títulos semânticos (não usar text-white no tema claro) */
+    .theme-title {
+        color: var(--text-primary) !important;
+    }
+    .theme-muted {
         color: var(--text-secondary) !important;
     }
 
-    /* Títulos/textos que usam text-white no markup seguem o texto do tema */
-    .text-white {
+    /* Menu / nav links — hover funciona no claro e no escuro */
+    .nav-link {
+        color: var(--text-secondary);
+        transition: color 0.2s ease, background-color 0.2s ease;
+    }
+    .nav-link:hover {
+        color: var(--text-primary) !important;
+        background-color: color-mix(in srgb, var(--accent) 10%, transparent) !important;
+    }
+    .nav-link.is-active {
+        color: var(--on-accent) !important;
+        background-color: var(--accent) !important;
+    }
+    .nav-link-quiet {
+        color: var(--text-secondary);
+        transition: color 0.2s ease;
+    }
+    .nav-link-quiet:hover {
         color: var(--text-primary) !important;
     }
 
-    /* CTAs e badges sobre o vermelho da marca usam texto "on accent" */
-    a[style*="var(--accent)"].text-white,
-    button[style*="var(--accent)"].text-white,
-    span[style*="var(--accent)"].text-white,
-    div[style*="var(--accent)"].text-white,
-    a[style*="var(--accent)"],
-    button[style*="var(--accent)"],
-    span[style*="background: var(--accent)"],
-    div[style*="background: var(--accent)"],
-    div[style*="background-color: var(--accent)"] {
-        color: var(--on-accent) !important;
+    /* Hero: máscara suave — sem faixa preta ofuscando a foto */
+    .hero-photo-mask {
+        background: linear-gradient(to top, rgba(15, 23, 42, 0.18), transparent 45%);
+    }
+    @media (min-width: 1024px) {
+        .hero-photo-mask {
+            background: linear-gradient(to right, rgba(15, 23, 42, 0.12), transparent 55%);
+        }
+    }
+    body.dark-theme .hero-photo-mask {
+        background: linear-gradient(to top, rgba(12, 14, 18, 0.55), transparent 50%);
+    }
+    @media (min-width: 1024px) {
+        body.dark-theme .hero-photo-mask {
+            background: linear-gradient(to right, rgba(12, 14, 18, 0.45), transparent 60%);
+        }
+    }
+
+    /* Texto branco real só em cima de mídia / fundo escuro local */
+    .on-media,
+    .on-media .text-white {
+        color: #ffffff !important;
     }
 
     .bg-blue-600, .bg-emerald-600, .bg-slate-800, .bg-slate-950, .bg-amber-600 {
