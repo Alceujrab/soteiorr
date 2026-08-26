@@ -54,6 +54,7 @@ Route::get('/contato', [RaffleController::class, 'contact'])->name('pages.contac
 Route::get('/duvidas', [RaffleController::class, 'faqs'])->name('pages.faqs');
 Route::get('/politica-de-privacidade', [RaffleController::class, 'privacy'])->name('pages.privacy');
 Route::get('/termos-de-uso', [RaffleController::class, 'terms'])->name('pages.terms');
+Route::get('/regulamento', [RaffleController::class, 'regulation'])->name('pages.regulation');
 
 // Rotas Admin
 Route::get('/admin', [AdminController::class, 'dashboard'])->name('admin.dashboard');

@@ -296,6 +296,18 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Regulamento -->
+                    <div class="space-y-2">
+                        <label class="text-xs text-slate-400 font-bold uppercase tracking-wider">Página "Regulamento":</label>
+                        <input type="hidden" name="page_regulation" id="input_page_regulation">
+                        <div class="quill-wrapper rounded-xl overflow-hidden border border-slate-800">
+                            <div id="editor_page_regulation" class="quill-editor h-80 bg-slate-900/50 text-slate-200">
+                                {!! $settings['page_regulation'] !!}
+                            </div>
+                        </div>
+                        <p class="text-[10px] text-slate-500">Página pública: <a href="{{ route('pages.regulation') }}" target="_blank" class="text-blue-400 hover:text-blue-300">/regulamento</a></p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -402,7 +414,8 @@
         'editor_page_contact',
         'editor_page_faqs',
         'editor_page_privacy_policy',
-        'editor_page_terms_of_use'
+        'editor_page_terms_of_use',
+        'editor_page_regulation'
     ];
 
     editorsConfig.forEach(id => {
@@ -426,6 +439,7 @@
         document.getElementById('input_page_faqs').value = quillEditors['editor_page_faqs'].root.innerHTML;
         document.getElementById('input_page_privacy_policy').value = quillEditors['editor_page_privacy_policy'].root.innerHTML;
         document.getElementById('input_page_terms_of_use').value = quillEditors['editor_page_terms_of_use'].root.innerHTML;
+        document.getElementById('input_page_regulation').value = quillEditors['editor_page_regulation'].root.innerHTML;
     }
 
     // Sincronizar na submissão do formulário

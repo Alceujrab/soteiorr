@@ -102,6 +102,7 @@
                     <a href="{{ route('pages.about') }}" class="text-sm font-medium text-slate-300 hover:text-white transition">Sobre Nós</a>
                     <a href="{{ route('pages.contact') }}" class="text-sm font-medium text-slate-300 hover:text-white transition">Contato</a>
                     <a href="{{ route('pages.faqs') }}" class="text-sm font-medium text-slate-300 hover:text-white transition">Dúvidas</a>
+                    <a href="{{ route('pages.regulation') }}" class="text-sm font-medium text-slate-300 hover:text-white transition">Regulamento</a>
                     @auth
                         @if(in_array(auth()->user()->role, ['cliente', 'vendedor']))
                             <a href="{{ route('customer.dashboard') }}" class="text-sm font-medium text-blue-400 hover:text-blue-300 transition flex items-center gap-1">
@@ -172,6 +173,10 @@
             <a href="{{ route('pages.faqs') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:text-white hover:bg-slate-900/60 transition">
                 <i class="fa-solid fa-circle-question text-lg"></i>
                 <span class="font-medium text-sm">Dúvidas Frequentes</span>
+            </a>
+            <a href="{{ route('pages.regulation') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:text-white hover:bg-slate-900/60 transition">
+                <i class="fa-solid fa-scale-balanced text-lg"></i>
+                <span class="font-medium text-sm">Regulamento</span>
             </a>
             
             <div class="border-t my-4" style="border-color: var(--border-color);"></div>
@@ -264,6 +269,7 @@
                     <ul class="space-y-2 text-xs text-slate-500">
                         <li><a href="{{ route('pages.privacy') }}" class="hover:text-white transition">Política de Privacidade</a></li>
                         <li><a href="{{ route('pages.terms') }}" class="hover:text-white transition">Termos de Uso do Site</a></li>
+                        <li><a href="{{ route('pages.regulation') }}" class="hover:text-white transition">Regulamento da Promoção</a></li>
                         <li><a href="{{ route('raffles.validate-ticket') }}" class="hover:text-white transition">Validador de Bilhetes Online</a></li>
                     </ul>
                 </div>

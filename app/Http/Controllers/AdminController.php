@@ -12,6 +12,7 @@ use App\Models\Raffle;
 use App\Models\Setting;
 use App\Models\Ticket;
 use App\Models\User;
+use App\Support\DefaultRegulationContent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -267,6 +268,7 @@ class AdminController extends Controller
             'page_faqs' => Setting::get('page_faqs', '<h1>Dúvidas Frequentes</h1><p>Veja as respostas para as perguntas mais comuns dos nossos participantes.</p>'),
             'page_privacy_policy' => Setting::get('page_privacy_policy', '<h1>Política de Privacidade</h1><p>Sua privacidade é nossa prioridade. Coletamos e usamos dados apenas para o processamento seguro das cotas.</p>'),
             'page_terms_of_use' => Setting::get('page_terms_of_use', '<h1>Termos de Uso</h1><p>Ao adquirir cotas na Ação RR Veículos, você concorda com o regulamento oficial da Ação Promocional e com as regras gerais.</p>'),
+            'page_regulation' => Setting::get('page_regulation', DefaultRegulationContent::html()),
         ];
 
         return view('admin.settings', compact('settings'));
@@ -309,6 +311,7 @@ class AdminController extends Controller
             'page_faqs' => 'nullable|string',
             'page_privacy_policy' => 'nullable|string',
             'page_terms_of_use' => 'nullable|string',
+            'page_regulation' => 'nullable|string',
         ]);
 
         Setting::set('app_name', $request->app_name);
@@ -348,6 +351,7 @@ class AdminController extends Controller
         Setting::set('page_faqs', $request->page_faqs ?: '');
         Setting::set('page_privacy_policy', $request->page_privacy_policy ?: '');
         Setting::set('page_terms_of_use', $request->page_terms_of_use ?: '');
+        Setting::set('page_regulation', $request->page_regulation ?: '');
 
         config(['app.name' => $request->app_name]);
 

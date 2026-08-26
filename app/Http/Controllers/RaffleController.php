@@ -10,6 +10,7 @@ use App\Models\Setting;
 use App\Models\Ticket;
 use App\Models\User;
 use App\Services\PaymentService;
+use App\Support\DefaultRegulationContent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -307,5 +308,12 @@ class RaffleController extends Controller
         $content = Setting::get('page_terms_of_use', $default);
 
         return view('pages.terms', compact('content'));
+    }
+
+    public function regulation()
+    {
+        $content = Setting::get('page_regulation', DefaultRegulationContent::html());
+
+        return view('pages.regulation', compact('content'));
     }
 }
