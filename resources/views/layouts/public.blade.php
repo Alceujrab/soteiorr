@@ -288,6 +288,25 @@
         </div>
     </footer>
 
+    <!-- Back to top (hidden near top; stays clear of mobile nav/drawer) -->
+    <button
+        type="button"
+        id="back-to-top"
+        onclick="window.scrollTo({ top: 0, behavior: 'smooth' })"
+        aria-label="Voltar ao topo"
+        title="Voltar ao topo"
+        class="fixed z-40 opacity-0 pointer-events-none translate-y-2 transition-all duration-300 ease-out
+               right-4 bottom-5 sm:right-6 sm:bottom-8
+               w-10 h-10 sm:w-11 sm:h-11
+               rounded-full border shadow-lg backdrop-blur
+               flex items-center justify-center
+               text-white hover:scale-105 active:scale-95
+               focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
+        style="background-color: color-mix(in srgb, var(--accent) 88%, #0f172a); border-color: color-mix(in srgb, var(--accent) 45%, transparent); box-shadow: 0 10px 25px rgba(0,0,0,0.35);"
+    >
+        <i class="fa-solid fa-arrow-up text-sm sm:text-base"></i>
+    </button>
+
     <!-- Theme Switcher Logic -->
     <script>
         const savedTheme = localStorage.getItem('theme') || 'dark';
@@ -321,7 +340,29 @@
                     overlay.classList.add('hidden');
                 }, 300);
             }
+            updateBackToTopVisibility();
         }
+
+        function updateBackToTopVisibility() {
+            const btn = document.getElementById('back-to-top');
+            const drawer = document.getElementById('mobile-drawer');
+            if (!btn) return;
+
+            const drawerOpen = drawer && !drawer.classList.contains('-translate-x-full');
+            const scrolledEnough = window.scrollY > 420;
+            const show = scrolledEnough && !drawerOpen;
+
+            btn.classList.toggle('opacity-0', !show);
+            btn.classList.toggle('pointer-events-none', !show);
+            btn.classList.toggle('translate-y-2', !show);
+            btn.classList.toggle('opacity-100', show);
+            btn.classList.toggle('translate-y-0', show);
+            btn.setAttribute('aria-hidden', show ? 'false' : 'true');
+        }
+
+        window.addEventListener('scroll', updateBackToTopVisibility, { passive: true });
+        window.addEventListener('resize', updateBackToTopVisibility);
+        document.addEventListener('DOMContentLoaded', updateBackToTopVisibility);
     </script>
 </body>
 </html>
