@@ -167,9 +167,8 @@
                                         <a href="{{ route('admin.raffles.edit', $raffle->id) }}" class="bg-slate-800 hover:bg-slate-700 text-white font-semibold px-2.5 py-1.5 rounded-lg text-xs transition flex items-center gap-1.5 w-fit border border-slate-700">
                                             <i class="fa-solid fa-pen-to-square"></i> Editar
                                         </a>
-                                        <form action="{{ route('admin.raffles.destroy', $raffle->id) }}" method="POST" onsubmit="return confirm('Excluir esta Ação Promocional? Esta ação remove bilhetes e pacotes vinculados.');">
+                                        <form action="{{ route('admin.raffles.destroy.request', $raffle->id) }}" method="POST" onsubmit="return confirm('Solicitar exclusão desta Ação Promocional? Um código será enviado ao e-mail do administrador.');">
                                             @csrf
-                                            @method('DELETE')
                                             <button type="submit" class="bg-red-500/10 hover:bg-red-500/20 text-red-400 font-semibold px-2.5 py-1.5 rounded-lg text-xs transition flex items-center gap-1.5 w-fit border border-red-500/30">
                                                 <i class="fa-solid fa-trash"></i> Excluir
                                             </button>

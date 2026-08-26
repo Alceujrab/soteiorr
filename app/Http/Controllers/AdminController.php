@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\ConfirmRaffleDeletionAction;
 use App\Actions\LogActivityAction;
+use App\Actions\RequestRaffleDeletionAction;
 use App\Models\ActivityLog;
 use App\Models\Banner;
 use App\Models\Draw;
@@ -224,36 +226,108 @@ class AdminController extends Controller
     }
 
     /**
-     * Excluir Ação Promocional e registros relacionados.
+     * Solicitar exclusão: envia código por e-mail ao administrador.
      */
-    public function destroyRaffle(Raffle $raffle, LogActivityAction $logActivity)
+    public function requestDestroyRaffle(Raffle $raffle, RequestRaffleDeletionAction $requestDeletion, LogActivityAction $logActivity)
     {
-        $title = $raffle->title;
-        $id = $raffle->id;
+        $admin = $this->resolveAdminUser();
 
-        DB::transaction(function () use ($raffle) {
-            $paymentIds = Ticket::where('raffle_id', $raffle->id)
-                ->whereNotNull('payment_id')
-                ->pluck('payment_id')
-                ->unique()
-                ->filter()
-                ->values();
+        try {
+            $result = $requestDeletion->execute($raffle, $admin);
+        } catch (\Throwable $e) {
+            return redirect()->route('admin.dashboard')
+                ->withErrors(['error' => $e->getMessage()]);
+        }
 
-            Ticket::where('raffle_id', $raffle->id)->delete();
-            $raffle->packages()->delete();
-            $raffle->draw()?->delete();
-            $raffle->delete();
+        $logActivity->execute(
+            "Solicitou exclusão da Ação Promocional ID: {$raffle->id} - {$raffle->title}",
+            json_encode(['email' => $result['email']])
+        );
 
-            if ($paymentIds->isNotEmpty()) {
-                Payment::whereIn('id', $paymentIds)
-                    ->whereDoesntHave('tickets')
-                    ->delete();
-            }
-        });
+        return redirect()
+            ->route('admin.raffles.destroy.confirm', $raffle)
+            ->with('success', 'Enviamos um código de confirmação para '.$this->maskEmail($result['email']).'.');
+    }
 
-        $logActivity->execute("Excluiu a Ação Promocional ID: {$id} - {$title}");
+    /**
+     * Exibir formulário de confirmação do código de exclusão.
+     */
+    public function showDestroyConfirm(Raffle $raffle)
+    {
+        $admin = $this->resolveAdminUser();
+
+        return view('admin.confirm_raffle_deletion', [
+            'raffle' => $raffle,
+            'maskedEmail' => $this->maskEmail($admin->email),
+            'expiresInMinutes' => RequestRaffleDeletionAction::EXPIRES_IN_MINUTES,
+        ]);
+    }
+
+    /**
+     * Confirmar exclusão com o código recebido por e-mail.
+     */
+    public function confirmDestroyRaffle(
+        Request $request,
+        Raffle $raffle,
+        ConfirmRaffleDeletionAction $confirmDeletion,
+        LogActivityAction $logActivity
+    ) {
+        $code = preg_replace('/\D+/', '', (string) $request->input('code'));
+        $request->merge(['code' => $code]);
+
+        $request->validate([
+            'code' => 'required|string|digits:6',
+        ]);
+
+        $admin = $this->resolveAdminUser();
+
+        try {
+            $confirmDeletion->execute($raffle, $admin, $code, $logActivity);
+        } catch (\Throwable $e) {
+            return redirect()
+                ->route('admin.raffles.destroy.confirm', $raffle)
+                ->withErrors(['code' => $e->getMessage()]);
+        }
 
         return redirect()->route('admin.dashboard')->with('success', 'Ação Promocional excluída com sucesso!');
+    }
+
+    /**
+     * Reenviar código de exclusão.
+     */
+    public function resendDestroyCode(Raffle $raffle, RequestRaffleDeletionAction $requestDeletion, LogActivityAction $logActivity)
+    {
+        return $this->requestDestroyRaffle($raffle, $requestDeletion, $logActivity);
+    }
+
+    private function resolveAdminUser(): User
+    {
+        if (Auth::check() && in_array(Auth::user()->role, ['admin_organizador', 'super_admin'], true)) {
+            return Auth::user();
+        }
+
+        $admin = User::where('role', 'admin_organizador')->first()
+            ?: User::where('role', 'super_admin')->first();
+
+        if (! $admin) {
+            abort(403, 'Nenhum administrador encontrado.');
+        }
+
+        Auth::login($admin);
+
+        return $admin;
+    }
+
+    private function maskEmail(?string $email): string
+    {
+        if (blank($email) || ! str_contains($email, '@')) {
+            return '***';
+        }
+
+        [$local, $domain] = explode('@', $email, 2);
+        $visible = substr($local, 0, 2);
+
+        return $visible.str_repeat('*', max(strlen($local) - 2, 1)).'@'.$domain;
     }
 
     /**

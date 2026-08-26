@@ -2,11 +2,13 @@
 
 namespace Tests\Feature;
 
+use App\Mail\RaffleDeletionCodeMail;
 use App\Models\Raffle;
 use App\Models\RafflePackage;
 use App\Models\Ticket;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
 
 class AdminRaffleManagementTest extends TestCase
@@ -44,8 +46,10 @@ class AdminRaffleManagementTest extends TestCase
         ]);
     }
 
-    public function test_admin_can_delete_raffle_and_related_packages(): void
+    public function test_admin_can_delete_raffle_after_email_code_confirmation(): void
     {
+        Mail::fake();
+
         $admin = $this->makeAdmin();
 
         $raffle = Raffle::create([
@@ -67,7 +71,18 @@ class AdminRaffleManagementTest extends TestCase
             'status' => 'reserved',
         ]);
 
-        $response = $this->actingAs($admin)->delete(route('admin.raffles.destroy', $raffle));
+        $this->actingAs($admin)->post(route('admin.raffles.destroy.request', $raffle));
+
+        $code = null;
+        Mail::assertSent(RaffleDeletionCodeMail::class, function ($mail) use (&$code) {
+            $code = $mail->code;
+
+            return true;
+        });
+
+        $response = $this->actingAs($admin)->post(route('admin.raffles.destroy.confirm.submit', $raffle), [
+            'code' => $code,
+        ]);
 
         $response->assertRedirect(route('admin.dashboard'));
         $this->assertDatabaseMissing('raffles', ['id' => $raffle->id]);
