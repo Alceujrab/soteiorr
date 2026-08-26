@@ -4,15 +4,24 @@
 
 @section('content')
 @php
-    $heroBanner = isset($banners) && $banners->isNotEmpty() ? $banners->first() : null;
     $heroRaffle = $raffles->first();
-    $heroImage = $heroBanner->image_url
-        ?? $heroRaffle?->image_url
-        ?? 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=1600&q=80';
-    $heroTitle = $heroBanner->title
-        ?? ($heroRaffle?->title ?? 'Seu próximo clássico pode ser seu');
-    $heroSubtitle = $heroBanner->subtitle
-        ?? 'Participe da Ação Promocional e concorra a veículos reais com total transparência.';
+    $heroBanner = isset($banners) && $banners->isNotEmpty() ? $banners->first() : null;
+
+    // Prioridade: ação ativa real > banner cadastrado > fallback
+    $heroImageDesktop = $heroRaffle?->image_url
+        ?? $heroBanner?->desktopImage()
+        ?? asset('images/logo-rr.png');
+    $heroImageMobile = $heroRaffle?->image_url
+        ?? ($heroBanner ? $heroBanner->mobileImage() : null)
+        ?? $heroImageDesktop;
+    $heroTitle = $heroRaffle?->title
+        ?? ($heroBanner?->title ?? 'Seu próximo clássico pode ser seu');
+    $heroSubtitle = $heroBanner?->subtitle
+        ?? ($heroRaffle?->description
+            ?? 'Participe da Ação Promocional e concorra a veículos reais com total transparência.');
+    if ($heroRaffle && blank($heroBanner?->subtitle)) {
+        $heroSubtitle = 'A partir de R$ '.number_format($heroRaffle->startingPrice(), 2, ',', '.').' · '.number_format($heroRaffle->total_numbers, 0, ',', '.').' números';
+    }
 
     $soldNumbers = $raffles->sum('paid_tickets_count');
     $totalNumbers = max(1, (int) $raffles->sum('total_numbers'));
@@ -25,8 +34,10 @@
     <!-- Hero assimétrico -->
     <section class="grid grid-cols-1 lg:grid-cols-12 gap-0 overflow-hidden rounded-2xl border" style="border-color: var(--border-color); background: var(--bg-card);">
         <div class="lg:col-span-7 relative min-h-[280px] sm:min-h-[360px] lg:min-h-[440px]">
-            <img src="{{ $heroImage }}" alt="{{ $heroTitle }}" class="absolute inset-0 w-full h-full object-cover">
-            <div class="absolute inset-0 bg-gradient-to-t lg:bg-gradient-to-r from-[#0c0e12] via-[#0c0e12]/55 to-transparent"></div>
+            <img src="{{ $heroImageDesktop }}" alt="{{ $heroTitle }}" class="absolute inset-0 w-full h-full object-cover hidden sm:block">
+            <img src="{{ $heroImageMobile }}" alt="{{ $heroTitle }}" class="absolute inset-0 w-full h-full object-cover sm:hidden">
+            <div class="absolute inset-0 bg-gradient-to-t lg:bg-gradient-to-r from-[#0c0e12] via-[#0c0e12]/55 to-transparent light-hero-mask"></div>
+            <img src="{{ asset('images/logo-rr.png') }}" alt="RR Veículos" class="absolute bottom-4 right-4 sm:bottom-6 sm:right-6 h-10 sm:h-12 w-auto opacity-90 drop-shadow-lg">
             <div class="absolute bottom-4 left-4 sm:bottom-6 sm:left-6 flex flex-wrap gap-2">
                 <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded bg-black/55 border border-white/10 text-white">100% Seguro</span>
                 <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded bg-black/55 border border-white/10 text-white">Apuração transparente</span>
@@ -128,6 +139,7 @@
                 <article class="glass-card rounded-2xl overflow-hidden border group flex flex-col h-full transition hover:-translate-y-0.5">
                     <div class="h-52 w-full relative overflow-hidden bg-black">
                         <img src="{{ $raffle->image_url }}" alt="{{ $raffle->title }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                        <img src="{{ asset('images/logo-rr.png') }}" alt="RR Veículos" class="photo-brand-mark">
                         <div class="absolute top-4 right-4 text-white font-bold px-3 py-1 rounded-lg text-sm shadow" style="background: var(--accent);">
                             a partir de R$ {{ number_format($raffle->startingPrice(), 2, ',', '.') }}
                         </div>

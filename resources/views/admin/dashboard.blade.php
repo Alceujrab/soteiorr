@@ -223,9 +223,9 @@
             <!-- Manual Form -->
             <div class="glass-card rounded-2xl p-6 space-y-4">
                 <h3 class="text-base font-bold text-white flex items-center gap-2 border-b pb-2" style="border-color: var(--border-color);">
-                    <i class="fa-solid fa-plus text-slate-400"></i> Adicionar Banner Manual
+                    <i class="fa-solid fa-plus text-slate-400"></i> Adicionar Banner
                 </h3>
-                <form action="{{ route('admin.banners.store') }}" method="POST" class="space-y-4">
+                <form action="{{ route('admin.banners.store') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
                     @csrf
                     <div class="space-y-1">
                         <label class="text-[10px] text-slate-400 font-bold uppercase block">Título do Destaque:</label>
@@ -236,11 +236,21 @@
                         <input type="text" name="subtitle" placeholder="Ex: Ação Promocional no próximo domingo" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none">
                     </div>
                     <div class="space-y-1">
-                        <label class="text-[10px] text-slate-400 font-bold uppercase block">URL da Imagem:</label>
-                        <input type="url" name="image_url" required placeholder="https://exemplo.com/imagem.jpg" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none">
+                        <label class="text-[10px] text-slate-400 font-bold uppercase block">Imagem Desktop (upload):</label>
+                        <input type="file" name="image" accept="image/*" class="w-full text-xs text-slate-300 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:bg-slate-800 file:text-white">
+                        <p class="text-[10px] text-slate-500">Tamanho recomendado: <strong class="text-slate-300">1920 × 700 px</strong> (JPG/PNG, até 5 MB)</p>
+                    </div>
+                    <div class="space-y-1">
+                        <label class="text-[10px] text-slate-400 font-bold uppercase block">Imagem Mobile (upload):</label>
+                        <input type="file" name="mobile_image" accept="image/*" class="w-full text-xs text-slate-300 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:bg-slate-800 file:text-white">
+                        <p class="text-[10px] text-slate-500">Tamanho recomendado: <strong class="text-slate-300">1080 × 1350 px</strong> (retrato, JPG/PNG, até 5 MB)</p>
+                    </div>
+                    <div class="space-y-1">
+                        <label class="text-[10px] text-slate-400 font-bold uppercase block">Ou URL da imagem desktop (opcional):</label>
+                        <input type="url" name="image_url" placeholder="https://exemplo.com/imagem.jpg" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none">
                     </div>
                     <button type="submit" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-semibold py-2 rounded-xl text-xs transition border border-slate-700">
-                        Adicionar Manualmente
+                        Salvar Banner
                     </button>
                 </form>
             </div>
@@ -273,6 +283,13 @@
                                 @csrf
                                 <button type="submit" class="px-2.5 py-1.5 rounded-lg text-xs font-semibold transition {{ $banner->active ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-slate-800 text-slate-500 border border-slate-700' }}">
                                     {{ $banner->active ? 'Ativo' : 'Inativo' }}
+                                </button>
+                            </form>
+                            <form action="{{ route('admin.banners.destroy', $banner->id) }}" method="POST" onsubmit="return confirm('Excluir este banner?');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="px-2.5 py-1.5 rounded-lg text-xs font-semibold text-red-400 border border-red-500/30 hover:bg-red-500/10 transition">
+                                    Excluir
                                 </button>
                             </form>
                         </div>

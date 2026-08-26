@@ -9,13 +9,14 @@
         <div class="glass-card rounded-2xl overflow-hidden">
             <div class="h-64 bg-slate-950 relative overflow-hidden group">
                 @php
-                    $images = !empty($raffle->images) && is_array($raffle->images) ? $raffle->images : [$raffle->image_url ?: 'https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?auto=format&fit=crop&w=800&q=80'];
+                    $images = !empty($raffle->images) && is_array($raffle->images) ? $raffle->images : [$raffle->image_url ?: asset('images/logo-rr.png')];
                 @endphp
                 
                 <div class="w-full h-full flex transition-transform duration-500" id="carousel-slides" style="width: {{ count($images) * 100 }}%">
                     @foreach($images as $image)
                         <div class="w-full h-full flex-shrink-0 relative" style="width: calc(100% / {{ count($images) }})">
                             <img src="{{ $image }}" alt="{{ $raffle->title }}" class="w-full h-full object-cover">
+                            <img src="{{ asset('images/logo-rr.png') }}" alt="RR Veículos" class="photo-brand-mark">
                         </div>
                     @endforeach
                 </div>

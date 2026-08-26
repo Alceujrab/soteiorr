@@ -715,26 +715,62 @@ class AdminController extends Controller
     }
 
     /**
-     * Cadastrar banner manualmente.
+     * Cadastrar banner manualmente (upload desktop/mobile ou URL).
      */
     public function storeBanner(Request $request, LogActivityAction $logActivity)
     {
         $request->validate([
             'title' => 'required|string|max:255',
             'subtitle' => 'nullable|string',
-            'image_url' => 'required|url',
+            'image' => 'nullable|image|max:5120',
+            'mobile_image' => 'nullable|image|max:5120',
+            'image_url' => 'nullable|url',
         ]);
+
+        $desktopUrl = $request->input('image_url');
+        $mobileUrl = null;
+
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $fileName = 'banner_desktop_'.time().'_'.uniqid().'.'.$file->getClientOriginalExtension();
+            $file->move(public_path('uploads/banners'), $fileName);
+            $desktopUrl = '/uploads/banners/'.$fileName;
+        }
+
+        if ($request->hasFile('mobile_image')) {
+            $file = $request->file('mobile_image');
+            $fileName = 'banner_mobile_'.time().'_'.uniqid().'.'.$file->getClientOriginalExtension();
+            $file->move(public_path('uploads/banners'), $fileName);
+            $mobileUrl = '/uploads/banners/'.$fileName;
+        }
+
+        if (blank($desktopUrl)) {
+            return redirect()->back()->withErrors(['image' => 'Envie a imagem desktop ou informe uma URL.']);
+        }
 
         $banner = Banner::create([
             'title' => $request->title,
             'subtitle' => $request->subtitle,
-            'image_url' => $request->image_url,
+            'image_url' => $desktopUrl,
+            'mobile_image_url' => $mobileUrl,
             'active' => true,
         ]);
 
-        $logActivity->execute("Criou banner manualmente: '{$request->title}'", json_encode($banner->toArray()));
+        $logActivity->execute("Criou banner: '{$request->title}'", json_encode($banner->toArray()));
 
         return redirect()->route('admin.dashboard')->with('success', 'Banner criado com sucesso!');
+    }
+
+    /**
+     * Remover banner.
+     */
+    public function destroyBanner(Banner $banner, LogActivityAction $logActivity)
+    {
+        $title = $banner->title;
+        $banner->delete();
+        $logActivity->execute("Excluiu banner: {$title}");
+
+        return redirect()->route('admin.dashboard')->with('success', 'Banner excluído com sucesso!');
     }
 
     /**

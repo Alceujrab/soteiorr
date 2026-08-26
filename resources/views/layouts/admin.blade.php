@@ -16,7 +16,20 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
-            /* Versão 2 — Graphite & Vermelho Corrida */
+            --bg-primary: #f7f8fa;
+            --bg-sidebar: #ffffff;
+            --bg-card: #ffffff;
+            --border-color: rgba(225, 29, 46, 0.16);
+            --text-primary: #1a1d23;
+            --text-secondary: #5b6472;
+            --accent: #e11d2e;
+            --accent-hover: #be1525;
+            --badge-bg: rgba(225, 29, 46, 0.1);
+            --badge-text: #d01222;
+            --card-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+        }
+
+        body.dark-theme {
             --bg-primary: #0c0e12;
             --bg-sidebar: #08090c;
             --bg-card: rgba(22, 26, 33, 0.92);
@@ -27,19 +40,7 @@
             --accent-hover: #be1525;
             --badge-bg: rgba(225, 29, 46, 0.12);
             --badge-text: #ff4d5a;
-        }
-
-        body.light-theme {
-            --bg-primary: #f4f5f7;
-            --bg-sidebar: #eceef2;
-            --bg-card: rgba(255, 255, 255, 0.94);
-            --border-color: rgba(225, 29, 46, 0.2);
-            --text-primary: #111827;
-            --text-secondary: #4b5563;
-            --accent: #dc1628;
-            --accent-hover: #b91020;
-            --badge-bg: rgba(220, 22, 40, 0.1);
-            --badge-text: #dc1628;
+            --card-shadow: 0 8px 28px rgba(0, 0, 0, 0.28);
         }
 
         body {
@@ -56,7 +57,13 @@
         .glass-card {
             background: var(--bg-card) !important;
             border-color: var(--border-color) !important;
-            box-shadow: 0 8px 28px rgba(0, 0, 0, 0.28);
+            box-shadow: var(--card-shadow);
+        }
+
+        .brand-logo {
+            height: 2rem;
+            width: auto;
+            object-fit: contain;
         }
 
         .text-slate-400, .text-slate-500, .text-slate-300 {
@@ -94,11 +101,8 @@
     <aside class="w-72 border-r flex flex-col hidden md:flex min-h-screen sticky top-0" style="background-color: var(--bg-sidebar); border-color: var(--border-color);">
         <!-- Logo -->
         <div class="h-20 flex items-center px-6 border-b gap-3" style="border-color: var(--border-color);">
-            <div class="p-2 rounded-xl text-white font-bold tracking-wide shadow-lg" style="background-color: var(--accent);">
-                <i class="fa-solid fa-user-shield text-lg"></i>
-            </div>
-            <a href="/" class="text-sm font-bold font-display tracking-tight text-white">
-                RR <span style="color: var(--accent);">Admin</span>
+            <a href="/" class="flex items-center gap-2">
+                <img src="{{ asset('images/logo-rr.png') }}" alt="RR Veículos" class="brand-logo">
             </a>
         </div>
 
@@ -332,18 +336,18 @@
 
     <!-- Theme Switcher Logic -->
     <script>
-        const savedTheme = localStorage.getItem('theme') || 'dark';
-        if (savedTheme === 'light') {
-            document.body.classList.add('light-theme');
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        if (savedTheme === 'dark') {
+            document.body.classList.add('dark-theme');
         }
 
         function toggleTheme() {
-            if (document.body.classList.contains('light-theme')) {
-                document.body.classList.remove('light-theme');
-                localStorage.setItem('theme', 'dark');
-            } else {
-                document.body.classList.add('light-theme');
+            if (document.body.classList.contains('dark-theme')) {
+                document.body.classList.remove('dark-theme');
                 localStorage.setItem('theme', 'light');
+            } else {
+                document.body.classList.add('dark-theme');
+                localStorage.setItem('theme', 'dark');
             }
         }
 

@@ -78,6 +78,7 @@ Route::post('/admin/notifications/send', [AdminController::class, 'sendNotificat
 Route::post('/admin/banners', [AdminController::class, 'storeBanner'])->name('admin.banners.store');
 Route::post('/admin/banners/generate', [AdminController::class, 'generateBannerAI'])->name('admin.banners.generate');
 Route::post('/admin/banners/{banner}/toggle', [AdminController::class, 'toggleBanner'])->name('admin.banners.toggle');
+Route::delete('/admin/banners/{banner}', [AdminController::class, 'destroyBanner'])->name('admin.banners.destroy');
 
 // Rotas de API e Webhooks
 use App\Http\Controllers\ApiController;

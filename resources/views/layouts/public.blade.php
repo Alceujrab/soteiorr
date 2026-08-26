@@ -14,7 +14,22 @@
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* Versão 2 — Graphite & Vermelho Corrida */
+            /* Tema claro padrão — branco & vermelho RR */
+            --bg-primary: #f7f8fa;
+            --bg-sidebar: #ffffff;
+            --bg-card: #ffffff;
+            --border-color: rgba(225, 29, 46, 0.16);
+            --text-primary: #1a1d23;
+            --text-secondary: #5b6472;
+            --accent: #e11d2e;
+            --accent-hover: #be1525;
+            --badge-bg: rgba(225, 29, 46, 0.1);
+            --badge-text: #d01222;
+            --metal: #6b7280;
+            --card-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+        }
+
+        body.dark-theme {
             --bg-primary: #0c0e12;
             --bg-sidebar: #08090c;
             --bg-card: rgba(22, 26, 33, 0.92);
@@ -26,20 +41,7 @@
             --badge-bg: rgba(225, 29, 46, 0.12);
             --badge-text: #ff4d5a;
             --metal: #8b939e;
-        }
-
-        body.light-theme {
-            --bg-primary: #f4f5f7;
-            --bg-sidebar: #eceef2;
-            --bg-card: rgba(255, 255, 255, 0.94);
-            --border-color: rgba(225, 29, 46, 0.2);
-            --text-primary: #111827;
-            --text-secondary: #4b5563;
-            --accent: #dc1628;
-            --accent-hover: #b91020;
-            --badge-bg: rgba(220, 22, 40, 0.1);
-            --badge-text: #dc1628;
-            --metal: #6b7280;
+            --card-shadow: 0 8px 28px rgba(0, 0, 0, 0.28);
         }
 
         body {
@@ -56,7 +58,24 @@
         .glass-card {
             background: var(--bg-card) !important;
             border-color: var(--border-color) !important;
-            box-shadow: 0 8px 28px rgba(0, 0, 0, 0.28);
+            box-shadow: var(--card-shadow);
+        }
+
+        .brand-logo {
+            height: 2.25rem;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .photo-brand-mark {
+            position: absolute;
+            right: 0.75rem;
+            bottom: 0.75rem;
+            height: 1.75rem;
+            width: auto;
+            opacity: 0.92;
+            filter: drop-shadow(0 2px 6px rgba(0,0,0,0.45));
+            pointer-events: none;
         }
 
         /* Mapeamento dinâmico para os elementos do Tailwind */
@@ -93,11 +112,8 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16 items-center">
                 <div class="flex items-center gap-3">
-                    <div class="p-2 rounded-xl text-white font-bold tracking-wide" style="background-color: var(--accent);">
-                        <i class="fa-solid fa-car-side text-lg"></i>
-                    </div>
-                    <a href="/" class="text-lg font-bold font-display tracking-tight text-white">
-                        RR <span style="color: var(--accent);">Veículos</span>
+                    <a href="/" class="flex items-center gap-2">
+                        <img src="{{ asset('images/logo-rr.png') }}" alt="RR Veículos" class="brand-logo">
                     </a>
                 </div>
                 <div class="hidden md:flex items-center gap-5">
@@ -156,10 +172,7 @@
     <div id="mobile-drawer" class="fixed top-0 bottom-0 left-0 w-80 max-w-[85vw] z-50 transform -translate-x-full transition-transform duration-300 ease-in-out border-r flex flex-col" style="background-color: var(--bg-sidebar); border-color: var(--border-color);">
         <div class="h-16 flex items-center justify-between px-6 border-b" style="border-color: var(--border-color);">
             <div class="flex items-center gap-2">
-                <div class="p-1.5 rounded-lg text-white font-bold" style="background-color: var(--accent);">
-                    <i class="fa-solid fa-car-side text-sm"></i>
-                </div>
-                <span class="font-bold text-white text-sm">Ação RR</span>
+                <img src="{{ asset('images/logo-rr.png') }}" alt="RR Veículos" class="h-8 w-auto">
             </div>
             <button onclick="toggleMobileMenu()" class="p-2 rounded-lg text-slate-400 hover:text-white transition">
                 <i class="fa-solid fa-xmark text-xl"></i>
@@ -298,7 +311,7 @@
     </footer>
 
     <!-- Mobile bottom navigation -->
-    <nav class="md:hidden fixed bottom-0 left-0 right-0 z-50 border-t backdrop-blur-xl" style="background-color: rgba(8,9,12,0.94); border-color: var(--border-color); padding-bottom: env(safe-area-inset-bottom);">
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 z-50 border-t backdrop-blur-xl" style="background-color: var(--bg-sidebar); border-color: var(--border-color); padding-bottom: env(safe-area-inset-bottom);">
         <div class="h-16 flex justify-around items-center px-1">
             <a href="/" class="flex flex-col items-center gap-1 min-w-[3.5rem] {{ request()->routeIs('raffles.index') ? 'text-white' : 'text-slate-400' }}">
                 <i class="fa-solid fa-house text-base" style="{{ request()->routeIs('raffles.index') ? 'color: var(--accent);' : '' }}"></i>
@@ -358,18 +371,18 @@
 
     <!-- Theme Switcher Logic -->
     <script>
-        const savedTheme = localStorage.getItem('theme') || 'dark';
-        if (savedTheme === 'light') {
-            document.body.classList.add('light-theme');
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        if (savedTheme === 'dark') {
+            document.body.classList.add('dark-theme');
         }
 
         function toggleTheme() {
-            if (document.body.classList.contains('light-theme')) {
-                document.body.classList.remove('light-theme');
-                localStorage.setItem('theme', 'dark');
-            } else {
-                document.body.classList.add('light-theme');
+            if (document.body.classList.contains('dark-theme')) {
+                document.body.classList.remove('dark-theme');
                 localStorage.setItem('theme', 'light');
+            } else {
+                document.body.classList.add('dark-theme');
+                localStorage.setItem('theme', 'dark');
             }
         }
 

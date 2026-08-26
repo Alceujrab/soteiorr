@@ -26,11 +26,12 @@ class RegulationPageTest extends TestCase
     public function test_admin_can_update_regulation_content_from_settings(): void
     {
         $admin = User::factory()->create([
-            'role' => 'admin',
+            'role' => 'admin_organizador',
         ]);
 
         $payload = [
             'app_name' => 'Ação RR Veículos',
+            'admin_security_email' => 'contato@rrsorteio.com',
             'min_tickets' => 1,
             'max_tickets' => 100,
             'page_regulation' => '<h1>Regulamento Atualizado</h1><p>Conteúdo revisado pela administração.</p>',

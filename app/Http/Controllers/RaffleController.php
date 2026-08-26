@@ -28,25 +28,10 @@ class RaffleController extends Controller
                 'tickets as paid_tickets_count' => fn ($q) => $q->where('status', 'paid'),
                 'tickets as taken_tickets_count' => fn ($q) => $q->whereIn('status', ['paid', 'reserved']),
             ])
+            ->latest('id')
             ->get();
-        $banners = Banner::where('active', true)->get();
 
-        // Se não houver nenhum banner, cria alguns banners padrão para exibição inicial premium
-        if ($banners->isEmpty()) {
-            Banner::create([
-                'title' => 'Ação Promocional de Luxo: Mustang GT',
-                'subtitle' => 'Adquira seus bilhetes a partir de R$ 5,00 e concorra!',
-                'image_url' => 'https://images.unsplash.com/photo-1583121274602-3e2820c69888?auto=format&fit=crop&w=1200&q=80',
-                'active' => true,
-            ]);
-            Banner::create([
-                'title' => 'BMW M4 Competition',
-                'subtitle' => 'O esportivo dos seus sonhos pode ser seu neste domingo.',
-                'image_url' => 'https://images.unsplash.com/photo-1555215695-3004980ad54e?auto=format&fit=crop&w=1200&q=80',
-                'active' => true,
-            ]);
-            $banners = Banner::where('active', true)->get();
-        }
+        $banners = Banner::where('active', true)->latest('id')->get();
 
         return view('raffles.index', compact('raffles', 'banners'));
     }
