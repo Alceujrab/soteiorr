@@ -17,6 +17,7 @@ use App\Models\Setting;
 use App\Models\Ticket;
 use App\Models\User;
 use App\Support\DefaultRegulationContent;
+use App\Support\ThemePalette;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -440,7 +441,12 @@ class AdminController extends Controller
             'page_regulation' => Setting::get('page_regulation', DefaultRegulationContent::html()),
         ];
 
-        return view('admin.settings', compact('settings'));
+        $themeLight = ThemePalette::light();
+        $themeDark = ThemePalette::dark();
+        $themeDefinitions = ThemePalette::definitions();
+        $themeDefaults = ThemePalette::defaults();
+
+        return view('admin.settings', compact('settings', 'themeLight', 'themeDark', 'themeDefinitions', 'themeDefaults'));
     }
 
     /**
@@ -482,6 +488,10 @@ class AdminController extends Controller
             'page_privacy_policy' => 'nullable|string',
             'page_terms_of_use' => 'nullable|string',
             'page_regulation' => 'nullable|string',
+            'theme_light' => 'nullable|array',
+            'theme_dark' => 'nullable|array',
+            'theme_light.*' => 'nullable|string|max:120',
+            'theme_dark.*' => 'nullable|string|max:120',
         ]);
 
         Setting::set('app_name', $request->app_name);
@@ -524,9 +534,19 @@ class AdminController extends Controller
         Setting::set('page_terms_of_use', $request->page_terms_of_use ?: '');
         Setting::set('page_regulation', $request->page_regulation ?: '');
 
+        if ($request->has('theme_light')) {
+            $light = ThemePalette::sanitize($request->input('theme_light', []), 'light');
+            Setting::set(ThemePalette::SETTING_LIGHT, json_encode($light));
+        }
+
+        if ($request->has('theme_dark')) {
+            $dark = ThemePalette::sanitize($request->input('theme_dark', []), 'dark');
+            Setting::set(ThemePalette::SETTING_DARK, json_encode($dark));
+        }
+
         config(['app.name' => $request->app_name]);
 
-        $logActivity->execute('Atualizou as configurações globais do sistema', json_encode($request->all()));
+        $logActivity->execute('Atualizou as configurações globais do sistema', json_encode($request->except(['_token'])));
 
         return redirect()->route('admin.settings')->with('success', 'Configurações atualizadas com sucesso!');
     }

@@ -69,12 +69,12 @@
                     </div>
                 </div>
                 <div class="h-2.5 rounded-full overflow-hidden bg-black/40 border" style="border-color: var(--border-color);">
-                    <div class="h-full rounded-full transition-all duration-700" style="width: {{ $metaPercent }}%; background: linear-gradient(90deg, var(--accent), #ff5a67);"></div>
+                    <div class="h-full rounded-full transition-all duration-700" style="width: {{ $metaPercent }}%; background: linear-gradient(90deg, var(--accent), var(--accent-soft));"></div>
                 </div>
             </div>
 
             <div class="flex flex-col sm:flex-row gap-3 pt-2">
-                <a href="{{ $firstRaffleUrl }}" class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-white font-bold text-sm transition shadow-lg" style="background-color: var(--accent); box-shadow: 0 10px 30px rgba(225,29,46,0.28);">
+                <a href="{{ $firstRaffleUrl }}" class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-bold text-sm transition shadow-lg" style="background-color: var(--accent); color: var(--on-accent); box-shadow: 0 10px 30px var(--accent-glow);">
                     Quero participar <i class="fa-solid fa-arrow-right text-xs"></i>
                 </a>
                 <a href="#pacotes" class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl border text-sm font-semibold text-white hover:bg-white/5 transition" style="border-color: var(--border-color);">
@@ -101,7 +101,7 @@
             @endphp
 
             @foreach($homePackages as $package)
-                <div class="relative glass-card rounded-2xl p-5 border flex flex-col gap-4 {{ $package->is_featured ? 'ring-1' : '' }}" style="{{ $package->is_featured ? 'ring-color: var(--accent); border-color: rgba(225,29,46,0.45);' : '' }}">
+                <div class="relative glass-card rounded-2xl p-5 border flex flex-col gap-4 {{ $package->is_featured ? 'ring-1' : '' }}" style="{{ $package->is_featured ? 'ring-color: var(--accent); border-color: var(--accent);' : '' }}">
                     @if($package->is_featured)
                         <span class="absolute -top-2.5 left-4 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded text-white" style="background: var(--accent);">Mais escolhido</span>
                     @endif
@@ -113,7 +113,7 @@
                     @if(!empty($package->highlight))
                         <p class="text-xs text-slate-500">{{ $package->highlight }}</p>
                     @endif
-                    <a href="{{ $firstRaffleUrl }}" class="mt-auto w-full text-center py-2.5 rounded-xl text-sm font-bold transition {{ $package->is_featured ? 'text-white' : 'border text-white hover:bg-white/5' }}" style="{{ $package->is_featured ? 'background: var(--accent);' : 'border-color: var(--border-color);' }}">
+                    <a href="{{ $firstRaffleUrl }}" class="mt-auto w-full text-center py-2.5 rounded-xl text-sm font-bold transition {{ $package->is_featured ? '' : 'border hover:bg-white/5' }}" style="{{ $package->is_featured ? 'background: var(--accent); color: var(--on-accent);' : 'border-color: var(--border-color); color: var(--text-primary);' }}">
                         Comprar
                     </a>
                 </div>
@@ -167,7 +167,7 @@
                             <span><i class="fa-solid fa-ticket mr-1"></i> {{ $raffle->total_numbers }} cotas</span>
                         </div>
 
-                        <a href="{{ route('raffles.show', $raffle->id) }}" class="w-full text-white font-bold py-3 px-4 rounded-xl transition flex items-center justify-center gap-2" style="background: var(--accent);">
+                        <a href="{{ route('raffles.show', $raffle->id) }}" class="w-full font-bold py-3 px-4 rounded-xl transition flex items-center justify-center gap-2" style="background: var(--accent); color: var(--on-accent);">
                             Quero Participar <i class="fa-solid fa-chevron-right text-xs"></i>
                         </a>
                     </div>

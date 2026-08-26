@@ -14,86 +14,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        :root {
-            --bg-primary: #f7f8fa;
-            --bg-sidebar: #ffffff;
-            --bg-card: #ffffff;
-            --border-color: rgba(225, 29, 46, 0.16);
-            --text-primary: #1a1d23;
-            --text-secondary: #5b6472;
-            --accent: #e11d2e;
-            --accent-hover: #be1525;
-            --badge-bg: rgba(225, 29, 46, 0.1);
-            --badge-text: #d01222;
-            --card-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
-        }
-
-        body.dark-theme {
-            --bg-primary: #0c0e12;
-            --bg-sidebar: #08090c;
-            --bg-card: rgba(22, 26, 33, 0.92);
-            --border-color: rgba(225, 29, 46, 0.22);
-            --text-primary: #f4f4f5;
-            --text-secondary: #9ca3af;
-            --accent: #e11d2e;
-            --accent-hover: #be1525;
-            --badge-bg: rgba(225, 29, 46, 0.12);
-            --badge-text: #ff4d5a;
-            --card-shadow: 0 8px 28px rgba(0, 0, 0, 0.28);
-        }
-
-        body {
-            font-family: 'DM Sans', sans-serif;
-            background-color: var(--bg-primary) !important;
-            color: var(--text-primary) !important;
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
-
-        h1, h2, h3, .font-display {
-            font-family: 'Space Grotesk', sans-serif;
-        }
-
-        .glass-card {
-            background: var(--bg-card) !important;
-            border-color: var(--border-color) !important;
-            box-shadow: var(--card-shadow);
-        }
-
-        .brand-logo {
-            height: 2rem;
-            width: auto;
-            object-fit: contain;
-        }
-
-        .text-slate-400, .text-slate-500, .text-slate-300 {
-            color: var(--text-secondary) !important;
-        }
-        .text-white {
-            color: var(--text-primary) !important;
-        }
-        .bg-blue-600, .bg-emerald-600, .bg-slate-800, .bg-slate-950, .bg-amber-600 {
-            background-color: var(--accent) !important;
-        }
-        .hover\:bg-blue-500:hover, .hover\:bg-emerald-500:hover, .hover\:bg-slate-700:hover, .hover\:bg-amber-500:hover {
-            background-color: var(--accent-hover) !important;
-        }
-        .text-blue-500, .text-blue-400, .text-emerald-400, .text-amber-400 {
-            color: var(--badge-text) !important;
-        }
-        .bg-blue-500\/10, .bg-emerald-500\/10, .bg-blue-600\/10, .bg-amber-500\/10, .bg-indigo-500\/10, .bg-purple-500\/10 {
-            background-color: var(--badge-bg) !important;
-        }
-        .border-blue-500\/30, .border-emerald-500\/30, .border-slate-800, .border-amber-500\/30, .border-indigo-500\/20, .border-purple-500\/20 {
-            border-color: var(--border-color) !important;
-        }
-        .text-indigo-400, .text-purple-400 {
-            color: var(--badge-text) !important;
-        }
-        .text-amber-950 {
-            color: #fff !important;
-        }
-    </style>
+    @include('partials.theme-styles')
 </head>
 <body class="min-h-screen flex flex-col md:flex-row">
 
@@ -321,7 +242,7 @@
             <i class="fa-solid fa-chart-line text-lg"></i>
             <span class="text-[10px]">Dashboard</span>
         </a>
-        <a href="{{ route('admin.raffles.create') }}" class="relative -mt-5 flex items-center justify-center w-12 h-12 rounded-full text-white shadow-lg" style="background: var(--accent); box-shadow: 0 8px 20px rgba(225,29,46,0.4);">
+        <a href="{{ route('admin.raffles.create') }}" class="relative -mt-5 flex items-center justify-center w-12 h-12 rounded-full shadow-lg" style="background: var(--accent); color: var(--on-accent); box-shadow: 0 8px 20px var(--accent-glow);">
             <i class="fa-solid fa-plus text-lg"></i>
         </a>
         <a href="{{ route('admin.reports') }}" class="flex flex-col items-center gap-1 text-slate-400 hover:text-white">
