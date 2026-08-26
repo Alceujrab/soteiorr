@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Mail\RaffleDeletionCodeMail;
 use App\Models\Raffle;
 use App\Models\RafflePackage;
+use App\Models\Setting;
 use App\Models\Ticket;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -49,6 +50,7 @@ class AdminRaffleManagementTest extends TestCase
     public function test_admin_can_delete_raffle_after_email_code_confirmation(): void
     {
         Mail::fake();
+        Setting::set('admin_security_email', 'contato@rrsorteio.com');
 
         $admin = $this->makeAdmin();
 

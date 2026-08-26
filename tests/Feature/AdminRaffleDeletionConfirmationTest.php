@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Mail\RaffleDeletionCodeMail;
 use App\Models\Raffle;
 use App\Models\RaffleDeletionChallenge;
+use App\Models\Setting;
 use App\Models\Ticket;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -18,6 +19,7 @@ class AdminRaffleDeletionConfirmationTest extends TestCase
     public function test_requesting_deletion_sends_code_email_and_does_not_delete_yet(): void
     {
         Mail::fake();
+        Setting::set('admin_security_email', 'contato@rrsorteio.com');
 
         $admin = $this->makeAdmin();
         $raffle = $this->makeRaffle($admin);
@@ -29,8 +31,8 @@ class AdminRaffleDeletionConfirmationTest extends TestCase
         $this->assertDatabaseHas('raffles', ['id' => $raffle->id]);
         $this->assertDatabaseCount('raffle_deletion_challenges', 1);
 
-        Mail::assertSent(RaffleDeletionCodeMail::class, function (RaffleDeletionCodeMail $mail) use ($admin, $raffle) {
-            return $mail->hasTo($admin->email)
+        Mail::assertSent(RaffleDeletionCodeMail::class, function (RaffleDeletionCodeMail $mail) use ($raffle) {
+            return $mail->hasTo('contato@rrsorteio.com')
                 && $mail->raffle->is($raffle)
                 && preg_match('/^\d{6}$/', $mail->code) === 1;
         });
@@ -39,6 +41,7 @@ class AdminRaffleDeletionConfirmationTest extends TestCase
     public function test_confirming_with_valid_code_deletes_raffle(): void
     {
         Mail::fake();
+        Setting::set('admin_security_email', 'contato@rrsorteio.com');
 
         $admin = $this->makeAdmin();
         $raffle = $this->makeRaffle($admin);
@@ -72,6 +75,7 @@ class AdminRaffleDeletionConfirmationTest extends TestCase
     public function test_confirming_with_invalid_code_keeps_raffle(): void
     {
         Mail::fake();
+        Setting::set('admin_security_email', 'contato@rrsorteio.com');
 
         $admin = $this->makeAdmin();
         $raffle = $this->makeRaffle($admin);

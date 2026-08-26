@@ -11,6 +11,7 @@ use App\Models\Draw;
 use App\Models\NotificationLog;
 use App\Models\Payment;
 use App\Models\Raffle;
+use App\Models\RaffleDeletionChallenge;
 use App\Models\RafflePackage;
 use App\Models\Setting;
 use App\Models\Ticket;
@@ -254,11 +255,18 @@ class AdminController extends Controller
      */
     public function showDestroyConfirm(Raffle $raffle)
     {
-        $admin = $this->resolveAdminUser();
+        $this->resolveAdminUser();
+
+        $destinationEmail = RaffleDeletionChallenge::query()
+            ->where('raffle_id', $raffle->id)
+            ->whereNull('consumed_at')
+            ->latest('id')
+            ->value('email')
+            ?: app(RequestRaffleDeletionAction::class)->resolutionEmail();
 
         return view('admin.confirm_raffle_deletion', [
             'raffle' => $raffle,
-            'maskedEmail' => $this->maskEmail($admin->email),
+            'maskedEmail' => $this->maskEmail($destinationEmail),
             'expiresInMinutes' => RequestRaffleDeletionAction::EXPIRES_IN_MINUTES,
         ]);
     }
@@ -386,6 +394,7 @@ class AdminController extends Controller
     {
         $settings = [
             'app_name' => Setting::get('app_name', config('app.name')),
+            'admin_security_email' => Setting::get('admin_security_email', config('mail.from.address')),
             'gateway_asaas_key' => Setting::get('gateway_asaas_key', ''),
             'gateway_mercadopago_key' => Setting::get('gateway_mercadopago_key', ''),
             'min_tickets' => Setting::get('min_tickets', 1),
@@ -441,6 +450,7 @@ class AdminController extends Controller
     {
         $request->validate([
             'app_name' => 'required|string',
+            'admin_security_email' => 'required|email',
             'min_tickets' => 'required|integer',
             'max_tickets' => 'required|integer',
             'gateway_asaas_key' => 'nullable|string',
@@ -475,6 +485,7 @@ class AdminController extends Controller
         ]);
 
         Setting::set('app_name', $request->app_name);
+        Setting::set('admin_security_email', $request->admin_security_email);
         Setting::set('min_tickets', $request->min_tickets);
         Setting::set('max_tickets', $request->max_tickets);
         Setting::set('gateway_asaas_key', $request->gateway_asaas_key ?: '');

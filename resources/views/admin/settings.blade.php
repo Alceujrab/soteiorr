@@ -49,6 +49,11 @@
                     <label class="text-xs text-slate-400 font-semibold uppercase">Nome do Aplicativo:</label>
                     <input type="text" name="app_name" value="{{ $settings['app_name'] }}" required class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none">
                 </div>
+                <div class="space-y-1.5">
+                    <label class="text-xs text-slate-400 font-semibold uppercase">E-mail de segurança (códigos de exclusão):</label>
+                    <input type="email" name="admin_security_email" value="{{ $settings['admin_security_email'] }}" required placeholder="contato@rrsorteio.com" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none">
+                    <p class="text-[11px] text-slate-500">Os códigos de confirmação para excluir ações serão enviados para este endereço.</p>
+                </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div class="space-y-1.5">
                         <label class="text-xs text-slate-400 font-semibold uppercase">Mínimo de Cotas por Compra:</label>

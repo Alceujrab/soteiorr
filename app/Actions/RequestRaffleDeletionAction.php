@@ -5,6 +5,7 @@ namespace App\Actions;
 use App\Mail\RaffleDeletionCodeMail;
 use App\Models\Raffle;
 use App\Models\RaffleDeletionChallenge;
+use App\Models\Setting;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -19,10 +20,10 @@ class RequestRaffleDeletionAction
      */
     public function execute(Raffle $raffle, User $requester): array
     {
-        $email = $requester->email;
+        $email = $this->resolutionEmail();
 
-        if (blank($email)) {
-            throw new RuntimeException('O administrador não possui e-mail cadastrado para receber o código de exclusão.');
+        if (blank($email) || ! filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            throw new RuntimeException('E-mail de segurança do administrador não configurado para receber o código de exclusão.');
         }
 
         RaffleDeletionChallenge::query()
@@ -51,5 +52,14 @@ class RequestRaffleDeletionAction
             'challenge' => $challenge,
             'email' => $email,
         ];
+    }
+
+    public function resolutionEmail(): string
+    {
+        $configured = Setting::get('admin_security_email')
+            ?: config('mail.from.address')
+            ?: '';
+
+        return trim((string) $configured);
     }
 }
