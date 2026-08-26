@@ -9,7 +9,6 @@ use App\Models\Raffle;
 use App\Models\RafflePackage;
 use App\Models\Setting;
 use App\Models\Ticket;
-use App\Models\User;
 use App\Services\PaymentService;
 use App\Support\DefaultRegulationContent;
 use Illuminate\Http\Request;
@@ -63,9 +62,14 @@ class RaffleController extends Controller
             ->where('id', $request->integer('package_id'))
             ->firstOrFail();
 
-        if (! Auth::check()) {
-            $user = User::where('role', 'cliente')->first() ?: User::first();
-            Auth::login($user);
+        $request->session()->put('checkout', [
+            'raffle_id' => $raffle->id,
+            'package_id' => $package->id,
+        ]);
+
+        if (! Auth::check() || Auth::user()->role !== 'cliente') {
+            return redirect()->route('register')
+                ->with('success', 'Para comprar, complete seu cadastro (ou faça login). Depois seguimos para o pagamento.');
         }
 
         $user = Auth::user();
@@ -82,6 +86,8 @@ class RaffleController extends Controller
                 $package->id
             );
 
+            $request->session()->forget('checkout');
+
             return redirect()->route('payments.show', $payment->id)
                 ->with('success', "Pacote {$package->name} reservado! Efetue o pagamento PIX para confirmar.");
         } catch (\Exception $e) {
@@ -96,8 +102,8 @@ class RaffleController extends Controller
     public function myTickets()
     {
         if (! Auth::check()) {
-            $user = User::where('role', 'cliente')->first() ?: User::first();
-            Auth::login($user);
+            return redirect()->route('login')
+                ->with('success', 'Entre na sua conta para ver seus números.');
         }
 
         $user = Auth::user();

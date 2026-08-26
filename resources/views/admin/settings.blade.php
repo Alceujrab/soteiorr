@@ -90,6 +90,14 @@
                         <input type="password" name="gateway_asaas_key" value="{{ $settings['gateway_asaas_key'] }}" placeholder="Chave secreta Asaas" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none">
                     </div>
                     <div class="space-y-1.5">
+                        <label class="text-xs text-slate-400 font-semibold uppercase">Asaas Sandbox:</label>
+                        <label class="flex items-center gap-2 mt-2 text-sm text-slate-300 cursor-pointer">
+                            <input type="checkbox" name="asaas_sandbox" value="1" {{ ($settings['asaas_sandbox'] ?? '1') == '1' ? 'checked' : '' }} class="rounded bg-slate-900 border-slate-700 text-red-600 focus:ring-0">
+                            Usar ambiente de testes (sandbox)
+                        </label>
+                        <p class="text-[10px] text-slate-500">Webhook: <code class="text-slate-400">/api/webhook/asaas</code></p>
+                    </div>
+                    <div class="space-y-1.5">
                         <label class="text-xs text-slate-400 font-semibold uppercase">Mercado Pago Access Token:</label>
                         <input type="password" name="gateway_mercadopago_key" value="{{ $settings['gateway_mercadopago_key'] }}" placeholder="Chave privada Mercado Pago" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none">
                     </div>

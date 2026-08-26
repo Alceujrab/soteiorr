@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Mail\PurchaseReceiptMail;
 use App\Models\Payment;
 use App\Models\Setting;
 use App\Models\Ticket;
@@ -9,10 +10,13 @@ use App\Models\User;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
 class PaymentService
 {
+    public function __construct(private AsaasService $asaas) {}
+
     /**
      * Criar um novo pagamento (PIX ou Boleto) associado aos bilhetes reservados.
      *
@@ -32,9 +36,25 @@ class PaymentService
 
             $transactionId = 'tx_'.Str::random(12);
             $pixKey = '';
+            $pixQrUrl = null;
 
-            // Verificar gateway escolhido e configurado
-            if ($gateway === 'itau' && Setting::get('itau_enabled') === '1') {
+            if ($gateway === 'asaas' && $this->asaas->isConfigured()) {
+                try {
+                    $pixData = $this->asaas->createPixCharge(
+                        $user,
+                        (float) $totalAmount,
+                        $transactionId,
+                        'Compra de cotas - Ação RR Veículos'
+                    );
+                    $transactionId = $pixData['id'];
+                    $pixKey = $pixData['payload'];
+                    if (! empty($pixData['encodedImage'])) {
+                        $pixQrUrl = 'data:image/png;base64,'.$pixData['encodedImage'];
+                    }
+                } catch (\Throwable $e) {
+                    Log::error('Asaas PIX falhou, usando simulação', ['message' => $e->getMessage()]);
+                }
+            } elseif ($gateway === 'itau' && Setting::get('itau_enabled') === '1') {
                 $pixData = $this->createItauPix($totalAmount);
                 if ($pixData) {
                     $transactionId = $pixData['txid'];
@@ -48,9 +68,12 @@ class PaymentService
                 }
             }
 
-            // Fallback para simulação se as chaves/conexão falharem ou não estiverem configuradas
-            if (empty($pixKey)) {
+            if ($pixKey === '') {
                 $pixKey = '00020101021226870014br.gov.bcb.pix2565qr.example.com/pix/'.$transactionId.'5204000053039865405'.number_format($totalAmount, 2, '.', '').'5802BR5913RR_VEICULOS6009SAO_PAULO62070503***6304'.Str::upper(Str::random(4));
+            }
+
+            if ($pixQrUrl === null) {
+                $pixQrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data='.urlencode($pixKey);
             }
 
             $payment = Payment::create([
@@ -62,7 +85,7 @@ class PaymentService
                 'status' => 'pending',
                 'payment_method' => $paymentMethod,
                 'pix_qr_code' => $pixKey,
-                'pix_qr_code_url' => 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data='.urlencode($pixKey),
+                'pix_qr_code_url' => $pixQrUrl,
             ]);
 
             foreach ($tickets as $ticket) {
@@ -80,7 +103,9 @@ class PaymentService
      */
     public function confirmPayment(Payment $payment)
     {
-        return DB::transaction(function () use ($payment) {
+        $shouldNotify = $payment->status !== 'approved';
+
+        $payment = DB::transaction(function () use ($payment) {
             if ($payment->status === 'approved') {
                 return $payment;
             }
@@ -89,13 +114,18 @@ class PaymentService
                 'status' => 'approved',
             ]);
 
-            // Atualizar os bilhetes para status "paid"
             Ticket::where('payment_id', $payment->id)->update([
                 'status' => 'paid',
             ]);
 
-            return $payment;
+            return $payment->fresh(['user', 'tickets.raffle', 'package']);
         });
+
+        if ($shouldNotify && $payment->user?->email) {
+            Mail::to($payment->user->email)->send(new PurchaseReceiptMail($payment));
+        }
+
+        return $payment;
     }
 
     /**

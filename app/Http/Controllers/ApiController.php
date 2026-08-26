@@ -45,22 +45,32 @@ class ApiController extends Controller
      */
     public function webhookAsaas(Request $request, PaymentService $paymentService, LogActivityAction $logActivity)
     {
-        // No Asaas real, o payload contém o ID do pagamento e o evento 'PAYMENT_RECEIVED'
-        // Simulação do payload do Asaas: {"event": "PAYMENT_RECEIVED", "payment": {"id": "pay_xxxxx", "externalReference": "tx_xxxx"}}
-        $event = $request->input('event');
-        $transactionId = $request->input('payment.externalReference');
+        $event = (string) $request->input('event');
+        $asaasPaymentId = $request->input('payment.id');
+        $externalReference = $request->input('payment.externalReference');
 
-        if ($event === 'PAYMENT_RECEIVED' && $transactionId) {
-            $payment = Payment::where('gateway_transaction_id', $transactionId)->first();
-            if ($payment) {
-                $paymentService->confirmPayment($payment);
-                $logActivity->execute("Webhook Asaas: Pagamento aprovado ID {$payment->id}", json_encode($request->all()));
+        $confirmedEvents = ['PAYMENT_RECEIVED', 'PAYMENT_CONFIRMED'];
 
-                return response()->json(['success' => true, 'message' => 'Payment approved']);
-            }
+        if (! in_array($event, $confirmedEvents, true)) {
+            return response()->json(['success' => true, 'message' => 'Event ignored']);
         }
 
-        return response()->json(['success' => false, 'message' => 'Invalid payload or payment not found'], 400);
+        $payment = null;
+        if (filled($asaasPaymentId)) {
+            $payment = Payment::where('gateway_transaction_id', $asaasPaymentId)->first();
+        }
+        if (! $payment && filled($externalReference)) {
+            $payment = Payment::where('gateway_transaction_id', $externalReference)->first();
+        }
+
+        if (! $payment) {
+            return response()->json(['success' => false, 'message' => 'Payment not found'], 404);
+        }
+
+        $paymentService->confirmPayment($payment);
+        $logActivity->execute("Webhook Asaas: Pagamento aprovado ID {$payment->id}", json_encode($request->all()));
+
+        return response()->json(['success' => true, 'message' => 'Payment approved']);
     }
 
     /**

@@ -21,6 +21,19 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+use App\Http\Controllers\PasswordResetController;
+
+Route::get('/forgot-password', [PasswordResetController::class, 'showForgotForm'])->name('password.request');
+Route::post('/forgot-password', [PasswordResetController::class, 'sendResetLink'])->name('password.email');
+Route::get('/reset-password/{token}', [PasswordResetController::class, 'showResetForm'])->name('password.reset');
+Route::post('/reset-password', [PasswordResetController::class, 'reset'])->name('password.update');
+
+use App\Http\Controllers\CheckoutController;
+
+Route::get('/checkout/continue', [CheckoutController::class, 'continue'])->name('checkout.continue');
+Route::post('/raffles/{raffle}/checkout', [CheckoutController::class, 'start'])->name('checkout.start');
+
 Route::get('/customer', function () {
     return redirect()->route('raffles.my-tickets');
 })->name('customer.dashboard');

@@ -397,6 +397,7 @@ class AdminController extends Controller
             'app_name' => Setting::get('app_name', config('app.name')),
             'admin_security_email' => Setting::get('admin_security_email', config('mail.from.address')),
             'gateway_asaas_key' => Setting::get('gateway_asaas_key', ''),
+            'asaas_sandbox' => Setting::get('asaas_sandbox', '1'),
             'gateway_mercadopago_key' => Setting::get('gateway_mercadopago_key', ''),
             'min_tickets' => Setting::get('min_tickets', 1),
             'max_tickets' => Setting::get('max_tickets', 10),
@@ -513,6 +514,7 @@ class AdminController extends Controller
         Setting::set('min_tickets', $request->min_tickets);
         Setting::set('max_tickets', $request->max_tickets);
         Setting::set('gateway_asaas_key', $request->gateway_asaas_key ?: '');
+        Setting::set('asaas_sandbox', $request->has('asaas_sandbox') ? '1' : '0');
         Setting::set('gateway_mercadopago_key', $request->gateway_mercadopago_key ?: '');
         Setting::set('show_sold_qty', $request->has('show_sold_qty') ? '1' : '0');
 
