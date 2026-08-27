@@ -42,7 +42,7 @@ return new class extends Migration
         <p>As cotas reservadas possuem prazo de validade de <strong>30 minutos</strong>. Caso o pagamento via QR Code ou Copia e Cola não seja confirmado nesse prazo, os números retornam ao grid público para outros interessados.</p>
 
         <h2>3. Como é definido o ganhador da Ação Promocional?</h2>
-        <p>Nossas Ações Promocionais oficiais utilizam a extração da <strong>Loteria Federal</strong> ou realizamos transmissões ao vivo auditadas em nossas redes sociais. O número vencedor é sempre baseado na combinação correspondente e anunciado publicamente.</p>
+        <p>O sorteio é realizado <strong>ao vivo</strong> pelo site oficial e pelo canal no YouTube, na data e horário divulgados na página da ação. O número contemplado é escolhido entre os bilhetes pagos e revelado dígito a dígito durante a transmissão.</p>
 
         <h2>4. Onde posso acompanhar as minhas cotas compradas?</h2>
         <p>Ao realizar o login, acesse a aba <strong>"Meus Bilhetes"</strong> no seu painel para visualizar o histórico de compras, status e comprovantes em PDF.</p>

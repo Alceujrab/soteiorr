@@ -1,2 +1,10 @@
 User-agent: *
-Disallow:
+Allow: /
+Disallow: /admin
+Disallow: /payments
+Disallow: /checkout
+Disallow: /api/
+Disallow: /simulate-login
+Disallow: /completar-cadastro
+
+Sitemap: https://rrsorteio.com/sitemap.xml

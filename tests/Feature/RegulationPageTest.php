@@ -61,5 +61,14 @@ class RegulationPageTest extends TestCase
         $this->assertStringContainsString('45.946.061/0001-84', $html);
         $this->assertStringContainsString('140.000', $html);
         $this->assertStringContainsString('Projetos Sociais', $html);
+        $this->assertStringContainsString('ao vivo', $html);
+        $this->assertStringContainsString('YouTube', $html);
+        $this->assertStringNotContainsString('Loteria Federal', $html);
+    }
+
+    public function test_public_pages_do_not_mention_loteria_federal(): void
+    {
+        $this->get(route('pages.regulation'))->assertOk()->assertDontSee('Loteria Federal', false);
+        $this->get(route('pages.faqs'))->assertOk()->assertDontSee('Loteria Federal', false);
     }
 }

@@ -19,7 +19,7 @@
             </div>
         @endif
 
-        <form action="{{ route('password.update') }}" method="POST" class="space-y-4">
+        <form action="{{ route('password.update') }}" method="POST" class="space-y-4" id="reset-password-form">
             @csrf
             <input type="hidden" name="token" value="{{ $token }}">
             <div class="space-y-1">
@@ -37,6 +37,7 @@
                 <input type="password" name="password_confirmation" required minlength="6"
                     class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-300 focus:outline-none focus:border-slate-700">
             </div>
+            <x-recaptcha action="reset_password" form-id="reset-password-form" />
             <button type="submit" class="w-full text-white font-semibold py-3 rounded-xl transition text-sm" style="background-color: var(--accent);">
                 Salvar nova senha
             </button>

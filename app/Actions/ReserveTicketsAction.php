@@ -26,6 +26,7 @@ class ReserveTicketsAction
 
         return DB::transaction(function () use ($user, $raffle, $numbers) {
             $existingTickets = Ticket::where('raffle_id', $raffle->id)
+                ->whereIn('status', ['paid', 'reserved'])
                 ->whereIn('number', $numbers)
                 ->lockForUpdate()
                 ->pluck('number')
@@ -71,7 +72,9 @@ class ReserveTicketsAction
             throw new Exception('A quantidade de números deve ser maior que zero.');
         }
 
-        $takenCount = Ticket::where('raffle_id', $raffle->id)->count();
+        $takenCount = Ticket::where('raffle_id', $raffle->id)
+            ->whereIn('status', ['paid', 'reserved'])
+            ->count();
         $availableCount = $raffle->total_numbers - $takenCount;
 
         if ($availableCount < $quantity) {
@@ -79,7 +82,10 @@ class ReserveTicketsAction
         }
 
         $takenSet = array_flip(
-            Ticket::where('raffle_id', $raffle->id)->pluck('number')->all()
+            Ticket::where('raffle_id', $raffle->id)
+                ->whereIn('status', ['paid', 'reserved'])
+                ->pluck('number')
+                ->all()
         );
 
         $picked = [];

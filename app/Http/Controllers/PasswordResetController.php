@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Services\RecaptchaService;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -16,8 +17,14 @@ class PasswordResetController extends Controller
         return view('auth.forgot-password');
     }
 
-    public function sendResetLink(Request $request)
+    public function sendResetLink(Request $request, RecaptchaService $recaptcha)
     {
+        $recaptcha->validateOrFail(
+            $request->input('g-recaptcha-response'),
+            $request->ip(),
+            'forgot_password'
+        );
+
         $request->validate([
             'email' => ['required', 'email'],
         ]);
@@ -37,8 +44,14 @@ class PasswordResetController extends Controller
         ]);
     }
 
-    public function reset(Request $request)
+    public function reset(Request $request, RecaptchaService $recaptcha)
     {
+        $recaptcha->validateOrFail(
+            $request->input('g-recaptcha-response'),
+            $request->ip(),
+            'reset_password'
+        );
+
         $request->validate([
             'token' => ['required'],
             'email' => ['required', 'email'],

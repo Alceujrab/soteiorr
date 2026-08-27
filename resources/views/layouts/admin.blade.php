@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Painel Administrativo - @yield('title', 'Ação RR Veículos')</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -39,9 +40,21 @@
                 <i class="fa-solid fa-chart-line text-base"></i>
                 <span class="font-medium text-sm">Dashboard / Ações Promocionais</span>
             </a>
+            <a href="{{ route('admin.banners') }}" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl {{ str_starts_with(Route::currentRouteName() ?? '', 'admin.banners') ? 'is-active' : '' }}">
+                <i class="fa-solid fa-images text-base"></i>
+                <span class="font-medium text-sm">Banners</span>
+            </a>
+            <a href="{{ route('admin.draws.index') }}" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl {{ str_starts_with(Route::currentRouteName() ?? '', 'admin.draws') ? 'is-active' : '' }}">
+                <i class="fa-solid fa-clover text-base"></i>
+                <span class="font-medium text-sm">Sorteio ao vivo</span>
+            </a>
             <a href="{{ route('admin.participants') }}" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl {{ Route::currentRouteName() == 'admin.participants' ? 'is-active' : '' }}">
                 <i class="fa-solid fa-users text-base"></i>
                 <span class="font-medium text-sm">Participantes</span>
+            </a>
+            <a href="{{ route('admin.affiliates') }}" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl {{ Route::currentRouteName() == 'admin.affiliates' ? 'is-active' : '' }}">
+                <i class="fa-solid fa-handshake text-base"></i>
+                <span class="font-medium text-sm">Afiliados</span>
             </a>
             <a href="{{ route('admin.reports') }}" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl {{ Route::currentRouteName() == 'admin.reports' ? 'is-active' : '' }}">
                 <i class="fa-solid fa-chart-pie text-base"></i>
@@ -85,6 +98,7 @@
                 </div>
             </div>
             <div class="mt-2 space-y-1">
+                @if(app()->environment(['local', 'testing']))
                 <label class="text-[9px] font-bold text-slate-500 uppercase block">Simular Perfil:</label>
                 <select onchange="location.href='/simulate-login/' + this.value" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2 py-1.5 text-[11px] text-slate-300 focus:outline-none">
                     <option value="super_admin" {{ auth()->check() && auth()->user()->role == 'super_admin' ? 'selected' : '' }}>Super Admin</option>
@@ -96,6 +110,7 @@
                     <option value="suporte" {{ auth()->check() && auth()->user()->role == 'suporte' ? 'selected' : '' }}>Suporte</option>
                     <option value="auditor" {{ auth()->check() && auth()->user()->role == 'auditor' ? 'selected' : '' }}>Auditor</option>
                 </select>
+                @endif
             </div>
             <form action="{{ route('logout') }}" method="POST" class="w-full mt-1">
                 @csrf
@@ -153,9 +168,21 @@
                     <i class="fa-solid fa-chart-line text-base"></i>
                     <span class="font-medium text-sm">Dashboard / Ações Promocionais</span>
                 </a>
+                <a href="{{ route('admin.banners') }}" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl {{ str_starts_with(Route::currentRouteName() ?? '', 'admin.banners') ? 'is-active' : '' }}">
+                    <i class="fa-solid fa-images text-base"></i>
+                    <span class="font-medium text-sm">Banners</span>
+                </a>
+                <a href="{{ route('admin.draws.index') }}" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl {{ str_starts_with(Route::currentRouteName() ?? '', 'admin.draws') ? 'is-active' : '' }}">
+                    <i class="fa-solid fa-clover text-base"></i>
+                    <span class="font-medium text-sm">Sorteio ao vivo</span>
+                </a>
                 <a href="{{ route('admin.participants') }}" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl {{ Route::currentRouteName() == 'admin.participants' ? 'is-active' : '' }}">
                     <i class="fa-solid fa-users text-base"></i>
                     <span class="font-medium text-sm">Participantes</span>
+                </a>
+                <a href="{{ route('admin.affiliates') }}" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl {{ Route::currentRouteName() == 'admin.affiliates' ? 'is-active' : '' }}">
+                    <i class="fa-solid fa-handshake text-base"></i>
+                    <span class="font-medium text-sm">Afiliados</span>
                 </a>
                 <a href="{{ route('admin.reports') }}" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl {{ Route::currentRouteName() == 'admin.reports' ? 'is-active' : '' }}">
                     <i class="fa-solid fa-chart-pie text-base"></i>
@@ -190,6 +217,7 @@
                     </div>
                 </div>
                 <div class="mt-2 space-y-1">
+                    @if(app()->environment(['local', 'testing']))
                     <label class="text-[9px] font-bold text-slate-500 uppercase block">Simular Perfil:</label>
                     <select onchange="location.href='/simulate-login/' + this.value" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2 py-1.5 text-[11px] text-slate-300 focus:outline-none">
                         <option value="super_admin" {{ auth()->check() && auth()->user()->role == 'super_admin' ? 'selected' : '' }}>Super Admin</option>
@@ -201,6 +229,7 @@
                         <option value="suporte" {{ auth()->check() && auth()->user()->role == 'suporte' ? 'selected' : '' }}>Suporte</option>
                         <option value="auditor" {{ auth()->check() && auth()->user()->role == 'auditor' ? 'selected' : '' }}>Auditor</option>
                     </select>
+                    @endif
                 </div>
                 <form action="{{ route('logout') }}" method="POST" class="w-full mt-1">
                     @csrf
@@ -243,6 +272,10 @@
         <a href="{{ route('admin.dashboard') }}" class="nav-link-quiet flex flex-col items-center gap-1">
             <i class="fa-solid fa-chart-line text-lg"></i>
             <span class="text-[10px]">Dashboard</span>
+        </a>
+        <a href="{{ route('admin.banners') }}" class="nav-link-quiet flex flex-col items-center gap-1 {{ str_starts_with(Route::currentRouteName() ?? '', 'admin.banners') ? 'is-active' : '' }}">
+            <i class="fa-solid fa-images text-lg"></i>
+            <span class="text-[10px]">Banners</span>
         </a>
         <a href="{{ route('admin.raffles.create') }}" class="relative -mt-5 flex items-center justify-center w-12 h-12 rounded-full shadow-lg" style="background: var(--accent); color: var(--on-accent); box-shadow: 0 8px 20px var(--accent-glow);">
             <i class="fa-solid fa-plus text-lg"></i>

@@ -35,11 +35,14 @@ class RafflePackagePurchaseTest extends TestCase
         [$admin, $cliente, $raffle] = $this->createRaffleWithPackages();
         $package = $raffle->packages()->where('name', 'Popular')->firstOrFail();
 
-        $response = $this->actingAs($cliente)->post(route('raffles.buy', $raffle), [
+        $response = $this->actingAs($cliente)->post(route('checkout.start', $raffle), [
             'package_id' => $package->id,
         ]);
+        $response->assertRedirect(route('checkout.continue'));
 
-        $response->assertRedirect();
+        $this->actingAs($cliente)
+            ->get(route('checkout.continue'))
+            ->assertRedirect();
 
         $this->assertDatabaseCount('tickets', 50);
         $this->assertDatabaseHas('payments', [
@@ -70,7 +73,7 @@ class RafflePackagePurchaseTest extends TestCase
 
         $foreignPackage = $other->packages()->firstOrFail();
 
-        $response = $this->actingAs($cliente)->post(route('raffles.buy', $raffle), [
+        $response = $this->actingAs($cliente)->post(route('checkout.start', $raffle), [
             'package_id' => $foreignPackage->id,
         ]);
 
@@ -95,6 +98,16 @@ class RafflePackagePurchaseTest extends TestCase
             'email' => 'client-packages@test.com',
             'password' => bcrypt('password'),
             'role' => 'cliente',
+            'cpf' => '390.533.447-05',
+            'birth_date' => now()->subYears(25)->toDateString(),
+            'whatsapp' => '66999999999',
+            'zip_code' => '78680000',
+            'address_street' => 'Rua das Flores',
+            'address_number' => '100',
+            'address_neighborhood' => 'Centro',
+            'address_city' => 'Água Boa',
+            'address_state' => 'MT',
+            'accepted_regulation_at' => now(),
         ]);
 
         $raffle = Raffle::create([

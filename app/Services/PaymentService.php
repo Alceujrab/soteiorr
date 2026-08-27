@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Actions\ReserveTicketsAction;
 use App\Mail\PurchaseReceiptMail;
 use App\Models\Payment;
 use App\Models\Setting;
@@ -22,9 +23,16 @@ class PaymentService
      *
      * @param  Collection<int, Ticket>|array<int, Ticket>  $tickets
      */
-    public function createPayment(User $user, $tickets, string $gateway = 'asaas', string $paymentMethod = 'pix', ?float $fixedAmount = null, ?int $rafflePackageId = null)
-    {
-        return DB::transaction(function () use ($user, $tickets, $gateway, $paymentMethod, $fixedAmount, $rafflePackageId) {
+    public function createPayment(
+        User $user,
+        $tickets,
+        string $gateway = 'asaas',
+        string $paymentMethod = 'pix',
+        ?float $fixedAmount = null,
+        ?int $rafflePackageId = null,
+        ?int $affiliateUserId = null
+    ) {
+        return DB::transaction(function () use ($user, $tickets, $gateway, $paymentMethod, $fixedAmount, $rafflePackageId, $affiliateUserId) {
             if ($fixedAmount !== null) {
                 $totalAmount = $fixedAmount;
             } else {
@@ -78,6 +86,7 @@ class PaymentService
 
             $payment = Payment::create([
                 'user_id' => $user->id,
+                'affiliate_user_id' => $affiliateUserId,
                 'raffle_package_id' => $rafflePackageId,
                 'amount' => $totalAmount,
                 'gateway' => $gateway,
@@ -99,26 +108,77 @@ class PaymentService
     }
 
     /**
+     * Regenera o QR PIX após alteração de valor (upsell).
+     */
+    public function refreshPixCharge(Payment $payment): Payment
+    {
+        $transactionId = 'tx_'.Str::random(12);
+        $pixKey = '';
+        $pixQrUrl = null;
+
+        if ($payment->gateway === 'asaas' && $this->asaas->isConfigured() && $payment->user) {
+            try {
+                $pixData = $this->asaas->createPixCharge(
+                    $payment->user,
+                    (float) $payment->amount,
+                    $transactionId,
+                    'Compra de cotas - Ação RR Veículos'
+                );
+                $transactionId = $pixData['id'];
+                $pixKey = $pixData['payload'];
+                if (! empty($pixData['encodedImage'])) {
+                    $pixQrUrl = 'data:image/png;base64,'.$pixData['encodedImage'];
+                }
+            } catch (\Throwable $e) {
+                Log::error('Asaas PIX (upsell) falhou, usando simulação', ['message' => $e->getMessage()]);
+            }
+        }
+
+        if ($pixKey === '') {
+            $pixKey = '00020101021226870014br.gov.bcb.pix2565qr.example.com/pix/'.$transactionId.'5204000053039865405'.number_format((float) $payment->amount, 2, '.', '').'5802BR5913RR_VEICULOS6009SAO_PAULO62070503***6304'.Str::upper(Str::random(4));
+        }
+
+        if ($pixQrUrl === null) {
+            $pixQrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data='.urlencode($pixKey);
+        }
+
+        $payment->update([
+            'gateway_transaction_id' => $transactionId,
+            'pix_qr_code' => $pixKey,
+            'pix_qr_code_url' => $pixQrUrl,
+        ]);
+
+        return $payment->fresh();
+    }
+
+    /**
      * Confirmar um pagamento e marcar os bilhetes como pagos.
+     * Se a reserva expirou e os números foram liberados, tenta reemitir as cotas do pacote.
      */
     public function confirmPayment(Payment $payment)
     {
         $shouldNotify = $payment->status !== 'approved';
 
         $payment = DB::transaction(function () use ($payment) {
-            if ($payment->status === 'approved') {
-                return $payment;
+            $locked = Payment::query()->whereKey($payment->id)->lockForUpdate()->firstOrFail();
+
+            if ($locked->status === 'approved') {
+                return $locked->fresh(['user', 'tickets.raffle', 'package']);
             }
 
-            $payment->update([
+            if ($locked->status === 'expired') {
+                $this->reissueTicketsForExpiredPayment($locked);
+            }
+
+            $locked->update([
                 'status' => 'approved',
             ]);
 
-            Ticket::where('payment_id', $payment->id)->update([
+            Ticket::where('payment_id', $locked->id)->update([
                 'status' => 'paid',
             ]);
 
-            return $payment->fresh(['user', 'tickets.raffle', 'package']);
+            return $locked->fresh(['user', 'tickets.raffle', 'package']);
         });
 
         if ($shouldNotify && $payment->user?->email) {
@@ -126,6 +186,39 @@ class PaymentService
         }
 
         return $payment;
+    }
+
+    /**
+     * Recria cotas quando o PIX chega depois da expiração da reserva.
+     */
+    private function reissueTicketsForExpiredPayment(Payment $payment): void
+    {
+        if ($payment->tickets()->exists()) {
+            return;
+        }
+
+        $package = $payment->package()->with('raffle')->first();
+        if (! $package || ! $package->raffle) {
+            Log::error('Pagamento expirado sem pacote para reemitir cotas', [
+                'payment_id' => $payment->id,
+            ]);
+
+            throw new \RuntimeException('Pagamento expirado sem cotas disponíveis para reemitir.');
+        }
+
+        $reserveAction = app(ReserveTicketsAction::class);
+        $numbers = $reserveAction->pickRandomAvailableNumbers($package->raffle, $package->numbers_qty);
+        $tickets = $reserveAction->execute($payment->user, $package->raffle, $numbers);
+
+        foreach ($tickets as $ticket) {
+            $ticket->update(['payment_id' => $payment->id]);
+        }
+
+        Log::warning('Cotas reemitidas após pagamento tardio de reserva expirada', [
+            'payment_id' => $payment->id,
+            'package_id' => $package->id,
+            'numbers' => $numbers,
+        ]);
     }
 
     /**

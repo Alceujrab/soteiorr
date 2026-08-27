@@ -41,7 +41,17 @@ class Raffle extends Model
 
     public function draw(): HasOne
     {
-        return $this->hasOne(Draw::class);
+        return $this->hasOne(Draw::class)->ofMany(
+            ['id' => 'max'],
+            function ($query): void {
+                $query->where('is_test', false);
+            }
+        );
+    }
+
+    public function draws(): HasMany
+    {
+        return $this->hasMany(Draw::class);
     }
 
     public function startingPrice(): float
@@ -72,6 +82,7 @@ class Raffle extends Model
                 'price' => $package['price'],
                 'highlight' => $package['highlight'] ?? null,
                 'is_featured' => ! empty($package['is_featured']),
+                'allows_selection' => ! empty($package['allows_selection']),
                 'sort_order' => $package['sort_order'] ?? ($index + 1),
             ]);
         }

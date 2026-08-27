@@ -29,12 +29,22 @@
     <section class="glass-card rounded-2xl overflow-hidden border" style="border-color: var(--border-color);">
         <div class="p-5 space-y-3">
             <p class="text-[11px] font-bold uppercase tracking-[0.16em]" style="color: var(--accent);">Ação entre amigos</p>
-            <h1 class="font-display text-2xl font-bold leading-tight text-white">{{ $raffle->prize_name }}</h1>
-            <p class="text-sm text-slate-400">{{ $raffle->description ?: 'Clássico, confiável e pronto para rodar!' }}</p>
-            <div class="inline-flex items-center gap-2 text-white text-xs font-bold px-3 py-2 rounded-lg" style="background: var(--accent);">
-                <i class="fa-solid fa-ticket"></i>
-                Sorteio {{ $raffle->draw_date->format('d/m/Y') }} pela Loteria Federal
+            <h1 class="font-display text-2xl font-bold leading-tight theme-title">{{ $raffle->prize_name }}</h1>
+            <p class="text-sm theme-muted">{{ $raffle->description ?: 'Clássico, confiável e pronto para rodar!' }}</p>
+            <div class="inline-flex items-center gap-2 text-xs font-bold px-3 py-2 rounded-lg" style="background: var(--accent); color: var(--on-accent);">
+                <i class="fa-solid fa-clover"></i>
+                Sorteio {{ $raffle->draw_date->format('d/m/Y') }} às {{ $raffle->draw_date->format('H:i') }} — ao vivo no site e YouTube
             </div>
+            <a href="{{ route('draws.raffle', $raffle) }}" class="inline-flex items-center gap-2 text-sm font-bold" style="color: var(--accent);">
+                <i class="fa-solid fa-clover"></i>
+                @if(($raffle->draw->status ?? null) === 'live')
+                    Acompanhar sorteio ao vivo
+                @elseif(($raffle->draw->status ?? null) === 'completed')
+                    Ver resultado do sorteio
+                @else
+                    Página do sorteio
+                @endif
+            </a>
         </div>
         <div class="relative aspect-[16/10] bg-slate-900">
             <img id="mobile-hero-img" src="{{ $images[0] }}" alt="{{ $raffle->title }}" class="w-full h-full object-cover">
@@ -44,7 +54,7 @@
 
     {{-- Galeria --}}
     <section class="space-y-3">
-        <h2 class="font-display text-lg font-bold text-white px-1">Galeria do prêmio</h2>
+        <h2 class="font-display text-lg font-bold theme-title px-1">Galeria do prêmio</h2>
         <div class="flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory -mx-1 px-1">
             @foreach($images as $index => $image)
                 <button type="button" onclick="setGalleryImage({{ $index }})" class="gallery-thumb snap-start flex-shrink-0 w-28 h-28 rounded-xl overflow-hidden border-2 transition {{ $index === 0 ? 'border-[var(--accent)]' : 'border-transparent' }}" data-index="{{ $index }}">
@@ -52,7 +62,7 @@
                 </button>
             @endforeach
         </div>
-        <p class="text-xs text-slate-500 px-1 flex items-center gap-2">
+        <p class="text-xs theme-muted px-1 flex items-center gap-2">
             <i class="fa-solid fa-hand-pointer"></i> Deslize para ver mais fotos
         </p>
     </section>
@@ -60,7 +70,7 @@
     {{-- Vídeo --}}
     @if($videoId)
         <section class="space-y-3">
-            <h2 class="font-display text-lg font-bold text-white px-1">Vídeo do prêmio</h2>
+            <h2 class="font-display text-lg font-bold theme-title px-1">Vídeo do prêmio</h2>
             <div class="relative w-full aspect-video rounded-2xl overflow-hidden border glass-card" style="border-color: var(--border-color);">
                 <iframe class="w-full h-full" src="https://www.youtube.com/embed/{{ $videoId }}" title="Vídeo do prêmio" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
             </div>
@@ -69,36 +79,36 @@
 
     {{-- Detalhes --}}
     <section class="glass-card rounded-2xl p-5 border space-y-4" style="border-color: var(--border-color);">
-        <h2 class="font-display text-lg font-bold text-white">Detalhes do veículo</h2>
+        <h2 class="font-display text-lg font-bold theme-title">Detalhes do veículo</h2>
         <div class="grid grid-cols-2 gap-3">
             <div class="rounded-xl border p-3 space-y-1" style="border-color: var(--border-color);">
-                <div class="text-[10px] uppercase font-bold text-slate-500"><i class="fa-solid fa-car mr-1" style="color: var(--accent);"></i> Prêmio</div>
-                <div class="text-sm font-semibold text-white leading-snug">{{ $raffle->prize_name }}</div>
+                <div class="text-[10px] uppercase font-bold theme-muted"><i class="fa-solid fa-car mr-1" style="color: var(--accent);"></i> Prêmio</div>
+                <div class="text-sm font-semibold theme-title leading-snug">{{ $raffle->prize_name }}</div>
             </div>
             <div class="rounded-xl border p-3 space-y-1" style="border-color: var(--border-color);">
-                <div class="text-[10px] uppercase font-bold text-slate-500"><i class="fa-solid fa-hashtag mr-1" style="color: var(--accent);"></i> Números</div>
-                <div class="text-sm font-semibold text-white">{{ number_format($raffle->total_numbers, 0, ',', '.') }}</div>
+                <div class="text-[10px] uppercase font-bold theme-muted"><i class="fa-solid fa-hashtag mr-1" style="color: var(--accent);"></i> Números</div>
+                <div class="text-sm font-semibold theme-title">{{ number_format($raffle->total_numbers, 0, ',', '.') }}</div>
             </div>
             <div class="rounded-xl border p-3 space-y-1" style="border-color: var(--border-color);">
-                <div class="text-[10px] uppercase font-bold text-slate-500"><i class="fa-solid fa-calendar-day mr-1" style="color: var(--accent);"></i> Sorteio</div>
-                <div class="text-sm font-semibold text-white">{{ $raffle->draw_date->format('d/m/Y H:i') }}</div>
+                <div class="text-[10px] uppercase font-bold theme-muted"><i class="fa-solid fa-calendar-day mr-1" style="color: var(--accent);"></i> Sorteio</div>
+                <div class="text-sm font-semibold theme-title">{{ $raffle->draw_date->format('d/m/Y H:i') }}</div>
             </div>
             <div class="rounded-xl border p-3 space-y-1" style="border-color: var(--border-color);">
-                <div class="text-[10px] uppercase font-bold text-slate-500"><i class="fa-solid fa-tag mr-1" style="color: var(--accent);"></i> A partir de</div>
-                <div class="text-sm font-semibold text-white">R$ {{ number_format($raffle->startingPrice(), 2, ',', '.') }}</div>
+                <div class="text-[10px] uppercase font-bold theme-muted"><i class="fa-solid fa-tag mr-1" style="color: var(--accent);"></i> A partir de</div>
+                <div class="text-sm font-semibold theme-title">R$ {{ number_format($raffle->startingPrice(), 2, ',', '.') }}</div>
             </div>
         </div>
         @if($raffle->prize_description)
-            <p class="text-sm text-slate-400 leading-relaxed">{{ $raffle->prize_description }}</p>
+            <p class="text-sm theme-muted leading-relaxed">{{ $raffle->prize_description }}</p>
         @endif
         <p class="text-xs font-semibold flex items-center gap-2" style="color: var(--accent);">
             <i class="fa-solid fa-circle-check"></i> Veículo revisado e em ótimo estado de conservação!
         </p>
         @if($showSold)
             <div class="space-y-1.5 pt-1">
-                <div class="flex justify-between text-xs text-slate-500">
+                <div class="flex justify-between text-xs theme-muted">
                     <span>Progresso</span>
-                    <span class="font-bold text-white">{{ number_format($takenCount, 0, ',', '.') }} / {{ number_format($raffle->total_numbers, 0, ',', '.') }}</span>
+                    <span class="font-bold theme-title">{{ number_format($takenCount, 0, ',', '.') }} / {{ number_format($raffle->total_numbers, 0, ',', '.') }}</span>
                 </div>
                 <div class="h-2 rounded-full overflow-hidden bg-black/10 border" style="border-color: var(--border-color);">
                     <div class="h-full rounded-full" style="width: {{ $pct }}%; background: var(--accent);"></div>
@@ -109,51 +119,51 @@
 
     {{-- Combos --}}
     <section class="space-y-3" id="pacotes-mobile">
-        <h2 class="font-display text-lg font-bold text-white px-1">Combos de números</h2>
+        <h2 class="font-display text-lg font-bold theme-title px-1">Combos de números</h2>
         <div class="space-y-3">
             @forelse($raffle->packages as $package)
-                <form action="{{ route('raffles.buy', $raffle->id) }}" method="POST" class="relative glass-card rounded-2xl p-4 border flex items-center gap-3 {{ $package->is_featured ? 'ring-2' : '' }}" style="{{ $package->is_featured ? 'border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent);' : 'border-color: var(--border-color);' }}">
+                <form action="{{ route('checkout.start', $raffle->id) }}" method="POST" class="relative glass-card rounded-2xl p-4 border flex items-center gap-3 {{ $package->is_featured ? 'ring-2' : '' }}" style="{{ $package->is_featured ? 'border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent);' : 'border-color: var(--border-color);' }}">
                     @csrf
                     <input type="hidden" name="package_id" value="{{ $package->id }}">
                     @if($package->is_featured)
-                        <span class="absolute -top-2.5 left-4 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded text-white" style="background: var(--accent);">Mais escolhido</span>
+                        <span class="absolute -top-2.5 left-4 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded" style="background: var(--accent); color: var(--on-accent);">Mais escolhido</span>
                     @endif
                     <div class="flex-1 min-w-0">
-                        <div class="text-xs font-bold uppercase tracking-wide text-slate-500">{{ $package->name }}</div>
-                        <div class="text-sm text-slate-400">{{ $package->numbers_qty }} {{ $package->numbers_qty === 1 ? 'número' : 'números' }}</div>
+                        <div class="text-xs font-bold uppercase tracking-wide theme-muted">{{ $package->name }}</div>
+                        <div class="text-sm theme-muted">{{ $package->numbers_qty }} {{ $package->numbers_qty === 1 ? 'número' : 'números' }}{{ $package->allows_selection ? ' · escolha disponível' : '' }}</div>
                         <div class="font-display text-xl font-bold mt-0.5" style="color: var(--accent);">R$ {{ number_format($package->price, 2, ',', '.') }}</div>
                     </div>
-                    <button type="submit" class="shrink-0 px-3 py-2.5 rounded-xl text-[11px] font-bold text-white uppercase tracking-wide" style="background: var(--accent);">
+                    <button type="submit" class="shrink-0 px-3 py-2.5 rounded-xl text-[11px] font-bold uppercase tracking-wide" style="background: var(--accent); color: var(--on-accent);">
                         Escolher
                     </button>
                 </form>
             @empty
-                <p class="text-sm text-slate-400">Nenhum pacote cadastrado.</p>
+                <p class="text-sm theme-muted">Nenhum pacote cadastrado.</p>
             @endforelse
         </div>
     </section>
 
     {{-- Trust + CTA --}}
     <section class="grid grid-cols-2 gap-3 text-center">
-        <div class="glass-card rounded-xl p-3 border text-xs text-slate-500" style="border-color: var(--border-color);">
-            <i class="fa-solid fa-landmark mb-1" style="color: var(--accent);"></i><br>Loteria Federal
+        <div class="glass-card rounded-xl p-3 border text-xs theme-muted" style="border-color: var(--border-color);">
+            <i class="fa-brands fa-youtube mb-1" style="color: var(--accent);"></i><br>Ao vivo no YouTube
         </div>
-        <div class="glass-card rounded-xl p-3 border text-xs text-slate-500" style="border-color: var(--border-color);">
+        <div class="glass-card rounded-xl p-3 border text-xs theme-muted" style="border-color: var(--border-color);">
             <i class="fa-solid fa-shield-halved mb-1" style="color: var(--accent);"></i><br>Compra 100% segura
         </div>
-        <div class="glass-card rounded-xl p-3 border text-xs text-slate-500" style="border-color: var(--border-color);">
+        <div class="glass-card rounded-xl p-3 border text-xs theme-muted" style="border-color: var(--border-color);">
             <i class="fa-solid fa-bolt mb-1" style="color: var(--accent);"></i><br>Número na hora
         </div>
-        <div class="glass-card rounded-xl p-3 border text-xs text-slate-500" style="border-color: var(--border-color);">
+        <div class="glass-card rounded-xl p-3 border text-xs theme-muted" style="border-color: var(--border-color);">
             <i class="fa-solid fa-eye mb-1" style="color: var(--accent);"></i><br>Transparência
         </div>
     </section>
 
-    <div class="rounded-2xl p-4 text-center text-white font-bold text-sm" style="background: var(--accent);">
+    <div class="rounded-2xl p-4 text-center font-bold text-sm" style="background: var(--accent); color: var(--on-accent);">
         Garanta já seu número e boa sorte!
     </div>
 
-    <a href="{{ route('pages.contact') }}" class="glass-card flex items-center justify-center gap-2 w-full py-3.5 rounded-2xl border text-sm font-bold text-white" style="border-color: var(--border-color);">
+    <a href="{{ route('pages.contact') }}" class="glass-card flex items-center justify-center gap-2 w-full py-3.5 rounded-2xl border text-sm font-bold theme-title" style="border-color: var(--border-color);">
         <i class="fa-brands fa-whatsapp text-lg" style="color: #25D366;"></i> Fale conosco
     </a>
 </div>
@@ -163,9 +173,19 @@
     <div class="flex items-center justify-between gap-4">
         <div>
             <p class="text-[11px] font-bold uppercase tracking-[0.16em]" style="color: var(--accent);">Ação Promocional</p>
-            <h1 class="font-display text-3xl font-bold text-white mt-1">{{ $raffle->title }}</h1>
+            <h1 class="font-display text-3xl font-bold theme-title mt-1">{{ $raffle->title }}</h1>
+            <a href="{{ route('draws.raffle', $raffle) }}" class="inline-flex items-center gap-2 mt-3 text-sm font-bold" style="color: var(--accent);">
+                <i class="fa-solid fa-clover"></i>
+                @if(($raffle->draw->status ?? null) === 'live')
+                    Acompanhar sorteio ao vivo
+                @elseif(($raffle->draw->status ?? null) === 'completed')
+                    Ver resultado do sorteio
+                @else
+                    Página do sorteio
+                @endif
+            </a>
         </div>
-        <div class="flex items-center gap-5 text-xs font-semibold text-slate-500">
+        <div class="flex items-center gap-5 text-xs font-semibold theme-muted">
             <span class="inline-flex items-center gap-1.5"><i class="fa-solid fa-shield-halved" style="color: var(--accent);"></i> Pagamento seguro</span>
             <span class="inline-flex items-center gap-1.5"><i class="fa-solid fa-trophy" style="color: var(--accent);"></i> Sorteio garantido</span>
             <span class="inline-flex items-center gap-1.5"><i class="fa-solid fa-headset" style="color: var(--accent);"></i> Suporte dedicado</span>
@@ -178,11 +198,11 @@
             <div class="glass-card rounded-2xl overflow-hidden border" style="border-color: var(--border-color);">
                 <div class="relative aspect-[16/10] bg-slate-900 group">
                     <img id="desktop-hero-img" src="{{ $images[0] }}" alt="{{ $raffle->title }}" class="w-full h-full object-cover">
-                    <div class="absolute top-4 left-4 rounded-lg overflow-hidden shadow-lg">
-                        <div class="px-3 py-1.5 text-white text-xs font-bold uppercase tracking-wide" style="background: var(--accent);">{{ $raffle->prize_name }}</div>
+                    <div class="absolute top-4 left-4 rounded-lg overflow-hidden shadow-lg on-media">
+                        <div class="px-3 py-1.5 text-xs font-bold uppercase tracking-wide" style="background: var(--accent); color: var(--on-accent);">{{ $raffle->prize_name }}</div>
                         <div class="px-3 py-1 bg-black/80 text-[11px] text-white/90">{{ $raffle->title }}</div>
                     </div>
-                    <span class="absolute top-4 right-4 text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded text-white" style="background: var(--accent);">Imagem ilustrativa</span>
+                    <span class="absolute top-4 right-4 text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded" style="background: var(--accent); color: var(--on-accent);">Imagem ilustrativa</span>
                     <img src="{{ asset('images/logo-rr.png') }}" alt="RR Veículos" class="photo-brand-mark">
 
                     @if(count($images) > 1)
@@ -215,48 +235,48 @@
             <div class="glass-card rounded-2xl border overflow-hidden" style="border-color: var(--border-color);">
                 <div class="flex border-b overflow-x-auto" style="border-color: var(--border-color);">
                     <button type="button" class="detail-tab px-5 py-3.5 text-sm font-semibold border-b-2 transition" data-tab="descricao" style="border-color: var(--accent); color: var(--accent);">Descrição</button>
-                    <button type="button" class="detail-tab px-5 py-3.5 text-sm font-semibold border-b-2 border-transparent text-slate-500 hover:text-white transition" data-tab="video"><i class="fa-solid fa-play mr-1.5"></i>Vídeo</button>
-                    <button type="button" class="detail-tab px-5 py-3.5 text-sm font-semibold border-b-2 border-transparent text-slate-500 hover:text-white transition" data-tab="regulamento"><i class="fa-solid fa-file-lines mr-1.5"></i>Regulamento</button>
-                    <button type="button" class="detail-tab px-5 py-3.5 text-sm font-semibold border-b-2 border-transparent text-slate-500 hover:text-white transition" data-tab="compartilhar"><i class="fa-solid fa-share-nodes mr-1.5"></i>Compartilhar</button>
+                    <button type="button" class="detail-tab px-5 py-3.5 text-sm font-semibold border-b-2 border-transparent theme-muted transition" data-tab="video"><i class="fa-solid fa-play mr-1.5"></i>Vídeo</button>
+                    <button type="button" class="detail-tab px-5 py-3.5 text-sm font-semibold border-b-2 border-transparent theme-muted transition" data-tab="regulamento"><i class="fa-solid fa-file-lines mr-1.5"></i>Regulamento</button>
+                    <button type="button" class="detail-tab px-5 py-3.5 text-sm font-semibold border-b-2 border-transparent theme-muted transition" data-tab="compartilhar"><i class="fa-solid fa-share-nodes mr-1.5"></i>Compartilhar</button>
                 </div>
 
                 <div class="p-6">
                     <div id="tab-descricao" class="tab-panel space-y-5">
-                        <p class="text-sm text-slate-400 leading-relaxed">{{ $raffle->description ?: $raffle->prize_description }}</p>
+                        <p class="text-sm theme-muted leading-relaxed">{{ $raffle->description ?: $raffle->prize_description }}</p>
                         @if($raffle->prize_description && $raffle->description)
-                            <p class="text-sm text-slate-400 leading-relaxed">{{ $raffle->prize_description }}</p>
+                            <p class="text-sm theme-muted leading-relaxed">{{ $raffle->prize_description }}</p>
                         @endif
                         <div class="grid grid-cols-3 gap-3">
                             <div class="rounded-xl border p-4 space-y-1" style="border-color: var(--border-color);">
-                                <div class="text-[10px] uppercase font-bold text-slate-500"><i class="fa-solid fa-car mr-1" style="color: var(--accent);"></i> Prêmio</div>
-                                <div class="text-sm font-semibold text-white">{{ $raffle->prize_name }}</div>
+                                <div class="text-[10px] uppercase font-bold theme-muted"><i class="fa-solid fa-car mr-1" style="color: var(--accent);"></i> Prêmio</div>
+                                <div class="text-sm font-semibold theme-title">{{ $raffle->prize_name }}</div>
                             </div>
                             <div class="rounded-xl border p-4 space-y-1" style="border-color: var(--border-color);">
-                                <div class="text-[10px] uppercase font-bold text-slate-500"><i class="fa-solid fa-hashtag mr-1" style="color: var(--accent);"></i> Números</div>
-                                <div class="text-sm font-semibold text-white">{{ number_format($raffle->total_numbers, 0, ',', '.') }}</div>
+                                <div class="text-[10px] uppercase font-bold theme-muted"><i class="fa-solid fa-hashtag mr-1" style="color: var(--accent);"></i> Números</div>
+                                <div class="text-sm font-semibold theme-title">{{ number_format($raffle->total_numbers, 0, ',', '.') }}</div>
                             </div>
                             <div class="rounded-xl border p-4 space-y-1" style="border-color: var(--border-color);">
-                                <div class="text-[10px] uppercase font-bold text-slate-500"><i class="fa-solid fa-tag mr-1" style="color: var(--accent);"></i> A partir de</div>
-                                <div class="text-sm font-semibold text-white">R$ {{ number_format($raffle->startingPrice(), 2, ',', '.') }}</div>
+                                <div class="text-[10px] uppercase font-bold theme-muted"><i class="fa-solid fa-tag mr-1" style="color: var(--accent);"></i> A partir de</div>
+                                <div class="text-sm font-semibold theme-title">R$ {{ number_format($raffle->startingPrice(), 2, ',', '.') }}</div>
                             </div>
                             <div class="rounded-xl border p-4 space-y-1" style="border-color: var(--border-color);">
-                                <div class="text-[10px] uppercase font-bold text-slate-500"><i class="fa-solid fa-calendar-day mr-1" style="color: var(--accent);"></i> Data</div>
-                                <div class="text-sm font-semibold text-white">{{ $raffle->draw_date->format('d/m/Y') }}</div>
+                                <div class="text-[10px] uppercase font-bold theme-muted"><i class="fa-solid fa-calendar-day mr-1" style="color: var(--accent);"></i> Data</div>
+                                <div class="text-sm font-semibold theme-title">{{ $raffle->draw_date->format('d/m/Y') }}</div>
                             </div>
                             <div class="rounded-xl border p-4 space-y-1" style="border-color: var(--border-color);">
-                                <div class="text-[10px] uppercase font-bold text-slate-500"><i class="fa-solid fa-clock mr-1" style="color: var(--accent);"></i> Horário</div>
-                                <div class="text-sm font-semibold text-white">{{ $raffle->draw_date->format('H:i') }}</div>
+                                <div class="text-[10px] uppercase font-bold theme-muted"><i class="fa-solid fa-clock mr-1" style="color: var(--accent);"></i> Horário</div>
+                                <div class="text-sm font-semibold theme-title">{{ $raffle->draw_date->format('H:i') }}</div>
                             </div>
                             <div class="rounded-xl border p-4 space-y-1" style="border-color: var(--border-color);">
-                                <div class="text-[10px] uppercase font-bold text-slate-500"><i class="fa-solid fa-circle-info mr-1" style="color: var(--accent);"></i> Status</div>
-                                <div class="text-sm font-semibold text-white">{{ $raffle->status === 'active' ? 'Ativa' : 'Encerrada' }}</div>
+                                <div class="text-[10px] uppercase font-bold theme-muted"><i class="fa-solid fa-circle-info mr-1" style="color: var(--accent);"></i> Status</div>
+                                <div class="text-sm font-semibold theme-title">{{ $raffle->status === 'active' ? 'Ativa' : 'Encerrada' }}</div>
                             </div>
                         </div>
                         @if($showSold)
                             <div class="space-y-2">
-                                <div class="flex justify-between text-xs text-slate-500">
+                                <div class="flex justify-between text-xs theme-muted">
                                     <span>Bilhetes reservados/pagos</span>
-                                    <span class="font-bold text-white">{{ number_format($takenCount, 0, ',', '.') }} / {{ number_format($raffle->total_numbers, 0, ',', '.') }}</span>
+                                    <span class="font-bold theme-title">{{ number_format($takenCount, 0, ',', '.') }} / {{ number_format($raffle->total_numbers, 0, ',', '.') }}</span>
                                 </div>
                                 <div class="h-2.5 rounded-full overflow-hidden bg-black/10 border" style="border-color: var(--border-color);">
                                     <div class="h-full rounded-full" style="width: {{ $pct }}%; background: var(--accent);"></div>
@@ -271,25 +291,25 @@
                                 <iframe class="w-full h-full" src="https://www.youtube.com/embed/{{ $videoId }}" title="Vídeo do prêmio" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
                             </div>
                         @else
-                            <p class="text-sm text-slate-400">Nenhum vídeo cadastrado para esta ação.</p>
+                            <p class="text-sm theme-muted">Nenhum vídeo cadastrado para esta ação.</p>
                         @endif
                     </div>
 
                     <div id="tab-regulamento" class="tab-panel hidden space-y-3">
-                        <p class="text-sm text-slate-400">Consulte o regulamento oficial da promoção para regras, elegibilidade e critérios de apuração.</p>
-                        <a href="{{ route('pages.regulation') }}" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold text-white" style="background: var(--accent);">
+                        <p class="text-sm theme-muted">Consulte o regulamento oficial da promoção para regras, elegibilidade e critérios de apuração.</p>
+                        <a href="{{ route('pages.regulation') }}" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold" style="background: var(--accent); color: var(--on-accent);">
                             <i class="fa-solid fa-scale-balanced"></i> Abrir regulamento
                         </a>
                     </div>
 
                     <div id="tab-compartilhar" class="tab-panel hidden space-y-4">
-                        <p class="text-sm text-slate-400">Ajude a divulgar esta ação entre amigos:</p>
+                        <p class="text-sm theme-muted">Ajude a divulgar esta ação entre amigos:</p>
                         <div class="grid grid-cols-5 gap-2">
                             <a href="https://api.whatsapp.com/send?text={{ urlencode($shareText) }}" target="_blank" class="flex items-center justify-center p-3 rounded-xl bg-[#25D366] text-white"><i class="fa-brands fa-whatsapp text-lg"></i></a>
                             <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode($shareUrl) }}" target="_blank" class="flex items-center justify-center p-3 rounded-xl bg-[#1877F2] text-white"><i class="fa-brands fa-facebook-f text-lg"></i></a>
                             <a href="https://twitter.com/intent/tweet?url={{ urlencode($shareUrl) }}&text={{ urlencode('Confira essa ação no Ação RR Veículos!') }}" target="_blank" class="flex items-center justify-center p-3 rounded-xl bg-black text-white border" style="border-color: var(--border-color);"><i class="fa-brands fa-x-twitter text-lg"></i></a>
                             <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ urlencode($shareUrl) }}" target="_blank" class="flex items-center justify-center p-3 rounded-xl bg-[#0A66C2] text-white"><i class="fa-brands fa-linkedin-in text-lg"></i></a>
-                            <button type="button" onclick="copyRaffleLink()" class="flex items-center justify-center p-3 rounded-xl border text-white" style="border-color: var(--border-color); background: var(--bg-primary);"><i class="fa-solid fa-link text-lg"></i></button>
+                            <button type="button" onclick="copyRaffleLink()" class="flex items-center justify-center p-3 rounded-xl border theme-title" style="border-color: var(--border-color); background: var(--bg-primary);"><i class="fa-solid fa-link text-lg"></i></button>
                         </div>
                         <p id="share-toast" class="text-xs font-bold hidden" style="color: var(--accent);">Link copiado!</p>
                     </div>
@@ -302,48 +322,48 @@
             <div class="sticky top-24 space-y-4">
                 <div class="glass-card rounded-2xl border p-6 space-y-5" style="border-color: var(--border-color);">
                     <div>
-                        <h2 class="font-display text-xl font-bold text-white uppercase tracking-tight">Escolha seu pacote e concorra!</h2>
-                        <p class="text-sm text-slate-400 mt-1">Quanto mais números, maiores suas chances!</p>
+                        <h2 class="font-display text-xl font-bold theme-title uppercase tracking-tight">Escolha seu pacote e concorra!</h2>
+                        <p class="text-sm theme-muted mt-1">Quanto mais números, maiores suas chances!</p>
                     </div>
 
                     <div class="space-y-3">
                         @forelse($raffle->packages as $package)
-                            <form action="{{ route('raffles.buy', $raffle->id) }}" method="POST" class="relative rounded-xl border p-4 flex items-center gap-4 transition hover:shadow-md {{ $package->is_featured ? 'ring-2' : '' }}" style="{{ $package->is_featured ? 'border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent);' : 'border-color: var(--border-color);' }}">
+                            <form action="{{ route('checkout.start', $raffle->id) }}" method="POST" class="relative rounded-xl border p-4 flex items-center gap-4 transition hover:shadow-md {{ $package->is_featured ? 'ring-2' : '' }}" style="{{ $package->is_featured ? 'border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent);' : 'border-color: var(--border-color);' }}">
                                 @csrf
                                 <input type="hidden" name="package_id" value="{{ $package->id }}">
                                 @if($package->is_featured)
-                                    <span class="absolute -top-2.5 left-4 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded text-white" style="background: var(--accent);">Mais escolhido</span>
+                                    <span class="absolute -top-2.5 left-4 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded" style="background: var(--accent); color: var(--on-accent);">Mais escolhido</span>
                                 @endif
                                 <div class="w-4 h-4 rounded-full border-2 flex-shrink-0" style="border-color: {{ $package->is_featured ? 'var(--accent)' : 'var(--border-color)' }}; background: {{ $package->is_featured ? 'var(--accent)' : 'transparent' }};"></div>
                                 <div class="flex-1 min-w-0">
-                                    <div class="text-xs font-bold uppercase tracking-wide text-slate-500">{{ $package->name }}</div>
-                                    <div class="text-sm text-slate-400">{{ $package->numbers_qty }} números</div>
+                                    <div class="text-xs font-bold uppercase tracking-wide theme-muted">{{ $package->name }}</div>
+                                    <div class="text-sm theme-muted">{{ $package->numbers_qty }} números{{ $package->allows_selection ? ' · escolha disponível' : '' }}</div>
                                 </div>
                                 <div class="text-right shrink-0">
                                     <div class="font-display text-lg font-bold" style="color: var(--accent);">R$ {{ number_format($package->price, 2, ',', '.') }}</div>
-                                    <button type="submit" class="mt-1 text-[11px] font-bold uppercase tracking-wide px-3 py-1.5 rounded-lg text-white" style="background: var(--accent);">
+                                    <button type="submit" class="mt-1 text-[11px] font-bold uppercase tracking-wide px-3 py-1.5 rounded-lg" style="background: var(--accent); color: var(--on-accent);">
                                         Comprar agora
                                     </button>
                                 </div>
                             </form>
                         @empty
-                            <p class="text-sm text-slate-400">Nenhum pacote cadastrado.</p>
+                            <p class="text-sm theme-muted">Nenhum pacote cadastrado.</p>
                         @endforelse
                     </div>
                 </div>
 
                 <div class="grid grid-cols-3 gap-3">
                     <div class="glass-card rounded-xl border p-3 text-center" style="border-color: var(--border-color);">
-                        <div class="text-[10px] uppercase font-bold text-slate-500 mb-1">Data do sorteio</div>
-                        <div class="text-xs font-bold text-white">{{ $raffle->draw_date->format('d/m/Y') }}<br>{{ $raffle->draw_date->format('H:i') }}</div>
+                        <div class="text-[10px] uppercase font-bold theme-muted mb-1">Data do sorteio</div>
+                        <div class="text-xs font-bold theme-title">{{ $raffle->draw_date->format('d/m/Y') }}<br>{{ $raffle->draw_date->format('H:i') }}</div>
                     </div>
                     <div class="glass-card rounded-xl border p-3 text-center" style="border-color: var(--border-color);">
-                        <div class="text-[10px] uppercase font-bold text-slate-500 mb-1">Sorteio pela</div>
-                        <div class="text-xs font-bold text-white">Loteria Federal</div>
+                        <div class="text-[10px] uppercase font-bold theme-muted mb-1">Como será</div>
+                        <div class="text-xs font-bold theme-title">Ao vivo no site e YouTube</div>
                     </div>
                     <div class="glass-card rounded-xl border p-3 text-center" style="border-color: var(--border-color);">
-                        <div class="text-[10px] uppercase font-bold text-slate-500 mb-1">Entrega</div>
-                        <div class="text-xs font-bold text-white">Grátis p/ Brasil</div>
+                        <div class="text-[10px] uppercase font-bold theme-muted mb-1">Entrega</div>
+                        <div class="text-xs font-bold theme-title">Grátis p/ Brasil</div>
                     </div>
                 </div>
             </div>
@@ -402,12 +422,10 @@ document.addEventListener('DOMContentLoaded', function () {
             const tab = btn.getAttribute('data-tab');
             document.querySelectorAll('.detail-tab').forEach((b) => {
                 b.style.borderColor = 'transparent';
-                b.style.color = '';
-                b.classList.add('text-slate-500');
+                b.style.color = 'var(--text-secondary)';
             });
             btn.style.borderColor = 'var(--accent)';
             btn.style.color = 'var(--accent)';
-            btn.classList.remove('text-slate-500');
 
             document.querySelectorAll('.tab-panel').forEach((panel) => panel.classList.add('hidden'));
             const target = document.getElementById('tab-' + tab);

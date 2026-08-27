@@ -25,3 +25,9 @@ _ide_helper.php
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# Credenciais e instaladores locais
+client_secret*.json
+*.msi
+*.eml
+/database/database.sqlite

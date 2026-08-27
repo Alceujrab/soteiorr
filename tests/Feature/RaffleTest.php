@@ -2,10 +2,9 @@
 
 namespace Tests\Feature;
 
+use App\Actions\ReserveTicketsAction;
 use App\Models\Raffle;
 use App\Models\User;
-use App\Models\Ticket;
-use App\Actions\ReserveTicketsAction;
 use App\Services\PaymentService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -43,14 +42,14 @@ class RaffleTest extends TestCase
         ]);
 
         // 2. Executar a ação de reserva
-        $reserveAction = new ReserveTicketsAction();
+        $reserveAction = new ReserveTicketsAction;
         $tickets = $reserveAction->execute($cliente, $raffle, [5, 12, 88]);
 
         $this->assertCount(3, $tickets);
         $this->assertEquals('reserved', $tickets->first()->status);
 
         // 3. Criar pagamento
-        $paymentService = new PaymentService();
+        $paymentService = app(PaymentService::class);
         $payment = $paymentService->createPayment($cliente, $tickets);
 
         $this->assertEquals('pending', $payment->status);
@@ -60,7 +59,7 @@ class RaffleTest extends TestCase
         $paymentService->confirmPayment($payment);
 
         $this->assertEquals('approved', $payment->fresh()->status);
-        
+
         // Verificar se os bilhetes mudaram para "paid"
         foreach ($tickets as $ticket) {
             $this->assertEquals('paid', $ticket->fresh()->status);

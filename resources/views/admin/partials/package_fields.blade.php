@@ -6,6 +6,7 @@
             'price' => $p->price,
             'highlight' => $p->highlight,
             'is_featured' => $p->is_featured,
+            'allows_selection' => $p->allows_selection,
         ])->values()->all()
         : ($defaultPackages ?? \App\Models\RafflePackage::defaultDefinitions()));
 @endphp
@@ -17,7 +18,7 @@
             + Pacote
         </button>
     </div>
-    <p class="text-[11px] text-slate-500">Defina os pacotes oferecidos na compra. O preço da ação será o menor pacote.</p>
+    <p class="text-[11px] text-slate-500">Defina os pacotes oferecidos na compra. O preço da ação será o menor pacote. Marque “Escolher nº” para permitir seleção manual.</p>
 
     <div id="packages-list" class="space-y-3">
         @foreach($packageRows as $index => $package)
@@ -34,16 +35,20 @@
                     <label class="text-[10px] uppercase text-slate-500 font-bold">Preço (R$)</label>
                     <input type="number" step="0.01" min="0.01" name="packages[{{ $index }}][price]" value="{{ $package['price'] ?? '' }}" required class="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-200">
                 </div>
-                <div class="sm:col-span-3 space-y-1">
-                    <label class="text-[10px] uppercase text-slate-500 font-bold">Destaque</label>
+                <div class="sm:col-span-2 space-y-1">
+                    <label class="text-[10px] uppercase text-slate-500 font-bold">Destaque texto</label>
                     <input type="text" name="packages[{{ $index }}][highlight]" value="{{ $package['highlight'] ?? '' }}" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-200">
                 </div>
-                <div class="sm:col-span-2 flex items-end justify-between gap-2 pb-1">
+                <div class="sm:col-span-3 flex flex-col justify-end gap-2 pb-1">
                     <label class="inline-flex items-center gap-1.5 text-[11px] text-slate-400">
                         <input type="checkbox" name="packages[{{ $index }}][is_featured]" value="1" {{ !empty($package['is_featured']) ? 'checked' : '' }} class="rounded border-slate-700">
-                        Destaque
+                        Em destaque
                     </label>
-                    <button type="button" onclick="this.closest('.package-row').remove()" class="text-red-400 hover:text-red-300 text-xs" title="Remover">
+                    <label class="inline-flex items-center gap-1.5 text-[11px] text-slate-400">
+                        <input type="checkbox" name="packages[{{ $index }}][allows_selection]" value="1" {{ !empty($package['allows_selection']) ? 'checked' : '' }} class="rounded border-slate-700">
+                        Escolher nº
+                    </label>
+                    <button type="button" onclick="this.closest('.package-row').remove()" class="text-red-400 hover:text-red-300 text-xs self-start" title="Remover">
                         <i class="fa-solid fa-trash"></i>
                     </button>
                 </div>
@@ -66,16 +71,20 @@
             <label class="text-[10px] uppercase text-slate-500 font-bold">Preço (R$)</label>
             <input type="number" step="0.01" min="0.01" data-name="price" value="9.90" required class="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-200">
         </div>
-        <div class="sm:col-span-3 space-y-1">
-            <label class="text-[10px] uppercase text-slate-500 font-bold">Destaque</label>
+        <div class="sm:col-span-2 space-y-1">
+            <label class="text-[10px] uppercase text-slate-500 font-bold">Destaque texto</label>
             <input type="text" data-name="highlight" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-200">
         </div>
-        <div class="sm:col-span-2 flex items-end justify-between gap-2 pb-1">
+        <div class="sm:col-span-3 flex flex-col justify-end gap-2 pb-1">
             <label class="inline-flex items-center gap-1.5 text-[11px] text-slate-400">
                 <input type="checkbox" data-name="is_featured" value="1" class="rounded border-slate-700">
-                Destaque
+                Em destaque
             </label>
-            <button type="button" onclick="this.closest('.package-row').remove()" class="text-red-400 hover:text-red-300 text-xs" title="Remover">
+            <label class="inline-flex items-center gap-1.5 text-[11px] text-slate-400">
+                <input type="checkbox" data-name="allows_selection" value="1" class="rounded border-slate-700">
+                Escolher nº
+            </label>
+            <button type="button" onclick="this.closest('.package-row').remove()" class="text-red-400 hover:text-red-300 text-xs self-start" title="Remover">
                 <i class="fa-solid fa-trash"></i>
             </button>
         </div>

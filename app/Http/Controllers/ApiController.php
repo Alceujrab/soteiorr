@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Actions\LogActivityAction;
 use App\Models\Payment;
 use App\Models\Raffle;
+use App\Models\Setting;
 use App\Services\PaymentService;
 use Illuminate\Http\Request;
 
@@ -41,10 +42,12 @@ class ApiController extends Controller
     }
 
     /**
-     * Webhook de simulação do Asaas para confirmação automática.
+     * Webhook do Asaas para confirmação automática.
      */
     public function webhookAsaas(Request $request, PaymentService $paymentService, LogActivityAction $logActivity)
     {
+        $this->assertWebhookToken($request, Setting::get('asaas_webhook_token', ''));
+
         $event = (string) $request->input('event');
         $asaasPaymentId = $request->input('payment.id');
         $externalReference = $request->input('payment.externalReference');
@@ -74,11 +77,12 @@ class ApiController extends Controller
     }
 
     /**
-     * Webhook de simulação do Mercado Pago para confirmação automática.
+     * Webhook do Mercado Pago para confirmação automática.
      */
     public function webhookMercadoPago(Request $request, PaymentService $paymentService, LogActivityAction $logActivity)
     {
-        // Simulação do payload do MP: {"action": "payment.created", "data": {"id": "mp_id"}, "external_reference": "tx_xxxx"}
+        $this->assertWebhookToken($request, Setting::get('mercadopago_webhook_token', ''));
+
         $action = $request->input('action');
         $transactionId = $request->input('external_reference');
 
@@ -93,5 +97,28 @@ class ApiController extends Controller
         }
 
         return response()->json(['success' => false, 'message' => 'Invalid payload or payment not found'], 400);
+    }
+
+    private function assertWebhookToken(Request $request, ?string $expectedToken): void
+    {
+        $expectedToken = trim((string) $expectedToken);
+        $provided = (string) (
+            $request->header('asaas-access-token')
+            ?? $request->header('X-Webhook-Token')
+            ?? $request->bearerToken()
+            ?? ''
+        );
+
+        if (app()->isProduction()) {
+            if ($expectedToken === '' || ! hash_equals($expectedToken, $provided)) {
+                abort(401, 'Webhook não autorizado.');
+            }
+
+            return;
+        }
+
+        if ($expectedToken !== '' && ! hash_equals($expectedToken, $provided)) {
+            abort(401, 'Webhook não autorizado.');
+        }
     }
 }

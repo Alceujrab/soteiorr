@@ -16,14 +16,53 @@ class CheckoutRegistrationFlowTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_register_page_shows_regulation_button_and_checkbox(): void
+    public function test_register_page_shows_choice_buttons_and_regulation_controls(): void
     {
         $response = $this->get(route('register'));
 
         $response->assertOk();
+        $response->assertSee('Já possuo conta');
+        $response->assertSee('Criar conta');
         $response->assertSee('Ler regulamento');
         $response->assertSee('name="accepted_regulation"', false);
         $response->assertSee(route('pages.regulation'), false);
+        $response->assertSee(route('login'), false);
+    }
+
+    public function test_cannot_register_with_duplicate_email_or_cpf(): void
+    {
+        Mail::fake();
+
+        User::factory()->create([
+            'email' => 'cliente@example.com',
+            'cpf' => '39053344705',
+            'role' => 'cliente',
+        ]);
+
+        $response = $this->from(route('register'))->post(route('register'), $this->validRegistrationPayload());
+
+        $response->assertRedirect(route('register'));
+        $response->assertSessionHasErrors([
+            'email' => 'Este e-mail já está cadastrado. Faça login ou use outro e-mail.',
+            'cpf' => 'Este CPF já está cadastrado. Faça login ou recupere sua senha.',
+        ]);
+        Mail::assertNothingSent();
+    }
+
+    public function test_cannot_register_with_invalid_cpf(): void
+    {
+        Mail::fake();
+
+        $payload = $this->validRegistrationPayload([
+            'cpf' => '111.111.111-11',
+        ]);
+
+        $response = $this->from(route('register'))->post(route('register'), $payload);
+
+        $response->assertRedirect(route('register'));
+        $response->assertSessionHasErrors('cpf');
+        $this->assertDatabaseCount('users', 0);
+        Mail::assertNothingSent();
     }
 
     public function test_cannot_register_without_accepting_regulation(): void
@@ -84,7 +123,7 @@ class CheckoutRegistrationFlowTest extends TestCase
         [$admin, $raffle] = $this->createRaffle();
         $package = $raffle->packages()->firstOrFail();
 
-        $response = $this->post(route('raffles.buy', $raffle), [
+        $response = $this->post(route('checkout.start', $raffle), [
             'package_id' => $package->id,
         ]);
 

@@ -12,7 +12,17 @@
             <p class="text-slate-400 text-sm">Insira seu e-mail e senha cadastrados.</p>
         </div>
 
-        <form action="{{ route('login') }}" method="POST" class="space-y-4">
+        @if ($errors->any())
+            <div class="rounded-xl border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm text-red-200 space-y-1">
+                @foreach ($errors->all() as $error)
+                    <p>{{ $error }}</p>
+                @endforeach
+            </div>
+        @endif
+
+        @include('partials.google-auth-button')
+
+        <form action="{{ route('login') }}" method="POST" class="space-y-4" id="login-form">
             @csrf
 
             <div class="space-y-1">
@@ -32,6 +42,8 @@
                 </label>
                 <a href="{{ route('password.request') }}" class="text-xs font-semibold hover:opacity-80" style="color: var(--accent);">Esqueci a senha</a>
             </div>
+
+            <x-recaptcha action="login" form-id="login-form" />
 
             <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3 rounded-xl transition text-sm">
                 Entrar

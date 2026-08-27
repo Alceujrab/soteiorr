@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\LogActivityAction;
 use App\Models\SupportTicket;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -14,12 +14,6 @@ class SupportController extends Controller
      */
     public function index()
     {
-        // Simular login do cliente de teste se não estiver logado
-        if (!Auth::check()) {
-            $user = User::where('role', 'cliente')->first() ?: User::first();
-            Auth::login($user);
-        }
-
         $tickets = SupportTicket::where('user_id', Auth::id())
             ->orderBy('created_at', 'desc')
             ->get();
@@ -30,7 +24,7 @@ class SupportController extends Controller
     /**
      * Salvar um novo ticket de suporte.
      */
-    public function storeTicket(Request $request, \App\Actions\LogActivityAction $logActivity)
+    public function storeTicket(Request $request, LogActivityAction $logActivity)
     {
         $request->validate([
             'subject' => 'required|string|max:255',

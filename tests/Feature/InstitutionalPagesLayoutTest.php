@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Setting;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -30,5 +31,22 @@ class InstitutionalPagesLayoutTest extends TestCase
             $response->assertSee('Sobre Nós', false);
             $response->assertSee('Regulamento', false);
         }
+    }
+
+    public function test_contact_page_shows_structured_channels(): void
+    {
+        Setting::set('contact_whatsapp', '(66) 98111-2233');
+        Setting::set('contact_email', 'contato@rrsorteio.com');
+        Setting::set('contact_address', 'Centro, Água Boa - MT');
+        Setting::set('page_contact', '');
+
+        $response = $this->get(route('pages.contact'));
+
+        $response->assertOk();
+        $response->assertSee('Falar no WhatsApp', false);
+        $response->assertSee('contato@rrsorteio.com', false);
+        $response->assertSee('wa.me/5566981112233', false);
+        $response->assertSee('Dúvidas frequentes', false);
+        $response->assertDontSee('99999-9999', false);
     }
 }

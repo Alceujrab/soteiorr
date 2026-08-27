@@ -3,12 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Ação RR Veículos Entre Amigos')</title>
+    @php
+        $seoTitle = trim($__env->yieldContent('title', \App\Support\Seo::title()));
+        $seoDescription = trim($__env->yieldContent('meta_description', \App\Support\Seo::description()));
+        $seoKeywords = \App\Support\Seo::keywords();
+        $seoSiteName = \App\Support\Seo::siteName();
+        $seoCanonical = url()->current();
+        $seoImage = asset('images/logo-rr.png');
+        $seoVerification = \App\Support\Seo::verificationCode();
+        $seoOrganization = \App\Support\Seo::organizationJsonLd();
+        $seoWebsite = \App\Support\Seo::websiteJsonLd();
+    @endphp
+    <title>{{ $seoTitle }}</title>
+    @include('partials.seo', compact(
+        'seoTitle',
+        'seoDescription',
+        'seoKeywords',
+        'seoSiteName',
+        'seoCanonical',
+        'seoImage',
+        'seoVerification',
+        'seoOrganization',
+        'seoWebsite'
+    ))
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts Inter -->
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -33,6 +55,7 @@
                     </button>
 
                     <a href="/" class="nav-link-quiet text-[11px] font-semibold uppercase tracking-[0.14em] transition">Início</a>
+                    <a href="{{ route('draws.index') }}" class="nav-link-quiet text-[11px] font-semibold uppercase tracking-[0.14em] transition">Sorteio</a>
                     <a href="#pacotes" class="nav-link-quiet text-[11px] font-semibold uppercase tracking-[0.14em] transition">Pacotes</a>
                     <a href="#acoes-promocionais" class="nav-link-quiet text-[11px] font-semibold uppercase tracking-[0.14em] transition">Ações</a>
                     <a href="{{ route('pages.faqs') }}" class="nav-link-quiet text-[11px] font-semibold uppercase tracking-[0.14em] transition">FAQ</a>
@@ -93,6 +116,10 @@
             <a href="/" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl">
                 <i class="fa-solid fa-ticket text-lg"></i>
                 <span class="font-medium text-sm">Ações Promocionais Ativas</span>
+            </a>
+            <a href="{{ route('draws.index') }}" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl">
+                <i class="fa-solid fa-clover text-lg"></i>
+                <span class="font-medium text-sm">Sorteio ao vivo</span>
             </a>
             <a href="{{ route('pages.about') }}" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl">
                 <i class="fa-solid fa-circle-info text-lg"></i>
@@ -227,6 +254,10 @@
                 <i class="fa-solid fa-house text-base" style="{{ request()->routeIs('raffles.index') ? 'color: var(--accent);' : '' }}"></i>
                 <span class="text-[10px] font-medium">Início</span>
             </a>
+            <a href="{{ route('draws.index') }}" class="flex flex-col items-center gap-1 min-w-[3.5rem] {{ request()->routeIs('draws.*') ? 'theme-title' : 'theme-muted' }}">
+                <i class="fa-solid fa-clover text-base" style="{{ request()->routeIs('draws.*') ? 'color: var(--accent);' : '' }}"></i>
+                <span class="text-[10px] font-medium">Sorteio</span>
+            </a>
             <a href="/#pacotes" class="flex flex-col items-center gap-1 min-w-[3.5rem] theme-muted">
                 <i class="fa-solid fa-boxes-stacked text-base"></i>
                 <span class="text-[10px] font-medium">Pacotes</span>
@@ -234,10 +265,6 @@
             <a href="/#acoes-promocionais" class="flex flex-col items-center gap-1 min-w-[3.5rem] theme-muted">
                 <i class="fa-solid fa-car text-base"></i>
                 <span class="text-[10px] font-medium">Ações</span>
-            </a>
-            <a href="{{ route('pages.regulation') }}" class="flex flex-col items-center gap-1 min-w-[3.5rem] {{ request()->routeIs('pages.regulation') ? 'theme-title' : 'theme-muted' }}">
-                <i class="fa-solid fa-scale-balanced text-base" style="{{ request()->routeIs('pages.regulation') ? 'color: var(--accent);' : '' }}"></i>
-                <span class="text-[10px] font-medium">Regras</span>
             </a>
             @auth
                 @if(in_array(auth()->user()->role, ['cliente', 'vendedor']))
@@ -336,5 +363,6 @@
         window.addEventListener('resize', updateBackToTopVisibility);
         document.addEventListener('DOMContentLoaded', updateBackToTopVisibility);
     </script>
+    @stack('scripts')
 </body>
 </html>

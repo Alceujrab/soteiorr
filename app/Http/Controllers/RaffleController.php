@@ -2,14 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Actions\ReserveTicketsAction;
 use App\Models\Banner;
 use App\Models\Payment;
 use App\Models\Raffle;
-use App\Models\RafflePackage;
 use App\Models\Setting;
 use App\Models\Ticket;
-use App\Services\PaymentService;
+use App\Support\ContactInfo;
 use App\Support\DefaultRegulationContent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -40,7 +38,7 @@ class RaffleController extends Controller
      */
     public function show(Raffle $raffle)
     {
-        $raffle->load('packages');
+        $raffle->load(['packages', 'draw']);
 
         $takenCount = Ticket::where('raffle_id', $raffle->id)
             ->whereIn('status', ['paid', 'reserved'])
@@ -50,50 +48,11 @@ class RaffleController extends Controller
     }
 
     /**
-     * Processar a compra/reserva de números.
+     * Compatibilidade: o fluxo único de compra é o checkout.
      */
-    public function buy(Request $request, Raffle $raffle, ReserveTicketsAction $reserveAction, PaymentService $paymentService)
+    public function buy(Request $request, Raffle $raffle)
     {
-        $request->validate([
-            'package_id' => 'required|integer|exists:raffle_packages,id',
-        ]);
-
-        $package = RafflePackage::where('raffle_id', $raffle->id)
-            ->where('id', $request->integer('package_id'))
-            ->firstOrFail();
-
-        $request->session()->put('checkout', [
-            'raffle_id' => $raffle->id,
-            'package_id' => $package->id,
-        ]);
-
-        if (! Auth::check() || Auth::user()->role !== 'cliente') {
-            return redirect()->route('register')
-                ->with('success', 'Para comprar, complete seu cadastro (ou faça login). Depois seguimos para o pagamento.');
-        }
-
-        $user = Auth::user();
-
-        try {
-            $numbers = $reserveAction->pickRandomAvailableNumbers($raffle, $package->numbers_qty);
-            $tickets = $reserveAction->execute($user, $raffle, $numbers);
-            $payment = $paymentService->createPayment(
-                $user,
-                $tickets,
-                'asaas',
-                'pix',
-                (float) $package->price,
-                $package->id
-            );
-
-            $request->session()->forget('checkout');
-
-            return redirect()->route('payments.show', $payment->id)
-                ->with('success', "Pacote {$package->name} reservado! Efetue o pagamento PIX para confirmar.");
-        } catch (\Exception $e) {
-            return redirect()->back()
-                ->withErrors(['error' => $e->getMessage()]);
-        }
+        return app(CheckoutController::class)->start($request, $raffle);
     }
 
     /**
@@ -121,6 +80,17 @@ class RaffleController extends Controller
      */
     public function receipt(Payment $payment)
     {
+        $user = Auth::user();
+
+        if (! $user) {
+            abort(403);
+        }
+
+        $isAdmin = in_array($user->role, ['admin_organizador', 'super_admin'], true);
+        if (! $isAdmin && (int) $payment->user_id !== (int) $user->id) {
+            abort(403);
+        }
+
         $payment->load(['user', 'tickets.raffle']);
 
         return view('payments.receipt', compact('payment'));
@@ -218,19 +188,10 @@ class RaffleController extends Controller
 
     public function contact()
     {
-        $default = '<h1>Fale Conosco</h1>
-        <p>Precisa de suporte com suas cotas ou tem alguma dúvida? Nossa central de atendimento da Ação RR Veículos Água Boa - MT está de braços abertos para ajudar.</p>
-        <h2>Canais de Atendimento Oficiais</h2>
-        <ul>
-            <li><strong>WhatsApp Suporte:</strong> (66) 99999-9999 (Atendimento prioritário)</li>
-            <li><strong>E-mail Corporativo:</strong> suporte@acaorrveiculos.com.br</li>
-            <li><strong>Endereço Comercial:</strong> Avenida das Nações, 1000 - Centro, Água Boa - MT</li>
-        </ul>
-        <h2>Horário de Atendimento</h2>
-        <p>Segunda a Sexta-feira: 08:00 às 18:00<br>Sábados: 08:00 às 12:00</p>';
-        $content = Setting::get('page_contact', $default);
+        $content = Setting::get('page_contact', '');
+        $contact = ContactInfo::all();
 
-        return view('pages.contact', compact('content'));
+        return view('pages.contact', compact('content', 'contact'));
     }
 
     public function faqs()
@@ -245,7 +206,7 @@ class RaffleController extends Controller
         <p>As cotas reservadas possuem prazo de validade de <strong>30 minutos</strong>. Caso o pagamento via QR Code ou Copia e Cola não seja confirmado nesse prazo, os números retornam ao grid público para outros interessados.</p>
 
         <h2>3. Como é definido o ganhador da Ação Promocional?</h2>
-        <p>Nossas Ações Promocionais oficiais utilizam a extração da <strong>Loteria Federal</strong> ou realizamos transmissões ao vivo auditadas em nossas redes sociais. O número vencedor é sempre baseado na combinação correspondente e anunciado publicamente.</p>
+        <p>O sorteio é realizado <strong>ao vivo</strong> pelo site oficial e pelo canal no YouTube, na data e horário divulgados na página da ação. O número contemplado é escolhido entre os bilhetes pagos e revelado dígito a dígito durante a transmissão.</p>
 
         <h2>4. Onde posso acompanhar as minhas cotas compradas?</h2>
         <p>Ao realizar o login, acesse a aba <strong>"Meus Bilhetes"</strong> no seu painel para visualizar o histórico de compras, status e comprovantes em PDF.</p>

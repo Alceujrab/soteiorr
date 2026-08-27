@@ -20,13 +20,14 @@
             </div>
         @endif
 
-        <form action="{{ route('password.email') }}" method="POST" class="space-y-4">
+        <form action="{{ route('password.email') }}" method="POST" class="space-y-4" id="forgot-password-form">
             @csrf
             <div class="space-y-1">
                 <label class="text-xs text-slate-400 font-semibold block">E-mail</label>
                 <input type="email" name="email" value="{{ old('email') }}" required
                     class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-300 focus:outline-none focus:border-slate-700">
             </div>
+            <x-recaptcha action="forgot_password" form-id="forgot-password-form" />
             <button type="submit" class="w-full text-white font-semibold py-3 rounded-xl transition text-sm" style="background-color: var(--accent);">
                 Enviar link
             </button>

@@ -92,8 +92,8 @@ Em 20 de dezembro de 2026, às 23h59, independentemente da quantidade de número
 <p>Caso números já tenham sido atribuídos, serão cancelados.</p>
 
 <h2 id="distribuicao">9. Geração e Distribuição dos Números</h2>
-<p>Os números serão distribuídos de maneira aleatória pelo sistema da Promoção.</p>
-<p>O Participante não poderá escolher números específicos.</p>
+<p>Os números serão distribuídos de maneira aleatória pelo sistema da Promoção (Surpresinha), salvo nos pacotes que expressamente permitam a escolha manual de números disponíveis.</p>
+<p>Quando o pacote não oferecer escolha manual, o Participante não poderá selecionar números específicos.</p>
 <p>Após a confirmação do pagamento, os números serão disponibilizados por:</p>
 <ul>
 <li>área do Participante na plataforma;</li>
@@ -105,38 +105,23 @@ Em 20 de dezembro de 2026, às 23h59, independentemente da quantidade de número
 
 <h2 id="apuracao">10. Quantidade, Formação e Apuração dos Números</h2>
 <p>A Promoção terá um total máximo de <strong>200.000 (duzentos mil)</strong> números da sorte.</p>
-<p>Os números serão divididos em 10 (dez) séries, identificadas pelos algarismos: 0, 1, 2, 3, 4, 5, 6, 7, 8 e 9.</p>
-<p>Cada série possuirá 20.000 (vinte mil) elementos sorteáveis, numerados de <strong>00000 a 19999</strong>.</p>
-<p>Cada número da sorte será composto por 6 (seis) algarismos, sendo:</p>
+<p>Cada número da sorte será composto por até 6 (seis) algarismos, apresentados com zeros à esquerda quando necessário (ex.: 054321).</p>
+<p>Os números serão distribuídos aleatoriamente pelo sistema entre 1 e 200.000, conforme disponibilidade.</p>
+
+<h3>10.1. Forma de apuração</h3>
+<p>A identificação do número contemplado será realizada por meio de <strong>sorteio ao vivo</strong>, transmitido pelo site oficial da Promoção e pelo canal da PROMOTORA no YouTube, na data e horário previamente divulgados.</p>
+<p>Participarão do sorteio exclusivamente os números com pagamento confirmado (bilhetes pagos) até o momento da apuração.</p>
+<p>O sistema selecionará aleatoriamente um número elegível entre os bilhetes pagos. Durante a transmissão, o número será revelado dígito a dígito, de forma pública e acompanhável pelos Participantes.</p>
+
+<h3>10.2. Acompanhamento</h3>
+<p>Os Participantes poderão acompanhar a apuração:</p>
 <ul>
-<li>o primeiro algarismo correspondente à série; e</li>
-<li>os cinco algarismos seguintes correspondentes ao elemento sorteável.</li>
+<li>pela página pública do sorteio no site da Promoção; e</li>
+<li>pela transmissão ao vivo no canal oficial no YouTube.</li>
 </ul>
-<p><strong>Exemplos:</strong> 0.12345 · 3.08721 · 7.19999</p>
-<p>A identificação do número potencialmente contemplado será realizada com base na Extração da Loteria Federal, conforme as regras seguintes.</p>
+<p>O link da página do sorteio e da transmissão será disponibilizado nos canais oficiais da PROMOTORA.</p>
 
-<h3>10.1. Determinação da série</h3>
-<p>O primeiro algarismo do número da sorte será determinado pelo algarismo da dezena do 1º (primeiro) prêmio da Extração da Loteria Federal. Esse algarismo corresponderá diretamente à série sorteada.</p>
-<p><strong>Exemplo:</strong> se o 1º prêmio for 12.573, o algarismo da dezena será 7. Portanto, a série sorteada será a <strong>Série 7</strong>.</p>
-
-<h3>10.2. Determinação do elemento sorteável</h3>
-<p>Os cinco algarismos correspondentes ao elemento sorteável serão formados pelos algarismos das unidades dos 5 (cinco) primeiros prêmios da Extração da Loteria Federal, lidos de cima para baixo.</p>
-<p><strong>Exemplo hipotético:</strong><br>
-1º Prêmio: 12.573<br>
-2º Prêmio: 34.486<br>
-3º Prêmio: 94.108<br>
-4º Prêmio: 32.114<br>
-5º Prêmio: 20.362</p>
-<p>As unidades dos cinco prêmios formam o número: <strong>36842</strong>.</p>
-<p>Como cada série possui somente os elementos compreendidos entre 00000 e 19999, será aplicada, quando necessária, a regra de redução descrita a seguir.</p>
-
-<h3>10.3. Regra de redução</h3>
-<p>Caso o número formado esteja compreendido entre 00000 e 19999, será utilizado diretamente como elemento sorteável.</p>
-<p>Caso seja igual ou superior a 20000, serão subtraídos sucessivamente blocos de 20.000 até que o resultado final esteja compreendido entre 00000 e 19999.</p>
-<p><strong>Exemplo:</strong> 36842 − 20000 = 16842. Considerando a série 7, o número da sorte potencialmente contemplado será <strong>7.16842</strong>.</p>
-<p><strong>Segundo exemplo:</strong> 83456 − 20000 = 63456; 63456 − 20000 = 43456; 43456 − 20000 = 23456; 23456 − 20000 = 3456. O elemento final será <strong>03456</strong>. Caso a série apurada fosse 4, o número da sorte seria <strong>4.03456</strong>.</p>
-
-<h3>10.4. Regra de aproximação</h3>
+<h3>10.3. Regra de aproximação</h3>
 <p>Caso o número final apurado:</p>
 <ul>
 <li>não tenha sido distribuído;</li>
@@ -145,14 +130,10 @@ Em 20 de dezembro de 2026, às 23h59, independentemente da quantidade de número
 <li>pertença a pessoa impedida de participar,</li>
 </ul>
 <p>será aplicada a regra de aproximação.</p>
-<p>Será inicialmente localizado, dentro da mesma série, o número validamente distribuído imediatamente superior ao elemento apurado. Caso não exista número superior válido naquela série, será localizado o número validamente distribuído imediatamente inferior. A busca prosseguirá sucessivamente até que seja identificado um Participante válido e elegível.</p>
+<p>Será localizado o número validamente distribuído imediatamente superior ao elemento apurado. Caso não exista número superior válido, será localizado o número validamente distribuído imediatamente inferior. A busca prosseguirá sucessivamente até que seja identificado um Participante válido e elegível.</p>
 
-<h3>10.5. Ausência de números distribuídos na série sorteada</h3>
-<p>Caso não exista qualquer número validamente distribuído na série determinada pela Extração da Loteria Federal, será utilizada a série imediatamente superior. Após a série 9, será considerada a série 0.</p>
-<p>A regra será aplicada sucessivamente até ser localizada uma série que contenha números regularmente distribuídos. Localizada a nova série, será mantido o elemento sorteável originalmente apurado e, caso ele não tenha sido distribuído, será aplicada a regra de aproximação prevista no item 10.4.</p>
-
-<h3>10.6. Extração não realizada</h3>
-<p>Caso a Extração da Loteria Federal não seja realizada na data prevista por qualquer motivo, será utilizada a Extração da Loteria Federal subsequente.</p>
+<h3>10.4. Adiamento da transmissão</h3>
+<p>Caso a transmissão ao vivo não possa ser realizada na data e horário previstos por motivo técnico ou operacional, a PROMOTORA reagendará a apuração e comunicará a nova data e horário pelos canais oficiais, com antecedência razoável.</p>
 
 <h2 id="meta">11. Meta de 70%</h2>
 <p>A meta comercial da Promoção será atingida quando forem distribuídos <strong>140.000 números da sorte</strong>, correspondente a 70% dos 200.000 números disponíveis.</p>
@@ -183,9 +164,9 @@ Em 20 de dezembro de 2026, às 23h59, independentemente da quantidade de número
 <p>O Participante declara ciência de que poderá ocorrer pequena variação até a entrega do veículo em razão de movimentação, manutenção, transporte, fotografias, filmagens, exposições, ações de divulgação e deslocamentos necessários.</p>
 
 <h2 id="data-apuracao">15. Data da Apuração</h2>
-<p>A apuração será realizada com base em Extração da Loteria Federal — a que ocorrer mais próxima ao dia <strong>20 de dezembro de 2026</strong>.</p>
+<p>A apuração será realizada <strong>ao vivo pelo site oficial e pelo canal no YouTube</strong>, na data e horário divulgados na página da Ação Promocional, previstos para o dia <strong>20 de dezembro de 2026</strong> (ou outra data/hora oficialmente comunicada).</p>
 <p>A apuração ocorrerá independentemente da quantidade de números efetivamente distribuídos, não estando condicionada ao atingimento da meta de 70% nem ao esgotamento dos 200.000 números disponíveis.</p>
-<p>Caso o período de participação seja encerrado antecipadamente, a PROMOTORA divulgará pelos canais oficiais a Extração da Loteria Federal aplicável à apuração, observadas as condições previamente estabelecidas para a Promoção.</p>
+<p>Caso o período de participação seja encerrado antecipadamente, a PROMOTORA divulgará pelos canais oficiais a nova data e horário do sorteio ao vivo, observadas as condições deste Regulamento.</p>
 
 <h2 id="validacao">16. Validação do Contemplado</h2>
 <p>Após a identificação do número potencialmente contemplado, a PROMOTORA verificará:</p>
@@ -235,7 +216,7 @@ Em 20 de dezembro de 2026, às 23h59, independentemente da quantidade de número
 <p>A PROMOTORA poderá cancelar o elemento duplicado e atribuir novos números aos Participantes afetados, garantindo igualdade de condições.</p>
 
 <h2 id="resultado">20. Divulgação do Resultado</h2>
-<p>O resultado será divulgado nos canais oficiais da RR Veículos, incluindo site, Instagram, WhatsApp e demais redes sociais.</p>
+<p>O resultado será divulgado ao vivo no site e no YouTube, e também nos demais canais oficiais da RR Veículos, incluindo Instagram, WhatsApp e redes sociais.</p>
 <p>O contemplado será comunicado através dos dados informados no cadastro.</p>
 
 <h2 id="documentacao">21. Documentação do Contemplado</h2>

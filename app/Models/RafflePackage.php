@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
     'price',
     'highlight',
     'is_featured',
+    'allows_selection',
     'sort_order',
 ])]
 class RafflePackage extends Model
@@ -23,6 +24,7 @@ class RafflePackage extends Model
             'numbers_qty' => 'integer',
             'price' => 'decimal:2',
             'is_featured' => 'boolean',
+            'allows_selection' => 'boolean',
             'sort_order' => 'integer',
         ];
     }
@@ -53,6 +55,7 @@ class RafflePackage extends Model
                 'price' => 9.90,
                 'highlight' => 'Para começar',
                 'is_featured' => false,
+                'allows_selection' => false,
                 'sort_order' => 1,
             ],
             [
@@ -61,6 +64,7 @@ class RafflePackage extends Model
                 'price' => 21.90,
                 'highlight' => 'Mais chances',
                 'is_featured' => false,
+                'allows_selection' => false,
                 'sort_order' => 2,
             ],
             [
@@ -69,6 +73,7 @@ class RafflePackage extends Model
                 'price' => 44.90,
                 'highlight' => 'Mais escolhido',
                 'is_featured' => true,
+                'allows_selection' => false,
                 'sort_order' => 3,
             ],
             [
@@ -77,6 +82,7 @@ class RafflePackage extends Model
                 'price' => 69.90,
                 'highlight' => 'Melhor custo-benefício',
                 'is_featured' => false,
+                'allows_selection' => true,
                 'sort_order' => 4,
             ],
         ];

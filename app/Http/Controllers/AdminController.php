@@ -29,14 +29,6 @@ class AdminController extends Controller
      */
     public function dashboard()
     {
-        // Simular login do admin de teste se não estiver logado
-        if (! Auth::check() || Auth::user()->role !== 'admin_organizador') {
-            $admin = User::where('role', 'admin_organizador')->first();
-            if ($admin) {
-                Auth::login($admin);
-            }
-        }
-
         $kpis = [
             'total_sales' => Ticket::where('status', 'paid')->count(),
             'total_revenue' => Payment::where('status', 'approved')->sum('amount'),
@@ -49,9 +41,17 @@ class AdminController extends Controller
                 $q->where('status', 'paid');
             }])->get();
 
+        return view('admin.dashboard', compact('kpis', 'raffles'));
+    }
+
+    /**
+     * Gerenciar banners da página inicial.
+     */
+    public function banners()
+    {
         $banners = Banner::orderBy('created_at', 'desc')->get();
 
-        return view('admin.dashboard', compact('kpis', 'raffles', 'banners'));
+        return view('admin.banners', compact('banners'));
     }
 
     /**
@@ -110,6 +110,7 @@ class AdminController extends Controller
                     'price' => (float) $package['price'],
                     'highlight' => $package['highlight'] ?? null,
                     'is_featured' => ! empty($package['is_featured']),
+                    'allows_selection' => ! empty($package['allows_selection']),
                     'sort_order' => $index + 1,
                 ];
             })
@@ -199,6 +200,7 @@ class AdminController extends Controller
                     'price' => (float) $package['price'],
                     'highlight' => $package['highlight'] ?? null,
                     'is_featured' => ! empty($package['is_featured']),
+                    'allows_selection' => ! empty($package['allows_selection']),
                     'sort_order' => $index + 1,
                 ];
             })
@@ -311,20 +313,13 @@ class AdminController extends Controller
 
     private function resolveAdminUser(): User
     {
-        if (Auth::check() && in_array(Auth::user()->role, ['admin_organizador', 'super_admin'], true)) {
-            return Auth::user();
+        $user = Auth::user();
+
+        if ($user && in_array($user->role, ['admin_organizador', 'super_admin'], true)) {
+            return $user;
         }
 
-        $admin = User::where('role', 'admin_organizador')->first()
-            ?: User::where('role', 'super_admin')->first();
-
-        if (! $admin) {
-            abort(403, 'Nenhum administrador encontrado.');
-        }
-
-        Auth::login($admin);
-
-        return $admin;
+        abort(403, 'Acesso restrito à administração.');
     }
 
     private function maskEmail(?string $email): string
@@ -398,7 +393,9 @@ class AdminController extends Controller
             'admin_security_email' => Setting::get('admin_security_email', config('mail.from.address')),
             'gateway_asaas_key' => Setting::get('gateway_asaas_key', ''),
             'asaas_sandbox' => Setting::get('asaas_sandbox', '1'),
+            'asaas_webhook_token' => Setting::get('asaas_webhook_token', ''),
             'gateway_mercadopago_key' => Setting::get('gateway_mercadopago_key', ''),
+            'mercadopago_webhook_token' => Setting::get('mercadopago_webhook_token', ''),
             'min_tickets' => Setting::get('min_tickets', 1),
             'max_tickets' => Setting::get('max_tickets', 10),
             'show_sold_qty' => Setting::get('show_sold_qty', '1'),
@@ -407,11 +404,18 @@ class AdminController extends Controller
             'recaptcha_enabled' => Setting::get('recaptcha_enabled', '0'),
             'recaptcha_site_key' => Setting::get('recaptcha_site_key', ''),
             'recaptcha_secret_key' => Setting::get('recaptcha_secret_key', ''),
+            'recaptcha_version' => Setting::get('recaptcha_version', 'v3'),
+            'recaptcha_min_score' => Setting::get('recaptcha_min_score', '0.5'),
 
             // Google Login
             'google_login_enabled' => Setting::get('google_login_enabled', '0'),
             'google_client_id' => Setting::get('google_client_id', ''),
             'google_client_secret' => Setting::get('google_client_secret', ''),
+
+            'seo_title' => Setting::get('seo_title', ''),
+            'seo_description' => Setting::get('seo_description', ''),
+            'seo_keywords' => Setting::get('seo_keywords', ''),
+            'google_site_verification' => Setting::get('google_site_verification', ''),
 
             // Google Maps
             'google_maps_enabled' => Setting::get('google_maps_enabled', '0'),
@@ -435,7 +439,13 @@ class AdminController extends Controller
 
             // Páginas Institucionais
             'page_about_us' => Setting::get('page_about_us', '<h1>Sobre Nós</h1><p>A Ação RR Veículos é especialista em realizar sonhos através de ações entre amigos com prêmios de alta qualidade e veículos revisados e garantidos.</p>'),
-            'page_contact' => Setting::get('page_contact', '<h1>Contato</h1><p>Precisa de suporte? Entre em contato conosco pelo e-mail suporte@acaorrveiculos.com.br ou pelo nosso WhatsApp oficial.</p>'),
+            'page_contact' => Setting::get('page_contact', ''),
+            'contact_whatsapp' => Setting::get('contact_whatsapp', ''),
+            'contact_email' => Setting::get('contact_email', 'contato@rrsorteio.com'),
+            'contact_address' => Setting::get('contact_address', 'Água Boa - MT'),
+            'contact_city' => Setting::get('contact_city', 'Água Boa - MT'),
+            'contact_hours_weekdays' => Setting::get('contact_hours_weekdays', 'Segunda a Sexta, 08h às 18h'),
+            'contact_hours_saturday' => Setting::get('contact_hours_saturday', 'Sábados, 08h às 12h'),
             'page_faqs' => Setting::get('page_faqs', '<h1>Dúvidas Frequentes</h1><p>Veja as respostas para as perguntas mais comuns dos nossos participantes.</p>'),
             'page_privacy_policy' => Setting::get('page_privacy_policy', '<h1>Política de Privacidade</h1><p>Sua privacidade é nossa prioridade. Coletamos e usamos dados apenas para o processamento seguro das cotas.</p>'),
             'page_terms_of_use' => Setting::get('page_terms_of_use', '<h1>Termos de Uso</h1><p>Ao adquirir cotas na Ação RR Veículos, você concorda com o regulamento oficial da Ação Promocional e com as regras gerais.</p>'),
@@ -471,13 +481,22 @@ class AdminController extends Controller
             'min_tickets' => 'required|integer',
             'max_tickets' => 'required|integer',
             'gateway_asaas_key' => 'nullable|string',
+            'asaas_webhook_token' => 'nullable|string|max:255',
             'gateway_mercadopago_key' => 'nullable|string',
+            'mercadopago_webhook_token' => 'nullable|string|max:255',
 
             'recaptcha_site_key' => 'nullable|string',
             'recaptcha_secret_key' => 'nullable|string',
+            'recaptcha_version' => 'nullable|in:v2,v3',
+            'recaptcha_min_score' => 'nullable|numeric|min:0|max:1',
 
             'google_client_id' => 'nullable|string',
             'google_client_secret' => 'nullable|string',
+
+            'seo_title' => 'nullable|string|max:180',
+            'seo_description' => 'nullable|string|max:500',
+            'seo_keywords' => 'nullable|string|max:500',
+            'google_site_verification' => 'nullable|string|max:120',
 
             'google_maps_key' => 'nullable|string',
 
@@ -495,6 +514,12 @@ class AdminController extends Controller
 
             'page_about_us' => 'nullable|string',
             'page_contact' => 'nullable|string',
+            'contact_whatsapp' => 'nullable|string|max:30',
+            'contact_email' => 'nullable|email|max:255',
+            'contact_address' => 'nullable|string|max:255',
+            'contact_city' => 'nullable|string|max:120',
+            'contact_hours_weekdays' => 'nullable|string|max:120',
+            'contact_hours_saturday' => 'nullable|string|max:120',
             'page_faqs' => 'nullable|string',
             'page_privacy_policy' => 'nullable|string',
             'page_terms_of_use' => 'nullable|string',
@@ -515,16 +540,25 @@ class AdminController extends Controller
         Setting::set('max_tickets', $request->max_tickets);
         Setting::set('gateway_asaas_key', $request->gateway_asaas_key ?: '');
         Setting::set('asaas_sandbox', $request->has('asaas_sandbox') ? '1' : '0');
+        Setting::set('asaas_webhook_token', $request->asaas_webhook_token ?: '');
         Setting::set('gateway_mercadopago_key', $request->gateway_mercadopago_key ?: '');
+        Setting::set('mercadopago_webhook_token', $request->mercadopago_webhook_token ?: '');
         Setting::set('show_sold_qty', $request->has('show_sold_qty') ? '1' : '0');
 
         Setting::set('recaptcha_enabled', $request->has('recaptcha_enabled') ? '1' : '0');
         Setting::set('recaptcha_site_key', $request->recaptcha_site_key ?: '');
         Setting::set('recaptcha_secret_key', $request->recaptcha_secret_key ?: '');
+        Setting::set('recaptcha_version', $request->input('recaptcha_version', 'v3') === 'v2' ? 'v2' : 'v3');
+        Setting::set('recaptcha_min_score', (string) ($request->input('recaptcha_min_score', '0.5') ?: '0.5'));
 
         Setting::set('google_login_enabled', $request->has('google_login_enabled') ? '1' : '0');
         Setting::set('google_client_id', $request->google_client_id ?: '');
         Setting::set('google_client_secret', $request->google_client_secret ?: '');
+
+        Setting::set('seo_title', $request->seo_title ?: '');
+        Setting::set('seo_description', $request->seo_description ?: '');
+        Setting::set('seo_keywords', $request->seo_keywords ?: '');
+        Setting::set('google_site_verification', $request->google_site_verification ?: '');
 
         Setting::set('google_maps_enabled', $request->has('google_maps_enabled') ? '1' : '0');
         Setting::set('google_maps_key', $request->google_maps_key ?: '');
@@ -545,6 +579,12 @@ class AdminController extends Controller
 
         Setting::set('page_about_us', $request->page_about_us ?: '');
         Setting::set('page_contact', $request->page_contact ?: '');
+        Setting::set('contact_whatsapp', $request->contact_whatsapp ?: '');
+        Setting::set('contact_email', $request->contact_email ?: 'contato@rrsorteio.com');
+        Setting::set('contact_address', $request->contact_address ?: '');
+        Setting::set('contact_city', $request->contact_city ?: '');
+        Setting::set('contact_hours_weekdays', $request->contact_hours_weekdays ?: '');
+        Setting::set('contact_hours_saturday', $request->contact_hours_saturday ?: '');
         Setting::set('page_faqs', $request->page_faqs ?: '');
         Setting::set('page_privacy_policy', $request->page_privacy_policy ?: '');
         Setting::set('page_terms_of_use', $request->page_terms_of_use ?: '');
@@ -757,7 +797,7 @@ class AdminController extends Controller
 
         $logActivity->execute("Gerou banner com IA para '{$request->title}'", json_encode($banner->toArray()));
 
-        return redirect()->route('admin.dashboard')->with('success', 'Banner gerado automaticamente com IA e cadastrado com sucesso!');
+        return redirect()->route('admin.banners')->with('success', 'Banner gerado automaticamente com IA e cadastrado com sucesso!');
     }
 
     /**
@@ -804,7 +844,7 @@ class AdminController extends Controller
 
         $logActivity->execute("Criou banner: '{$request->title}'", json_encode($banner->toArray()));
 
-        return redirect()->route('admin.dashboard')->with('success', 'Banner criado com sucesso!');
+        return redirect()->route('admin.banners')->with('success', 'Banner criado com sucesso!');
     }
 
     /**
@@ -816,7 +856,7 @@ class AdminController extends Controller
         $banner->delete();
         $logActivity->execute("Excluiu banner: {$title}");
 
-        return redirect()->route('admin.dashboard')->with('success', 'Banner excluído com sucesso!');
+        return redirect()->route('admin.banners')->with('success', 'Banner excluído com sucesso!');
     }
 
     /**
@@ -830,6 +870,6 @@ class AdminController extends Controller
 
         $logActivity->execute("Alterou status do banner ID: {$banner->id} para ".($banner->active ? 'Ativo' : 'Inativo'));
 
-        return redirect()->route('admin.dashboard')->with('success', 'Status do banner alterado com sucesso!');
+        return redirect()->route('admin.banners')->with('success', 'Status do banner alterado com sucesso!');
     }
 }

@@ -74,6 +74,16 @@
                         <div class="w-11 h-6 bg-slate-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-slate-300 after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
                     </label>
                 </div>
+
+                <div class="rounded-xl border p-4 flex flex-col sm:flex-row sm:items-center gap-4" style="border-color: var(--border-color); background: color-mix(in srgb, var(--accent) 8%, transparent);">
+                    <div class="flex-1">
+                        <h4 class="text-sm font-bold text-white flex items-center gap-2"><i class="fa-solid fa-flask text-amber-400"></i> Sorteio teste</h4>
+                        <p class="text-xs text-slate-400 mt-1">Simule a cerimônia completa (6 dígitos + ganhador fictício) sem afetar bilhetes reais.</p>
+                    </div>
+                    <a href="{{ route('admin.draws.test') }}" class="shrink-0 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold" style="background: var(--accent); color: var(--on-accent);">
+                        Abrir sala de teste
+                    </a>
+                </div>
             </div>
         </div>
 
@@ -97,9 +107,18 @@
                         </label>
                         <p class="text-[10px] text-slate-500">Webhook: <code class="text-slate-400">/api/webhook/asaas</code></p>
                     </div>
+                    <div class="space-y-1.5 md:col-span-2">
+                        <label class="text-xs text-slate-400 font-semibold uppercase">Token do Webhook Asaas:</label>
+                        <input type="password" name="asaas_webhook_token" value="{{ $settings['asaas_webhook_token'] }}" placeholder="Mesmo token configurado no painel Asaas (header asaas-access-token)" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none">
+                        <p class="text-[10px] text-slate-500">Obrigatório em produção. Configure o mesmo valor no Asaas como access token do webhook.</p>
+                    </div>
                     <div class="space-y-1.5">
                         <label class="text-xs text-slate-400 font-semibold uppercase">Mercado Pago Access Token:</label>
                         <input type="password" name="gateway_mercadopago_key" value="{{ $settings['gateway_mercadopago_key'] }}" placeholder="Chave privada Mercado Pago" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none">
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="text-xs text-slate-400 font-semibold uppercase">Token do Webhook Mercado Pago:</label>
+                        <input type="password" name="mercadopago_webhook_token" value="{{ $settings['mercadopago_webhook_token'] }}" placeholder="Token enviado no header X-Webhook-Token ou Authorization" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none">
                     </div>
                 </div>
             </div>
@@ -191,7 +210,24 @@
                         <span class="ml-2 text-xs text-slate-300 font-medium">Ativar</span>
                     </label>
                 </div>
+                <p class="text-xs text-slate-400 leading-relaxed">
+                    Crie as chaves em
+                    <a href="https://www.google.com/recaptcha/admin" target="_blank" rel="noopener" class="underline" style="color: var(--accent);">google.com/recaptcha/admin</a>
+                    para o domínio <strong class="text-slate-200">rrsorteio.com</strong> (e <code class="text-slate-300">localhost</code> se for testar local).
+                    Protege login, cadastro, recuperação de senha e completar perfil.
+                </p>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="space-y-1.5">
+                        <label class="text-xs text-slate-400 font-semibold uppercase">Versão:</label>
+                        <select name="recaptcha_version" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none">
+                            <option value="v3" {{ ($settings['recaptcha_version'] ?? 'v3') === 'v3' ? 'selected' : '' }}>v3 — Invisível (score)</option>
+                            <option value="v2" {{ ($settings['recaptcha_version'] ?? 'v3') === 'v2' ? 'selected' : '' }}>v2 — Checkbox “Não sou um robô”</option>
+                        </select>
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="text-xs text-slate-400 font-semibold uppercase">Score mínimo (só v3):</label>
+                        <input type="number" step="0.1" min="0" max="1" name="recaptcha_min_score" value="{{ $settings['recaptcha_min_score'] ?? '0.5' }}" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none">
+                    </div>
                     <div class="space-y-1.5">
                         <label class="text-xs text-slate-400 font-semibold uppercase">Site Key:</label>
                         <input type="text" name="recaptcha_site_key" value="{{ $settings['recaptcha_site_key'] }}" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none">
@@ -224,6 +260,36 @@
                         <label class="text-xs text-slate-400 font-semibold uppercase">Google Client Secret:</label>
                         <input type="password" name="google_client_secret" value="{{ $settings['google_client_secret'] }}" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none">
                     </div>
+                </div>
+                <p class="text-[11px] text-slate-500 leading-relaxed">
+                    No Google Cloud Console, adicione esta URI de redirecionamento autorizada:<br>
+                    <code class="text-slate-300 break-all">{{ url('/auth/google/callback') }}</code>
+                </p>
+            </div>
+
+            <!-- SEO Google -->
+            <div class="space-y-4 p-4 rounded-xl border bg-slate-900/20" style="border-color: var(--border-color);">
+                <div class="border-b pb-2" style="border-color: var(--border-color);">
+                    <h3 class="text-base font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-magnifying-glass-chart text-sm text-emerald-400"></i> SEO / Google Search
+                    </h3>
+                </div>
+                <div class="space-y-1.5">
+                    <label class="text-xs text-slate-400 font-semibold uppercase">Título SEO (padrão):</label>
+                    <input type="text" name="seo_title" value="{{ $settings['seo_title'] }}" placeholder="RR Veículos | Ações Promocionais" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none">
+                </div>
+                <div class="space-y-1.5">
+                    <label class="text-xs text-slate-400 font-semibold uppercase">Meta Description:</label>
+                    <textarea name="seo_description" rows="3" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none" placeholder="Descrição para o Google">{{ $settings['seo_description'] }}</textarea>
+                </div>
+                <div class="space-y-1.5">
+                    <label class="text-xs text-slate-400 font-semibold uppercase">Keywords:</label>
+                    <input type="text" name="seo_keywords" value="{{ $settings['seo_keywords'] }}" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none">
+                </div>
+                <div class="space-y-1.5">
+                    <label class="text-xs text-slate-400 font-semibold uppercase">Google Search Console (código de verificação):</label>
+                    <input type="text" name="google_site_verification" value="{{ $settings['google_site_verification'] }}" placeholder="conteúdo do meta google-site-verification" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none">
+                    <p class="text-[11px] text-slate-500">Sitemap: <a href="{{ url('/sitemap.xml') }}" target="_blank" class="underline text-slate-300">{{ url('/sitemap.xml') }}</a> · Robots: <a href="{{ url('/robots.txt') }}" target="_blank" class="underline text-slate-300">{{ url('/robots.txt') }}</a></p>
                 </div>
             </div>
 
@@ -270,12 +336,43 @@
                     </div>
 
                     <!-- Contato -->
-                    <div class="space-y-2">
-                        <label class="text-xs text-slate-400 font-bold uppercase tracking-wider">Página "Contato":</label>
-                        <input type="hidden" name="page_contact" id="input_page_contact">
-                        <div class="quill-wrapper rounded-xl overflow-hidden border border-slate-800">
-                            <div id="editor_page_contact" class="quill-editor h-48 bg-slate-900/50 text-slate-200">
-                                {!! $settings['page_contact'] !!}
+                    <div class="space-y-4 p-4 rounded-xl border bg-slate-900/20" style="border-color: var(--border-color);">
+                        <h4 class="text-sm font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-headset text-emerald-400"></i> Página Contato — canais oficiais
+                        </h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="space-y-1.5">
+                                <label class="text-xs text-slate-400 font-semibold uppercase">WhatsApp:</label>
+                                <input type="text" name="contact_whatsapp" value="{{ $settings['contact_whatsapp'] }}" placeholder="(66) 99999-9999" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none">
+                            </div>
+                            <div class="space-y-1.5">
+                                <label class="text-xs text-slate-400 font-semibold uppercase">E-mail:</label>
+                                <input type="email" name="contact_email" value="{{ $settings['contact_email'] }}" placeholder="contato@rrsorteio.com" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none">
+                            </div>
+                            <div class="space-y-1.5 md:col-span-2">
+                                <label class="text-xs text-slate-400 font-semibold uppercase">Endereço:</label>
+                                <input type="text" name="contact_address" value="{{ $settings['contact_address'] }}" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none">
+                            </div>
+                            <div class="space-y-1.5">
+                                <label class="text-xs text-slate-400 font-semibold uppercase">Cidade:</label>
+                                <input type="text" name="contact_city" value="{{ $settings['contact_city'] }}" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none">
+                            </div>
+                            <div class="space-y-1.5">
+                                <label class="text-xs text-slate-400 font-semibold uppercase">Horário (semana):</label>
+                                <input type="text" name="contact_hours_weekdays" value="{{ $settings['contact_hours_weekdays'] }}" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none">
+                            </div>
+                            <div class="space-y-1.5 md:col-span-2">
+                                <label class="text-xs text-slate-400 font-semibold uppercase">Horário (sábado):</label>
+                                <input type="text" name="contact_hours_saturday" value="{{ $settings['contact_hours_saturday'] }}" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none">
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-xs text-slate-400 font-bold uppercase tracking-wider">Texto adicional (opcional):</label>
+                            <input type="hidden" name="page_contact" id="input_page_contact">
+                            <div class="quill-wrapper rounded-xl overflow-hidden border border-slate-800">
+                                <div id="editor_page_contact" class="quill-editor h-48 bg-slate-900/50 text-slate-200">
+                                    {!! $settings['page_contact'] !!}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -569,7 +666,7 @@
         'como é realizada a ação promocional do veículo?': `
             <div class="faq-item mb-4" style="margin-bottom: 20px;">
                 <h3 style="font-size: 15px; font-weight: bold; color: #ef4444; margin-bottom: 5px;">Como e quando é realizada a Ação Promocional do prêmio?</h3>
-                <p style="font-size: 13px; color: #94a3b8; line-height: 1.6;">Todas as nossas Ações Promocionais são executadas com total transparência e auditabilidade. A data oficial da Ação Promocional é marcada previamente no painel da ação. Para definir o bilhete ganhador, utilizamos a extração oficial da <strong>Loteria Federal</strong> ou realizamos uma transmissão ao vivo de forma aleatória e auditada através de nossas redes sociais. O ganhador é notificado instantaneamente por e-mail e WhatsApp.</p>
+                <p style="font-size: 13px; color: #94a3b8; line-height: 1.6;">Todas as nossas Ações Promocionais são executadas com total transparência. A data e o horário oficiais do sorteio ficam divulgados na página da ação. O sorteio é realizado <strong>ao vivo pelo site e pelo canal no YouTube</strong>, com revelação do número contemplado entre os bilhetes pagos. O ganhador é notificado pelos canais oficiais (e-mail e WhatsApp, quando disponíveis).</p>
             </div>
         `,
         'qual o prazo para pagamento das cotas reservadas?': `

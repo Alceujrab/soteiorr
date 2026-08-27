@@ -35,7 +35,7 @@ class BannerUploadTest extends TestCase
             'mobile_image' => $mobile,
         ]);
 
-        $response->assertRedirect(route('admin.dashboard'));
+        $response->assertRedirect(route('admin.banners'));
 
         $banner = Banner::first();
         $this->assertNotNull($banner);
@@ -66,8 +66,24 @@ class BannerUploadTest extends TestCase
 
         $response = $this->actingAs($admin)->delete(route('admin.banners.destroy', $banner));
 
-        $response->assertRedirect(route('admin.dashboard'));
+        $response->assertRedirect(route('admin.banners'));
         $this->assertDatabaseMissing('banners', ['id' => $banner->id]);
+    }
+
+    public function test_admin_banners_page_is_available(): void
+    {
+        $admin = User::create([
+            'name' => 'Admin Banner Page',
+            'email' => 'admin-banner-page@test.com',
+            'password' => bcrypt('password'),
+            'role' => 'admin_organizador',
+        ]);
+
+        $response = $this->actingAs($admin)->get(route('admin.banners'));
+
+        $response->assertOk();
+        $response->assertSee('Gerar Banner com IA');
+        $response->assertSee('Adicionar Banner');
     }
 
     public function test_home_prefers_active_raffle_over_orphan_banner(): void
