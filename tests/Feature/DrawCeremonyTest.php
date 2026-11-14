@@ -205,22 +205,37 @@ class DrawCeremonyTest extends TestCase
         $this->assertSame(5, $public['reveal_interval_seconds']);
     }
 
-    public function test_cancel_resets_official_draw_to_pending(): void
+    public function test_official_draw_cannot_be_cancelled_after_winner_is_selected(): void
     {
         ['admin' => $admin, 'raffle' => $raffle] = $this->createPaidSetup();
         $ceremony = app(DrawCeremonyService::class);
         $draw = $ceremony->startOfficial($raffle);
-        $slug = $draw->public_slug;
+
+        $this->actingAs($admin)
+            ->from(route('admin.draws.room', $raffle))
+            ->post(route('admin.draws.cancel', $draw))
+            ->assertRedirect(route('admin.draws.room', $raffle))
+            ->assertSessionHasErrors('draw');
+
+        $draw = $draw->fresh();
+        $this->assertSame('live', $draw->status);
+        $this->assertSame('054321', $draw->winning_number_padded);
+        $this->assertSame(0, $draw->revealed_digits);
+        $this->assertSame('active', $raffle->fresh()->status);
+    }
+
+    public function test_test_draw_can_still_be_cancelled(): void
+    {
+        ['admin' => $admin, 'raffle' => $raffle] = $this->createPaidSetup();
+        $ceremony = app(DrawCeremonyService::class);
+        $draw = $ceremony->startTest(null, 123456, $raffle);
 
         $this->actingAs($admin)
             ->post(route('admin.draws.cancel', $draw))
-            ->assertRedirect(route('admin.draws.room', $raffle));
+            ->assertRedirect(route('admin.draws.test'));
 
         $draw = $draw->fresh();
-        $this->assertSame('pending', $draw->status);
-        $this->assertSame($slug, $draw->public_slug);
-        $this->assertNull($draw->winning_number);
-        $this->assertSame(0, $draw->revealed_digits);
+        $this->assertSame('cancelled', $draw->status);
         $this->assertSame('active', $raffle->fresh()->status);
     }
 

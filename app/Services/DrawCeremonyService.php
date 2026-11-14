@@ -512,42 +512,17 @@ class DrawCeremonyService
             return $draw->fresh(['raffle']);
         }
 
+        if (! $draw->is_test) {
+            throw ValidationException::withMessages([
+                'draw' => 'Sorteios oficiais não podem ser cancelados após iniciados. Use o modo de teste para ensaios.',
+            ]);
+        }
+
         return DB::transaction(function () use ($draw) {
-            $raffle = $draw->raffle()->lockForUpdate()->first();
-
-            if (! $draw->is_test && $raffle && $raffle->status === 'completed') {
-                $raffle->update(['status' => 'active']);
-            }
-
-            if ($draw->is_test) {
-                $draw->forceFill([
-                    'status' => Draw::STATUS_CANCELLED,
-                    'auto_reveal_started_at' => null,
-                    'completed_at' => $draw->completed_at ?: now(),
-                ])->save();
-
-                return $draw->fresh(['raffle']);
-            }
-
             $draw->forceFill([
-                'status' => Draw::STATUS_PENDING,
-                'revealed_digits' => 0,
-                'winning_number' => null,
-                'winning_number_padded' => null,
-                'winning_ticket_id' => null,
-                'winning_user_id' => null,
-                'winner_snapshot' => null,
-                'draw_seed' => null,
-                'eligible_hash' => null,
-                'eligible_count' => null,
-                'selection_index' => null,
-                'eligible_numbers' => null,
-                'ops_checklist' => null,
-                'started_at' => null,
-                'completed_at' => null,
-                'last_reveal_at' => null,
+                'status' => Draw::STATUS_CANCELLED,
                 'auto_reveal_started_at' => null,
-                'drawn_at' => null,
+                'completed_at' => $draw->completed_at ?: now(),
             ])->save();
 
             return $draw->fresh(['raffle']);

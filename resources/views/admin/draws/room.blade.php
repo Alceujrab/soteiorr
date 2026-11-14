@@ -85,19 +85,16 @@
                             </button>
                         @endif
                         @if($isLive || $isDone)
-                            <form method="POST" action="{{ route('admin.draws.cancel', $draw) }}" onsubmit="return confirm('Cancelar este sorteio? Você poderá iniciar novamente para ajustar e testar.');">
-                                @csrf
-                                <button type="submit" class="px-5 py-3.5 rounded-xl text-sm font-bold border" style="border-color: #ef4444; color: #fca5a5;">
-                                    Cancelar sorteio
-                                </button>
-                            </form>
+                            <span class="px-4 py-3 rounded-xl text-xs font-semibold border" style="border-color: var(--border-color); color: var(--text-secondary);">
+                                Sorteio oficial iniciado: resultado bloqueado
+                            </span>
                         @endif
                         <div class="text-sm theme-muted self-center">
                             Revelados: <strong class="theme-title" id="revealed-count">{{ $draw->revealed_digits }}</strong>/{{ $draw->digit_length }}
                         </div>
                     </div>
                     <p class="text-xs theme-muted" id="sortear-help">
-                        Ao clicar em <strong class="theme-title">Sortear números</strong>, todos os dígitos giram e param em sequência a cada 5 segundos. Use <strong class="theme-title">Cancelar sorteio</strong> enquanto estiver testando.
+                        Ao clicar em <strong class="theme-title">Sortear números</strong>, todos os dígitos giram e param em sequência a cada 5 segundos. Use a sala de teste para ensaios antes de iniciar o sorteio oficial.
                     </p>
                 </div>
 
